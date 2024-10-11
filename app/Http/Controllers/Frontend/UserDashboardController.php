@@ -21,7 +21,7 @@ class UserDashboardController extends Controller
         $reviews = ProductReview::where('user_id', Auth::user()->id)->count();
         $wishlist = Wishlist::where('user_id', Auth::user()->id)->count();
 
-        return view('frontend.dashboard.dashboard', compact(
+        return view('frontend.dashboard.layouts.master', compact(
             'totalOrder',
             'pendingOrder',
             'completeOrder',

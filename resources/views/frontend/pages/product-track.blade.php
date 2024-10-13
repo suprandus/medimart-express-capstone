@@ -43,7 +43,7 @@
                             <p class="text-center">tracking your order status</p>
                             <div class="wsus__track_input">
                                 <label class="d-block mb-2">invoice id*</label>
-                                <input type="text" placeholder="H25-21578455" name="tracker" value="{{@$order->invocie_id}}">
+                                <input type="text" placeholder="616364" name="tracker" value="{{@$order->invocie_id}}">
                             </div>
                             <button type="submit" class="common_btn">track</button>
                         </form>

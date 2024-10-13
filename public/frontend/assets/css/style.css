@@ -2813,3 +2813,20 @@ body:not(.sidebar-mini) .sidebar-style-2 .sidebar-menu li.active ul.dropdown-men
 .msg-notification {
     border: 5px solid #08c !important;
 }
+
+/* Dashboard Hover Effect */
+.card-link:hover .card {
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transform: scale(1.05);
+  transition: all 0.3s ease;
+}
+
+.card-link:hover .card-icon {
+  background-color: #444; /* Change icon background on hover */
+  transition: background-color 0.3s ease;
+}
+
+.card-link:hover .card-header h4 {
+  color: #007bff; /* Change the title color on hover */
+  transition: color 0.3s ease;
+}

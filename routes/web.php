@@ -44,7 +44,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 
 Route::get('flash-sale', [FlashSaleController::class, 'index'])->name('flash-sale');
 
@@ -69,7 +69,6 @@ Route::get('apply-coupon', [CartController::class, 'applyCoupon'])->name('apply-
 Route::get('coupon-calculation', [CartController::class, 'couponCalculation'])->name('coupon-calculation');
 
 /** Newsletter routes */
-
 Route::post('newsletter-request', [NewsletterController::class, 'newsLetterRequset'])->name('newsletter-request');
 Route::get('newsletter-verify/{token}', [NewsletterController::class, 'newsLetterEmailVarify'])->name('newsletter-verify');
 
@@ -94,6 +93,7 @@ Route::get('blog', [BlogController::class, 'blog'])->name('blog');
 
 /** Product routes */
 Route::get('show-product-modal/{id}', [HomeController::class, 'ShowProductModal'])->name('show-product-modal');
+
 /** add product in wishlist */
 Route::get('wishlist/add-product', [WishlistController::class, 'addToWishlist'])->name('wishlist.store');
 
@@ -103,7 +103,7 @@ Route::get('wishlist/add-product', [WishlistController::class, 'addToWishlist'])
 
 
 
-Route::group(['middleware' =>['auth', 'verified'], 'prefix' => 'user', 'as' => 'user.'], function(){
+Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'user', 'as' => 'user.'], function () {
     Route::get('dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
     Route::get('profile', [UserProfileController::class, 'index'])->name('profile'); // user.profile
     Route::put('profile', [UserProfileController::class, 'updateProfile'])->name('profile.update'); // user.profile.update

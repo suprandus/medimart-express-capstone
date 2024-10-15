@@ -77,6 +77,9 @@
     <script src="{{asset('frontend/assets/modules/nicescroll/jquery.nicescroll.min.js')}}"></script>
     <script src="{{asset('frontend/assets/modules/moment.min.js')}}"></script>
     <script src="{{asset('frontend/assets/js/stisla.js')}}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    {{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script> --}}
+
 
     <!-- JS Libraies -->
     <script src="{{asset('frontend/assets/modules/simple-weather/jquery.simpleWeather.min.js')}}"></script>

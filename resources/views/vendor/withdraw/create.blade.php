@@ -8,58 +8,49 @@
   <div class="section-header">
     <h1>Create Request</h1>
   </div>
-</div>
-<div class="section-body">
-  <div class="card">
-    <div class="card-body">
-      <div class="row">
-        <div class="col-xl-9 col-xxl-10 col-lg-9 ms-auto">
-          <div class="dashboard_content mt-2 mt-md-0">
-            <div class="row">
-              <div class="col-12">
-                <form action="{{route('vendor.withdraw.store')}}" method="POST" enctype="multipart/form-data">
-                  @csrf
-                  <!-- Method Selection -->
-                  <div class="form-group">
-                    <label for="method" class="form-label">Mode of Payment</label>
-                    <select name="method" id="method" class="form-control">
-                      <option value="">Select</option>
-                      @foreach ($methods as $method)
-                      <option value="{{ $method->id }}">{{ $method->name }}</option>
-                      @endforeach
-                    </select>
-                  </div>
-
-                  <!-- Withdraw Amount -->
-                  <div class="form-group">
-                    <label for="amount" class="form-label">Withdraw Amount</label>
-                    <input type="number" class="form-control" name="amount" id="amount" placeholder="Enter amount"
-                      min="0" step="0.01" required>
-                  </div>
-
-                  <!-- Account Information -->
-                  <div class="form-group">
-                    <label for="account_info" class="form-label">Account Information</label>
-                    <textarea name="account_info" id="account_info" class="form-control" rows="4"
-                      placeholder="Enter account details" required></textarea>
-                  </div>
-
-                  <!-- Submit Button -->
-                  <button type="submit" class="btn btn-primary w-100">Create</button>
-                </form>
-              </div>
-
-              <!-- Account Info Area -->
-              <div class="col-12 col-md-6 mt-3 account_info_area">
-                <!-- This area will be dynamically filled -->
-              </div>
-            </div>
+  <div class="section-body">
+    <div class="card">
+      <div class="card-body">
+        <form action="{{route('vendor.withdraw.store')}}" method="POST" enctype="multipart/form-data">
+          @csrf
+          <!-- Method Selection -->
+          <div class="form-group">
+            <label for="method" class="form-label">Mode of Payment</label>
+            <select name="method" id="method" class="form-control">
+              <option value="">Select</option>
+              @foreach ($methods as $method)
+              <option value="{{ $method->id }}">{{ $method->name }}</option>
+              @endforeach
+            </select>
           </div>
+
+          <!-- Withdraw Amount -->
+          <div class="form-group">
+            <label for="amount" class="form-label">Withdraw Amount</label>
+            <input type="number" class="form-control" name="amount" id="amount" placeholder="Enter amount" min="0"
+              step="0.01" required>
+          </div>
+
+          <!-- Account Information -->
+          <div class="form-group">
+            <label for="account_info" class="form-label">Account Information</label>
+            <textarea name="account_info" id="account_info" class="form-control" rows="4"
+              placeholder="Enter account details" required></textarea>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" class="btn btn-primary">Create</button>
+        </form>
+        <hr class="mt-4">
+        <div class="card-body account_info_area">
+          <!-- This area will be dynamically filled -->
         </div>
       </div>
     </div>
   </div>
 </div>
+</div>
+
 <!--=============================
     DASHBOARD END
   ==============================-->

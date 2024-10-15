@@ -1,183 +1,165 @@
 @php
-    $address = json_decode($order->order_address);
-
+$address = json_decode($order->order_address);
 @endphp
 
 @extends('vendor.layouts.master')
 
-@section('title')
-    {{ $settings->site_name }} || Product
-@endsection
-
 @section('content')
-    <!--=============================
-        DASHBOARD START
-      ==============================-->
-    <section id="wsus__dashboard">
-        <div class="container-fluid">
-            @include('vendor.layouts.sidebar')
+<!-- Main Content -->
+<section class="section">
+    <div class="section-header">
+        <h1>Order Details</h1>
+    </div>
 
-            <div class="row">
-                <div class="col-xl-9 col-xxl-10 col-lg-9 ms-auto">
-                    <div class="dashboard_content mt-2 mt-md-0">
-                        <h3><i class="far fa-user"></i> Order Details</h3>
-                        <div class="wsus__dashboard_profile">
+    <div class="section-body">
+        <div class="invoice">
+            <div class="invoice-print">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="invoice-title">
+                            <h2>Invoice</h2>
+                            <div class="invoice-number">Order #{{$order->invocie_id}}</div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <address>
+                                    <strong>Billing Information:</strong><br>
+                                    <b>Name:</b> {{$address->name}}<br>
+                                    <b>Email:</b> {{$address->email}}<br>
+                                    <b>Phone:</b> {{$address->phone}}<br>
+                                    <b>Address:</b> {{$address->address}},<br>
+                                    {{$address->city}}, {{$address->state}}, {{$address->zip}}<br>
+                                    {{$address->country}}
+                                </address>
+                            </div>
+                            <div class="col-md-6 text-md-right">
+                                <address>
+                                    <strong>Shipping Information:</strong><br>
+                                    <b>Name:</b> {{$address->name}}<br>
+                                    <b>Email:</b> {{$address->email}}<br>
+                                    <b>Phone:</b> {{$address->phone}}<br>
+                                    <b>Address:</b> {{$address->address}},<br>
+                                    {{$address->city}}, {{$address->state}}, {{$address->zip}}<br>
+                                    {{$address->country}}
+                                </address>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <address>
+                                    <strong>Payment Information:</strong><br>
+                                    <b>Method:</b> {{$order->payment_method}}<br>
+                                    <b>Transaction Id:</b> {{@$order->transaction->transaction_id}}<br>
+                                    <b>Status:</b> {{$order->payment_status === 1 ? 'Completed' : 'Pending'}}
+                                </address>
+                            </div>
+                            <div class="col-md-6 text-md-right">
+                                <address>
+                                    <strong>Order Date:</strong><br>
+                                    {{date('d F, Y', strtotime($order->created_at))}}<br><br>
+                                </address>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-1">
+                    <div class="col-md-12">
+                        <div class="section-title">Order Summary</div>
+                        <p class="section-lead">All items here cannot be deleted.</p>
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover table-md">
+                                <tr>
+                                    <th data-width="40">#</th>
+                                    <th>Item</th>
+                                    <th>Variant</th>
+                                    <th>Vendor Name</th>
+                                    <th class="text-center">Price</th>
+                                    <th class="text-center">Quantity</th>
+                                    <th class="text-right">Totals</th>
+                                </tr>
+                                @foreach ($order->orderProducts as $product)
+                                @php
+                                $variants = json_decode($product->variants);
+                                @endphp
+                                <tr>
+                                    <td>{{++$loop->index}}</td>
+                                    @if (isset($product->product->slug))
+                                    <td><a target="_blank"
+                                            href="{{route('product-detail', $product->product->slug)}}">{{$product->product_name}}</a>
+                                    </td>
+                                    @else
+                                    <td>{{$product->product_name}}</td>
+                                    @endif
+                                    <td>
+                                        @foreach ($variants as $key => $variant)
+                                        <b>{{$key}}:</b> {{$variant->name}}
+                                        ({{$settings->currency_icon}}{{$variant->price}})
+                                        @endforeach
+                                    </td>
+                                    <td>{{$product->vendor->shop_name}}</td>
 
-                            <!--============================
-                            INVOICE PAGE START
-                        ==============================-->
-                            <section id="" class="invoice-print">
-                                <div class="">
-                                    <div class="wsus__invoice_area">
-                                        <div class="wsus__invoice_header">
-                                            <div class="wsus__invoice_content">
-                                                <div class="row">
-                                                    <div class="col-xl-4 col-md-4 mb-5 mb-md-0">
-                                                        <div class="wsus__invoice_single">
-                                                            <h5>Billing Information</h5>
-                                                            <h6>{{ $address->name }}</h6>
-                                                            <p>{{ $address->email }}</p>
-                                                            <p>{{ $address->phone }}</p>
-                                                            <p>{{ $address->address }}, {{ $address->city }},
-                                                                {{ $address->state }}, {{ $address->zip }}</p>
-                                                            <p>{{ $address->country }}</p>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-xl-4 col-md-4 mb-5 mb-md-0">
-                                                        <div class="wsus__invoice_single text-md-center">
-                                                            <h5>shipping information</h5>
-                                                            <h6>{{ $address->name }}</h6>
-                                                            <p>{{ $address->email }}</p>
-                                                            <p>{{ $address->phone }}</p>
-                                                            <p>{{ $address->address }}, {{ $address->city }},
-                                                                {{ $address->state }}, {{ $address->zip }}</p>
-                                                            <p>{{ $address->country }}</p>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-xl-4 col-md-4">
-                                                        <div class="wsus__invoice_single text-md-end">
-                                                            <h5>Order id: #{{ $order->invocie_id }}</h5>
-                                                            <h6>Order status:
-                                                                {{ config('order_status.order_status_admin')[$order->order_status]['status'] }}
-                                                            </h6>
-                                                            <p>Payment Method: {{ $order->payment_method }}</p>
-                                                            <p>Payment Status: {{ $order->payment_status }}</p>
-                                                            <p>Transaction id: {{ $order->transaction->transaction_id }}
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="wsus__invoice_description">
-                                                <div class="table-responsive">
-                                                    <table class="table">
-                                                        <tr>
-                                                            <th class="name">
-                                                                product
-                                                            </th>
-                                                            <th class="amount">
-                                                                Vendor
-                                                            </th>
-
-                                                            <th class="amount">
-                                                                amount
-                                                            </th>
-
-                                                            <th class="quentity">
-                                                                quentity
-                                                            </th>
-                                                            <th class="total">
-                                                                total
-                                                            </th>
-                                                        </tr>
-                                                        @foreach ($order->orderProducts as $product)
-                                                            @if ($product->vendor_id === Auth::user()->vendor->id)
-                                                                @php
-                                                                    $variants = json_decode($product->variants);
-                                                                    $total = 0;
-                                                                    $total += $product->unit_price * $product->qty;
-                                                                @endphp
-                                                                <tr>
-                                                                    <td class="name">
-                                                                        <p>{{ $product->product_name }}</p>
-                                                                        @foreach ($variants as $key => $item)
-                                                                            <span>{{ $key }} :
-                                                                                {{ $item->name }}(
-                                                                                {{ $settings->currency_icon }}{{ $item->price }}
-                                                                                )</span>
-                                                                        @endforeach
-                                                                    </td>
-                                                                    <td class="amount">
-                                                                        {{ $product->vendor->shop_name }}
-                                                                    </td>
-                                                                    <td class="amount">
-                                                                        {{ $settings->currency_icon }}
-                                                                        {{ $product->unit_price }}
-                                                                    </td>
-
-                                                                    <td class="quentity">
-                                                                        {{ $product->qty }}
-                                                                    </td>
-                                                                    <td class="total">
-                                                                        {{ $settings->currency_icon }}
-                                                                        {{ $product->unit_price * $product->qty }}
-                                                                    </td>
-                                                                </tr>
-                                                            @endif
-                                                        @endforeach
-
-                                                    </table>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="wsus__invoice_footer">
-
-                                            <p><span>Total Amount:</span> {{ $settings->currency_icon }}
-                                                {{ $total }} </p>
-                                        </div>
+                                    <td class="text-center">{{$settings->currency_icon}}{{$product->unit_price}} </td>
+                                    <td class="text-center">{{$product->qty}}</td>
+                                    <td class="text-right">{{$settings->currency_icon}}{{($product->unit_price *
+                                        $product->qty) +
+                                        $product->variant_total}}</td>
+                                </tr>
+                                @endforeach
+                            </table>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-lg-8">
+                                <div class="invoice-detail-item">
+                                    <div class="invoice-detail-name">Subtotal</div>
+                                    <div class="invoice-detail-value">{{$settings->currency_icon}} {{$order->sub_total}}
                                     </div>
                                 </div>
-                            </section>
-                            <!--============================
-                            INVOICE PAGE END
-                        ==============================-->
-
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <form action="{{ route('vendor.orders.status', $order->id) }}">
-                                        <div class="form-group mt-5">
-                                            <label for="" class="mb-2">Order Status</label>
-                                            <select name="status" id="" class="form-control">
-                                                @foreach (config('order_status.order_status_vendor') as $key => $status)
-                                                    <option {{ $key === $order->order_status ? 'selected' : '' }}
-                                                        value="{{ $key }}">{{ $status['status'] }}</option>
-                                                @endforeach
-                                            </select>
-                                            <button class="btn btn-primary mt-3" type="submit">Save</button>
-                                        </div>
-                                    </form>
-                                </div>
-                                <div class="col-md-8">
-                                    <div class="mt-5 float-end">
-                                        <button class="btn btn-warning print_invoice">print</button>
+                                <div class="invoice-detail-item">
+                                    <div class="invoice-detail-name">Shipping (+)</div>
+                                    <div class="invoice-detail-value">{{$settings->currency_icon}} {{@$shipping->cost}}
                                     </div>
+                                </div>
+                                <div class="invoice-detail-item">
+                                    <div class="invoice-detail-name">Coupon (-)</div>
+                                    <div class="invoice-detail-value">{{$settings->currency_icon}} {{@$coupon->discount
+                                        ?
+                                        @$coupon->discount : 0}}</div>
+                                </div>
+                                <hr class="mt-2 mb-2">
+                                <div class="invoice-detail-item">
+                                    <div class="invoice-detail-name">Total</div>
+                                    <div class="invoice-detail-value invoice-detail-value-lg">
+                                        {{$settings->currency_icon}}
+                                        {{$order->amount}}</div>
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
+            <hr class="mt-2 mb-2">
+            <form action="{{ route('vendor.orders.status', $order->id) }}">
+                <div class="form-group mt-3">
+                    <label for="" class="mb-2">Order Status</label>
+                    <select name="status" class="form-control">
+                        @foreach (config('order_status.order_status_vendor') as $key => $status)
+                        <option {{ $key===$order->order_status ? 'selected' : '' }}
+                            value="{{ $key }}">{{ $status['status'] }}</option>
+                        @endforeach
+                    </select>
+                    <button class="btn btn-primary mt-3" type="submit">Save</button>
+                    <button class="btn btn-warning btn-icon icon-left print_invoice mt-3"><i class="fas fa-print"></i>
+                        Print</button>
+                </div>
+            </form>
         </div>
-    </section>
-    <!--=============================
-        DASHBOARD START
-      ==============================-->
+</section>
 @endsection
-
 @push('scripts')
-    <script>
-        $('.print_invoice').on('click', function() {
+<script>
+    $('.print_invoice').on('click', function() {
             let printBody = $('.invoice-print');
             let originalContents = $('body').html();
 
@@ -188,5 +170,5 @@
             $('body').html(originalContents);
 
         })
-    </script>
+</script>
 @endpush

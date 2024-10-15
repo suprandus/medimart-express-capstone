@@ -29,7 +29,7 @@
       </div>
       @endforeach
       <div class="col-12">
-        <a href="{{ route('user.address.create') }}" class="btn btn-primary mt-0"><i class="fas fa-plus"></i>New
+        <a href="{{ route('user.address.create') }}" class="btn btn-primary mt-0"><i class="fas fa-plus"></i> New
           Address</a>
       </div>
     </div>

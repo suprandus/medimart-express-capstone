@@ -39,7 +39,7 @@
                         <li class="{{setActive(['user.vendor-request.*'])}}"><a class="nav-link"
                                         href="{{route('user.vendor-request.index')}}"><i
                                                 class="fas fa-check-circle"></i>
-                                        <span>Pharmacy Verification</span></a>
+                                        <span>Pharmacy Application</span></a>
                         </li>
                 </ul>
 

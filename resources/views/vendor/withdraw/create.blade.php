@@ -1,74 +1,73 @@
 @extends('vendor.layouts.master')
 
-@section('title')
-{{$settings->site_name}} || Create Withdraw Request
-@endsection
-
 @section('content')
-  <!--=============================
+<!--=============================
     DASHBOARD START
   ==============================-->
-  <section id="wsus__dashboard">
-    <div class="container-fluid">
-        @include('vendor.layouts.sidebar')
-
+<div class="section">
+  <div class="section-header">
+    <h1>Create Request</h1>
+  </div>
+</div>
+<div class="section-body">
+  <div class="card">
+    <div class="card-body">
       <div class="row">
         <div class="col-xl-9 col-xxl-10 col-lg-9 ms-auto">
           <div class="dashboard_content mt-2 mt-md-0">
-            <h3><i class="far fa-user"></i> Create Withdraw Request</h3>
-            <div class="wsus__dashboard_profile">
-              <div class="row">
-                <div class="wsus__dash_pro_area col-md-6">
-
-                    <form action="{{route('vendor.withdraw.store')}}" method="POST" enctype="multipart/form-data">
-                        @csrf
-
-                        <div class="form-group wsus__input">
-                            <label>Method</label>
-                            <select name="method" id="method" class="form-control">
-                                <option value="">Select</option>
-                                @foreach ($methods as $method)
-                                <option value="{{ $method->id }}">{{$method->name}}</option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="form-group wsus__input">
-                            <label>Withdraw Amount</label>
-                            <input type="text" class="form-control" name="amount">
-                        </div>
-
-                        <div class="form-group wsus__input">
-                            <label>Account Information</label>
-                            <textarea name="account_info" class="form-control"></textarea>
-                        </div>
-
-
-
-                        <button type="submmit" class="btn btn-primary">Create</button>
-                    </form>
-
+            <div class="row">
+              <div class="col-12">
+                <form action="{{route('vendor.withdraw.store')}}" method="POST" enctype="multipart/form-data">
+                  @csrf
+                  <!-- Method Selection -->
+                  <div class="form-group">
+                    <label for="method" class="form-label">Mode of Payment</label>
+                    <select name="method" id="method" class="form-control">
+                      <option value="">Select</option>
+                      @foreach ($methods as $method)
+                      <option value="{{ $method->id }}">{{ $method->name }}</option>
+                      @endforeach
+                    </select>
                   </div>
 
-                  <div class="wsus__dash_pro_area col-md-6 account_info_area ml-2">
-
-
+                  <!-- Withdraw Amount -->
+                  <div class="form-group">
+                    <label for="amount" class="form-label">Withdraw Amount</label>
+                    <input type="number" class="form-control" name="amount" id="amount" placeholder="Enter amount"
+                      min="0" step="0.01" required>
                   </div>
+
+                  <!-- Account Information -->
+                  <div class="form-group">
+                    <label for="account_info" class="form-label">Account Information</label>
+                    <textarea name="account_info" id="account_info" class="form-control" rows="4"
+                      placeholder="Enter account details" required></textarea>
+                  </div>
+
+                  <!-- Submit Button -->
+                  <button type="submit" class="btn btn-primary w-100">Create</button>
+                </form>
+              </div>
+
+              <!-- Account Info Area -->
+              <div class="col-12 col-md-6 mt-3 account_info_area">
+                <!-- This area will be dynamically filled -->
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-  </section>
-  <!--=============================
-    DASHBOARD START
+  </div>
+</div>
+<!--=============================
+    DASHBOARD END
   ==============================-->
 @endsection
 
 @push('scripts')
-    <script>
-        $(document).ready(function(){
+<script>
+  $(document).ready(function(){
             $('#method').on('change', function(e){
                 let id = $(this).val();
                 $.ajax({
@@ -86,5 +85,5 @@
                 })
             });
         })
-    </script>
+</script>
 @endpush

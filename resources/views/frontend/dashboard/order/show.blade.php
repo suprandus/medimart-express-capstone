@@ -6,10 +6,6 @@ $coupon = json_decode($order->coupon);
 
 @extends('frontend.dashboard.layouts.master')
 
-@section('title')
-{{ $settings->site_name }} || Product
-@endsection
-
 @section('content')
 <!-- Main Content -->
 <section class="section">
@@ -147,7 +143,6 @@ $coupon = json_decode($order->coupon);
   </div>
 </section>
 @endsection
-
 
 @push('scripts')
 <script>

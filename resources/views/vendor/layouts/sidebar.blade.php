@@ -1,33 +1,44 @@
+<div class="main-sidebar sidebar-style-2">
+  <aside id="sidebar-wrapper">
+    <div class="sidebar-brand">
+      <a href="{{ route('home') }}">{{ $settings->site_name }}</a>
+    </div>
+    <div class="sidebar-brand sidebar-brand-sm">
+      <a href="">||</a>
+    </div>
+    <ul class="sidebar-menu">
+      <li class="menu-header">Dashboard</li>
+      <li class="{{setActive(['vendor.dashbaord'])}}">
+        <a class="nav-link" href="{{ route('vendor.dashbaord') }}"><i class="fas fa-prescription-bottle-alt"></i><span>
+            Dashboard</span></a>
+      </li>
+      <li class=""><a class="nav-link" href="{{ route('home') }}"><i class="fas fa-home"></i>
+          <span> Home</span></a>
+      </li>
+      <li class=""><a class="nav-link" href=""><i class="fas fa-envelope"></i>
+          <span> Messages</span></a>
+      </li>
+      <li class="{{setActive(['vendor.orders.*'])}}"><a class="nav-link" href=" {{ route('vendor.orders.index' )}}"><i
+            class="fas fa-box"></i>
+          <span> Orders</span></a>
+      </li>
+      <li class="{{setActive(['vendor.products.*'])}}"><a class="nav-link" href="{{route('vendor.products.index')}}"><i
+            class="fas fa-shopping-cart"></i>
+          <span> Products</span></a>
+      </li>
+      <li class="{{setActive(['vendor.reviews.*'])}}"><a class="nav-link" href="{{route('vendor.reviews.index')}}"><i
+            class="fas fa-star"></i>
+          <span> Reviews</span></a>
+      </li>
+      <li class="{{setActive(['vendor.withdraw.*'])}}"><a class="nav-link" href="{{route('vendor.withdraw.index')}}"><i
+            class="fas fa-money-bill-wave"></i>
+          <span> Withdraw</span></a>
+      </li>
 
-<div class="dashboard_sidebar">
-    <span class="close_icon">
-      <i class="far fa-bars dash_bar"></i>
-      <i class="far fa-times dash_close"></i>
-    </span>
-    <a href="javascript:;" class="dash_logo"><img src="{{asset($logoSetting->logo)}}" alt="logo" class="img-fluid"></a>
-    <ul class="dashboard_link">
-      <li><a class="{{setActive(['vendor.dashbaord'])}}" href="{{route('vendor.dashbaord')}}"><i class="fas fa-tachometer"></i>Dashboard</a></li>
-      <li><a class="" href="{{route('home')}}"><i class="fas fa-home"></i>Go To Home</a></li>
-
-      <li><a class="" href="{{route('vendor.messages.index')}}"><i class="fas fa-home"></i>Messenger</a></li>
-
-
-      <li><a class="{{setActive(['vendor.orders.*'])}}" href="{{route('vendor.orders.index')}}"><i class="fas fa-box"></i> Orders</a></li>
-
-      <li><a class="{{setActive(['vendor.products.*'])}}" href="{{route('vendor.products.index')}}"><i class="fas fa-cart-plus"></i> Products</a></li>
-      <li><a class="{{setActive(['vendor.reviews.index'])}}" href="{{route('vendor.reviews.index')}}"><i class="fas fa-star"></i> Review</a></li>
-
-        <li><a class="{{setActive(['vendor.reviews.index'])}}" href="{{route('vendor.withdraw.index')}}"><i class="fas fa-star"></i> My Withdraw</a></li>
-
-      <li><a class="{{setActive(['vendor.shop-profile.index'])}}" href="{{route('vendor.shop-profile.index')}}"><i class="far fa-user"></i> Shop Profile</a></li>
-      <li><a class="{{setActive(['vendor.profile'])}}" href="{{route('vendor.profile')}}"><i class="far fa-user"></i> My Profile</a></li><li>
-
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
-            <a href="{{route('logout')}}" onclick="event.preventDefault();
-            this.closest('form').submit();"><i class="far fa-sign-out-alt"></i> Log out</a>
-        </form>
-        </li>
-
+      <li class="{{setActive(['vendor.shop-profile.*'])}}"><a class="nav-link"
+          href="{{route('vendor.shop-profile.index')}}"><i class="fas fa-check-circle"></i>
+          <span>Pharmacy Profile</span></a>
+      </li>
     </ul>
-  </div>
+  </aside>
+</div>

@@ -23,35 +23,39 @@ class VendorProductVariantItemDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-        ->addColumn('action', function($query){
+            ->addColumn('action', function ($query) {
 
-            $editBtn = "<a href='".route('vendor.products-variant-item.edit', $query->id)."' class='btn btn-primary'><i class='far fa-edit'></i></a>";
-            $deleteBtn = "<a href='".route('vendor.products-variant-item.destroy', $query->id)."' class='btn btn-danger ml-2 delete-item'><i class='far fa-trash-alt'></i></a>";
+                $editBtn = "<a href='" . route('vendor.products-variant-item.edit', $query->id) . "' class='btn btn-primary'><i class='far fa-edit'></i></a>";
+                $deleteBtn = "<a href='" . route('vendor.products-variant-item.destroy', $query->id) . "' class='btn btn-danger ml-2 delete-item'><i class='far fa-trash-alt'></i></a>";
 
-            return $editBtn.$deleteBtn;
-        })
-        ->addColumn('status', function($query){
-            if($query->status == 1){
-                $button = '<div class="form-check form-switch">
-                <input checked class="form-check-input change-status" type="checkbox" id="flexSwitchCheckDefault" data-id="'.$query->id.'"></div>';
-            }else {
-                $button = '<div class="form-check form-switch">
-                <input class="form-check-input change-status" type="checkbox" id="flexSwitchCheckDefault" data-id="'.$query->id.'"></div>';
-            }
-            return $button;
-        })
-        ->addColumn('is_default', function($query){
-            if($query->is_default == 1){
-                return '<i class="badge bg-success">defalut</i>';
-            }else {
-                return '<i class="badge bg-danger">no</i>';
-            }
-        })
-        ->addColumn('variant_name', function($query){
-            return $query->productVariant->name;
-        })
-        ->rawColumns(['status', 'action', 'is_default'])
-        ->setRowId('id');
+                return $editBtn . $deleteBtn;
+            })
+            ->addColumn('status', function ($query) {
+                if ($query->status == 1) {
+                    $button = '<label class="custom-switch mt-2">
+                <input type="checkbox" checked name="custom-switch-checkbox" data-id="' . $query->id . '" class="custom-switch-input change-status" >
+                <span class="custom-switch-indicator"></span>
+            </label>';
+                } else {
+                    $button = '<label class="custom-switch mt-2">
+                    <input type="checkbox" name="custom-switch-checkbox" data-id="' . $query->id . '" class="custom-switch-input change-status">
+                    <span class="custom-switch-indicator"></span>
+                </label>';
+                }
+                return $button;
+            })
+            ->addColumn('is_default', function ($query) {
+                if ($query->is_default == 1) {
+                    return '<i class="badge bg-success">defalut</i>';
+                } else {
+                    return '<i class="badge bg-danger">no</i>';
+                }
+            })
+            ->addColumn('variant_name', function ($query) {
+                return $query->productVariant->name;
+            })
+            ->rawColumns(['status', 'action', 'is_default'])
+            ->setRowId('id');
     }
 
     /**
@@ -68,20 +72,20 @@ class VendorProductVariantItemDataTable extends DataTable
     public function html(): HtmlBuilder
     {
         return $this->builder()
-                    ->setTableId('vendorproductvariantitem-table')
-                    ->columns($this->getColumns())
-                    ->minifiedAjax()
-                    //->dom('Bfrtip')
-                    ->orderBy(0)
-                    ->selectStyleSingle()
-                    ->buttons([
-                        Button::make('excel'),
-                        Button::make('csv'),
-                        Button::make('pdf'),
-                        Button::make('print'),
-                        Button::make('reset'),
-                        Button::make('reload')
-                    ]);
+            ->setTableId('vendorproductvariantitem-table')
+            ->columns($this->getColumns())
+            ->minifiedAjax()
+            //->dom('Bfrtip')
+            ->orderBy(0)
+            ->selectStyleSingle()
+            ->buttons([
+                Button::make('excel'),
+                Button::make('csv'),
+                Button::make('pdf'),
+                Button::make('print'),
+                Button::make('reset'),
+                Button::make('reload')
+            ]);
     }
 
     /**
@@ -97,10 +101,10 @@ class VendorProductVariantItemDataTable extends DataTable
             Column::make('is_default'),
             Column::make('status'),
             Column::computed('action')
-            ->exportable(false)
-            ->printable(false)
-            ->width(200)
-            ->addClass('text-center'),
+                ->exportable(false)
+                ->printable(false)
+                ->width(200)
+                ->addClass('text-center'),
         ];
     }
 

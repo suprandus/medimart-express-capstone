@@ -10,8 +10,8 @@
 ## Installation
 Clone the repository and install dependencies:
 ```bash
-git clone https://github.com/your-username/medimart-express.git
-cd medimart-express
+git clone https://github.com/suprandus/medimart-express-capstone.git
+cd medimart-express-capstone
 composer install
 npm install
 ```

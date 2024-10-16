@@ -73,8 +73,8 @@ Route::post('newsletter-request', [NewsletterController::class, 'newsLetterRequs
 Route::get('newsletter-verify/{token}', [NewsletterController::class, 'newsLetterEmailVarify'])->name('newsletter-verify');
 
 /** vendor page routes */
-Route::get('vendor', [HomeController::class, 'vendorPage'])->name('vendor.index');
-Route::get('vendor-product/{id}', [HomeController::class, 'vendorProductsPage'])->name('vendor.products');
+Route::get('pharmacy', [HomeController::class, 'vendorPage'])->name('vendor.index');
+Route::get('pharmacy-product/{id}', [HomeController::class, 'vendorProductsPage'])->name('vendor.products');
 
 /** about page route */
 Route::get('about', [PageController::class, 'about'])->name('about');
@@ -127,8 +127,8 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'user', 'as' => 
     Route::get('reviews', [ReviewController::class, 'index'])->name('review.index');
 
     /** Vendor request route */
-    Route::get('vendor-request', [UserVendorReqeustController::class, 'index'])->name('vendor-request.index');
-    Route::post('vendor-request', [UserVendorReqeustController::class, 'create'])->name('vendor-request.create');
+    Route::get('pharmacy-request', [UserVendorReqeustController::class, 'index'])->name('vendor-request.index');
+    Route::post('pharmacy-request', [UserVendorReqeustController::class, 'create'])->name('vendor-request.create');
 
     /** product review routes */
     Route::post('review', [ReviewController::class, 'create'])->name('review.create');

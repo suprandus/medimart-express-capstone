@@ -4,7 +4,7 @@
 <!-- Main Content -->
 <section class="section">
   <div class="section-header">
-    <h1>Edit Address</h1>
+    <h1>New Address</h1>
   </div>
   <div class="section-body">
     <div class="row">

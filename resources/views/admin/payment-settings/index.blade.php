@@ -17,9 +17,10 @@
                       <div class="row">
                         <div class="col-2">
                           <div class="list-group" id="list-tab" role="tablist">
-                            <a class="list-group-item list-group-item-action active" id="list-home-list" data-toggle="list" href="#list-home" role="tab">Paypal</a>
-                            <a class="list-group-item list-group-item-action" id="list-stripe-list" data-toggle="list" href="#list-stripe" role="tab">Stripe</a>
-                            <a class="list-group-item list-group-item-action" id="list-razorpay-list" data-toggle="list" href="#list-razorpay" role="tab">RazorPay</a>
+                            <a class="list-group-item list-group-item-action active" id="list-home-list" data-toggle="list" href="#list-home" role="tab">PayPal</a>
+                            <a class="list-group-item list-group-item-action" id="list-home-list" data-toggle="list" href="#list-home" role="tab">PayMongo</a>
+                            {{-- <a class="list-group-item list-group-item-action" id="list-stripe-list" data-toggle="list" href="#list-stripe" role="tab">Stripe</a>
+                            <a class="list-group-item list-group-item-action" id="list-razorpay-list" data-toggle="list" href="#list-razorpay" role="tab">RazorPay</a> --}}
                             <a class="list-group-item list-group-item-action" id="list-settings-list" data-toggle="list" href="#list-settings" role="tab">COD</a>
                           </div>
                         </div>
@@ -27,10 +28,10 @@
                           <div class="tab-content" id="nav-tabContent">
 
                             @include('admin.payment-settings.sections.paypal-setting')
-
+{{-- 
                             @include('admin.payment-settings.sections.stripe-setting')
 
-                            @include('admin.payment-settings.sections.razorpay-setting')
+                            @include('admin.payment-settings.sections.razorpay-setting') --}}
 
                             @include('admin.payment-settings.sections.cod-setting')
 

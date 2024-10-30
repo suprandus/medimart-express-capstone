@@ -45,6 +45,7 @@
                     <h4>Add Flash Sale Products</h4>
 
                   </div>
+                  
                   <div class="card-body">
                     <form action="{{route('admin.flash-sale.add-product')}}" method="POST">
                         @csrf

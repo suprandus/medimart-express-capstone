@@ -41,7 +41,7 @@
                 <div class="row">
                     <div class="col-xl-12">
                         <div class="wsus__section_header rounded-0">
-                            <h3>flash sell</h3>
+                            <h3>flash sale</h3>
                             <div class="wsus__offer_countdown">
                                 <span class="end_text">ends time :</span>
                                 <div class="simply-countdown simply-countdown-one"></div>

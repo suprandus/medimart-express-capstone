@@ -96,9 +96,61 @@ class PaymentController extends Controller
         Session::forget('coupon');
     }
 
+    /** PayMongo config */
+    function paymongoConfig()
+    {
+        $paymongoSetting = PaymongoSetting::first();
+
+        if ($paymongoSetting) {
+            // Update the config in the application environment
+            config(['paymongo.livemode' => $paymongoSetting->live_mode == 1 ? 'true' : 'false']);
+            config(['paymongo.secret_key' => $paymongoSetting->secret_key]);
+            config(['paymongo.public_key' => $paymongoSetting->public_key]);
+        }
+
+        // Return the config array
+        return [
+            'secret_key' => config('paymongo.secret_key', env('PAYMONGO_SECRET_KEY')),
+            'public_key' => config('paymongo.public_key', env('PAYMONGO_PUBLIC_KEY')),
+            'livemode' => config('paymongo.livemode', false),
+        ];
+    }
+
+    /** PayMongo Redirect */
+    public function payWithPayMongo()
+    {
+        $this->paymongoConfig();
+        // get final payable amount
+        $payableAmount = getFinalPayableAmount();
+        $formattedPayableAmount = number_format($payableAmount, 2, '.', '');
+        $description = 'Payment for order';
+        $remarks = 'laravel-paymongo';
+
+        // payment link creation
+        $link = Paymongo::link()->create([
+            'amount' => $formattedPayableAmount,
+            'description' => $description,
+            'remarks' => $remarks
+        ]);
+
+        // debug the response
+        // dd($link);
+
+        $linkId = $link->id;
+
+        // find link using the $linkId
+        $paymentLink = Paymongo::link()->find($linkId);
+
+        // get checkout URL
+        $checkoutUrl = $paymentLink->checkout_url;
+        
+        return redirect()->away($checkoutUrl);
+    }
+
     /** Paypal config */
     public function paypalConfig()
     {
+
         $paypalSetting = PaypalSetting::first();
         $config = [
             'mode'    => $paypalSetting->mode === 1 ? 'live' : 'sandbox',

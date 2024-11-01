@@ -80,7 +80,8 @@
                             <div class="row">
                                 <div class="col-xl-12 m-auto">
                                     <div class="wsus__payment_area">
-                                        <a class="nav-link common_btn text-center" href="">Pay with PayMongo</a>
+                                        <a class="nav-link common_btn text-center"
+                                            href="{{ route('user.paymongo.payment')}} ">Pay with PayMongo</a>
                                     </div>
                                 </div>
                             </div>

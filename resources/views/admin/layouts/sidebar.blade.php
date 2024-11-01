@@ -121,7 +121,7 @@
 
                                         <li class="{{ setActive(['admin.canceled-orders']) }}"><a class="nav-link"
                                                         href="{{ route('admin.canceled-orders') }}">All Canceled
-                                                        Orders</a></li>=
+                                                        Orders</a></li>
                                 </ul>
                         </li>
 
@@ -149,7 +149,7 @@
                                                         href="{{ route('admin.shipping-rule.index') }}">Shipping
                                                         Rule</a></li>
                                         <li class="{{ setActive(['admin.vendor-profile.*']) }}"><a class="nav-link"
-                                                        href="{{ route('admin.vendor-profile.index') }}">Vendor
+                                                        href="{{ route('admin.vendor-profile.index') }}">Pharmacy
                                                         Profile</a></li>
                                         <li class="{{ setActive(['admin.payment-settings.*']) }}"><a class="nav-link"
                                                         href="{{ route('admin.payment-settings.index') }}">Payment

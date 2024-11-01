@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Backend\MessageController;
+use App\Http\Controllers\Backend\PayMongoSettingController;
 use App\Http\Controllers\Backend\AbountController;
 use App\Http\Controllers\Backend\AboutController;
 use App\Http\Controllers\Backend\AdminController;
@@ -258,6 +259,9 @@ Route::resource('footer-grid-three', FooterGridThreeController::class);
 /** Payment settings routes */
 Route::get('payment-settings', [PaymentSettingController::class, 'index'])->name('payment-settings.index');
 Route::resource('paypal-setting', PaypalSettingController::class);
+
+Route::put('paymongo-setting/{id}', [PayMongoSettingController::class, 'update'])->name('paymongo-setting.update');
+
 Route::put('stripe-setting/{id}', [StripeSettingController::class, 'update'])->name('stripe-setting.update');
 Route::put('razorpay-setting/{id}', [RazorpaySettingController::class, 'update'])->name('razorpay-setting.update');
 Route::put('cod-setting/{id}', [CodSettingController::class, 'update'])->name('cod-setting.update');

@@ -26,10 +26,13 @@ class PaymentController extends Controller
 {
     public function index()
     {
+        $paymongoSetting = PaymongoSetting::first();
+        $codSetting = CodSetting::first();
+
         if (!Session::has('address')) {
             return redirect()->route('user.checkout');
         }
-        return view('frontend.pages.payment');
+        return view('frontend.pages.payment', compact('paymongoSetting', 'codSetting'));
     }
 
     public function paymentSuccess()
@@ -120,9 +123,11 @@ class PaymentController extends Controller
     public function payWithPayMongo()
     {
         $this->paymongoConfig();
+
         // get final payable amount
         $payableAmount = getFinalPayableAmount();
         $formattedPayableAmount = number_format($payableAmount, 2, '.', '');
+
         $description = 'Payment for order';
         $remarks = 'laravel-paymongo';
 
@@ -143,7 +148,7 @@ class PaymentController extends Controller
 
         // get checkout URL
         $checkoutUrl = $paymentLink->checkout_url;
-        
+
         return redirect()->away($checkoutUrl);
     }
 

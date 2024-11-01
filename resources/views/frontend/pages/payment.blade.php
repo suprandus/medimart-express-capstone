@@ -40,17 +40,17 @@
                         <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist"
                             aria-orientation="vertical">
 
-                            {{-- @if($paymongoSetting->paymongo_status === 1) --}}
+                            @if($paymongoSetting->paymongo_status === 1)
                             <button class="nav-link common_btn active" id="v-pills-home-tab" data-bs-toggle="pill"
                                 data-bs-target="#v-pills-paypal" type="button" role="tab" aria-controls="v-pills-paypal"
                                 aria-selected="true">PayMongo</button>
-                            {{-- @endif --}}
+                            @endif
 
-                            {{-- @if( $codSetting->status === 1) --}}
+                            @if( $codSetting->status === 1)
                             <button class="nav-link common_btn" id="v-pills-profile-tab" data-bs-toggle="pill"
                                 data-bs-target="#v-pills-cod" type="button" role="tab" aria-controls="v-pills-stripe"
                                 aria-selected="false">COD </button>
-                            {{-- @endif --}}
+                            @endif
 
                             {{-- <button class="nav-link common_btn active" id="v-pills-home-tab" data-bs-toggle="pill"
                                 data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home"

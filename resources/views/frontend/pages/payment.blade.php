@@ -81,7 +81,8 @@
                                 <div class="col-xl-12 m-auto">
                                     <div class="wsus__payment_area">
                                         <a class="nav-link common_btn text-center"
-                                            href="{{ route('user.paymongo.payment')}} ">Pay with PayMongo</a>
+                                            href="{{ route('user.paymongo.payment')}} ">continue with PayMongo
+                                        </a>
                                     </div>
                                 </div>
                             </div>

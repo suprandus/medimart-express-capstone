@@ -16,8 +16,8 @@
         <div class="form-group">
           <label>Live Mode</label>
           <select name="mode" id="" class="form-control">
-            <option {{$paymongoSetting->live_mode === 0 ? 'selected' : ''}} value="0">True</option>
-            <option {{$paymongoSetting->live_mode === 1 ? 'selected' : ''}} value="1">False</option>
+            <option {{$paymongoSetting->live_mode === 1 ? 'selected' : ''}} value="1">True</option>
+            <option {{$paymongoSetting->live_mode === 0 ? 'selected' : ''}} value="0">False</option>
           </select>
         </div>
 

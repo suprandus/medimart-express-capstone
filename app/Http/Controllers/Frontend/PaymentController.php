@@ -97,6 +97,7 @@ class PaymentController extends Controller
         Session::forget('address');
         Session::forget('shipping_method');
         Session::forget('coupon');
+        Session::forget('checkoutId');
     }
 
     /** PayMongo config */
@@ -119,37 +120,58 @@ class PaymentController extends Controller
         ];
     }
 
-    /** PayMongo Redirect */
+    /** PayMongo redirect */
     public function payWithPayMongo()
     {
         $this->paymongoConfig();
 
-        // get final payable amount
-        $payableAmount = getFinalPayableAmount();
-        $formattedPayableAmount = number_format($payableAmount, 2, '.', '');
+        $lineItems = createLineItems();
 
-        $description = 'Payment for order';
-        $remarks = 'laravel-paymongo';
-
-        // payment link creation
-        $link = Paymongo::link()->create([
-            'amount' => $formattedPayableAmount,
-            'description' => $description,
-            'remarks' => $remarks
+        $checkout = Paymongo::checkout()->create([
+            'cancel_url' => route('user.paymongo.cancel'),
+            'billing' => [
+                'name' => Auth::user()->name,
+                'email' => Auth::user()->email,
+            ],
+            'line_items' => $lineItems,
+            'payment_method_types' => [
+                'card',
+                'gcash',
+                'paymaya',
+                'grab_pay'
+            ],
+            'success_url' => route('user.paymongo.success'),
+            'customer_email' => Auth::user()->email,
+            'send_email_receipt' => true,
         ]);
 
-        // debug the response
-        // dd($link);
+        Session::put('checkoutId', $checkout->id);
 
-        $linkId = $link->id;
+        return redirect()->away($checkout->checkout_url);
+    }
 
-        // find link using the $linkId
-        $paymentLink = Paymongo::link()->find($linkId);
+    public function paymongoSuccess()
+    {
+        $this->paymongoConfig();
+        $checkout = Paymongo::checkout()->find(Session::get('checkoutId'));
 
-        // get checkout URL
-        $checkoutUrl = $paymentLink->checkout_url;
+        $paymentIntentStatus = $checkout->payment_intent['attributes']['status'];
 
-        return redirect()->away($checkoutUrl);
+        // dd($paymentIntentStatus);
+
+        if ($paymentIntentStatus === 'succeeded') {
+            $this->storeOrder('paymongo', 1, $checkout->id, $checkout->payment_intent['attributes']['amount'] / 100, $checkout->payment_intent['attributes']['currency']);
+
+            $this->clearSession();
+
+            return redirect()->route('user.payment.success');
+        }
+    }
+
+    public function paymongoCancel()
+    {
+        toastr('Someting went wrong try again later!', 'error', 'Error');
+        return redirect()->route('user.payment');
     }
 
     /** Paypal config */
@@ -249,13 +271,11 @@ class PaymentController extends Controller
 
     public function paypalCancel()
     {
-        toastr('Someting went wrong try agin later!', 'error', 'Error');
+        toastr('Someting went wrong try again later!', 'error', 'Error');
         return redirect()->route('user.payment');
     }
 
-
     /** Stripe Payment */
-
     public function payWithStripe(Request $request)
     {
 
@@ -279,7 +299,7 @@ class PaymentController extends Controller
 
             return redirect()->route('user.payment.success');
         } else {
-            toastr('Someting went wrong try agin later!', 'error', 'Error');
+            toastr('Someting went wrong try again later!', 'error', 'Error');
             return redirect()->route('user.payment');
         }
     }

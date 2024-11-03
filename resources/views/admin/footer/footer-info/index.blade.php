@@ -30,24 +30,24 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>phone</label>
+                                    <label>Phone</label>
                                     <input type="text" class="form-control" name="phone" value="{{@$footerInfo->phone}}">
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label>email</label>
+                                    <label>Email</label>
                                     <input type="text" class="form-control" name="email" value="{{@$footerInfo->email}}">
                                 </div>
                             </div>
                         </div>
                         <div class="form-group">
-                            <label>address</label>
+                            <label>Address</label>
                             <input type="text" class="form-control" name="address" value="{{@$footerInfo->address}}">
                         </div>
 
                         <div class="form-group">
-                            <label>copyright</label>
+                            <label>Copyright</label>
                             <input type="text" class="form-control" name="copyright" value="{{@$footerInfo->copyright}}">
                         </div>
 

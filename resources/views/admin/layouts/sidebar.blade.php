@@ -263,7 +263,7 @@
                                         </li>
 
                                         <li class="{{ setActive(['admin.manage-user.index']) }}"><a class="nav-link"
-                                                        href="{{ route('admin.manage-user.index') }}">Add User</a>
+                                                        href="{{ route('admin.manage-user.index') }}">Create User</a>
                                         </li>
 
                                 </ul>

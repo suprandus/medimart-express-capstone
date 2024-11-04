@@ -21,6 +21,7 @@ use App\Http\Controllers\Frontend\UserOrderController;
 use App\Http\Controllers\Frontend\UserVendorReqeustController;
 use App\Http\Controllers\Frontend\WishlistController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Backend\VendorListController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -98,7 +99,8 @@ Route::get('show-product-modal/{id}', [HomeController::class, 'ShowProductModal'
 Route::get('wishlist/add-product', [WishlistController::class, 'addToWishlist'])->name('wishlist.store');
 
 
-
+/**nearest pharmacy**/
+Route::post('nearest-vendors', [VendorListController::class, 'nearestVendors'])->name('nearest-vendors');
 
 
 

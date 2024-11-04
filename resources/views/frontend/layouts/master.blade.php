@@ -29,7 +29,9 @@
     <link rel="stylesheet" href="{{asset('frontend/css/jquery.classycountdown.css')}}">
     <link rel="stylesheet" href="{{asset('frontend/css/venobox.min.css')}}">
     <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-
+    <!-- nearby pharmacy css -->
+    <link rel="stylesheet" href="{{asset('frontend/css/nearbypharmacy.css')}}">
+    
     <link rel="stylesheet" href="{{asset('frontend/css/style.css')}}">
     <link rel="stylesheet" href="{{asset('frontend/css/responsive.css')}}">
     @if($settings->layout === 'RTL')
@@ -135,8 +137,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!--classycountdown js-->
     <script src="{{asset('frontend/js/jquery.classycountdown.js')}}"></script>
-
-
     <!--main/custom js-->
     <script src="{{asset('frontend/js/main.js')}}"></script>
 

@@ -51,7 +51,6 @@
                                 $products[] = \App\Models\Product::withAvg('reviews', 'rating')
                                 ->with(['variants', 'category', 'productImageGalleries'])
                                 ->where('child_category_id', $category->id)->orderBy('id', 'DESC')->take(12)->get();
-
                             }
 
                         @endphp

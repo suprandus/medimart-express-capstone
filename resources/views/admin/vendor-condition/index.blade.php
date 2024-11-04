@@ -4,7 +4,7 @@
       <!-- Main Content -->
         <section class="section">
           <div class="section-header">
-            <h1>Vendor Condition</h1>
+            <h1>Pharmacy Condition</h1>
           </div>
 
           <div class="section-body">
@@ -13,7 +13,7 @@
               <div class="col-12">
                 <div class="card">
                   <div class="card-header">
-                    <h4>Vendor Condition</h4>
+                    <h4>Pharmacy Condition</h4>
 
                   </div>
                   <div class="card-body">

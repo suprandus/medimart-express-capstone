@@ -82,7 +82,7 @@ Route::put('brand/change-status', [BrandController::class, 'changeStatus'])->nam
 Route::resource('brand', BrandController::class);
 
 /** Vendor Profile routes */
-Route::resource('pharmacy-profile', AdminVendorProfileController::class);
+Route::resource('vendor-profile', AdminVendorProfileController::class);
 
 /** Products routes */
 Route::get('product/get-subcategories', [ProductController::class, 'getSubCategories'])->name('product.get-subcategories');

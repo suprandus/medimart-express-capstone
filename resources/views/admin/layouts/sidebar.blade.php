@@ -194,11 +194,11 @@
 
                                         <li class="{{ setActive(['admin.vendor-condition.index']) }}"><a
                                                         class="nav-link"
-                                                        href="{{ route('admin.vendor-condition.index') }}">Vendor
+                                                        href="{{ route('admin.vendor-condition.index') }}">Pharmacy
                                                         Condition</a></li>
 
                                         <li class="{{ setActive(['admin.about.index']) }}"><a class="nav-link"
-                                                        href="{{ route('admin.about.index') }}">About page</a></li>
+                                                        href="{{ route('admin.about.index') }}">About Page</a></li>
 
                                         <li class="{{ setActive(['admin.terms-and-conditions.index']) }}"><a
                                                         class="nav-link"

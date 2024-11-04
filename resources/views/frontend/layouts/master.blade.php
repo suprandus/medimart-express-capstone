@@ -43,7 +43,7 @@
     <!--============================
         HEADER START
     ==============================-->
-        @include('frontend.layouts.header')
+    @include('frontend.layouts.header')
     <!--============================
         HEADER END
     ==============================-->
@@ -52,7 +52,7 @@
     <!--============================
         MAIN MENU START
     ==============================-->
-        @include('frontend.layouts.menu')
+    @include('frontend.layouts.menu')
     <!--============================
         MAIN MENU END
     ==============================-->
@@ -61,7 +61,7 @@
     <!--============================
         Main Content Start
     ==============================-->
-        @yield('content')
+    @yield('content')
     <!--============================
        Main Content End
     ==============================-->
@@ -80,7 +80,7 @@
     <!--============================
         FOOTER PART START
     ==============================-->
-        @include('frontend.layouts.footer')
+    @include('frontend.layouts.footer')
     <!--============================
         FOOTER PART END
     ==============================-->
@@ -94,6 +94,26 @@
     </div>
     <!--============================
         SCROLL BUTTON  END
+    ==============================-->
+
+    <!--============================
+       CHATBOT NI LAWRENCE START
+    ==============================-->
+    <script type="text/javascript">
+        (function(d, t) {
+            var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
+            v.onload = function() {
+              window.voiceflow.chat.load({
+                verify: { projectID: '6728c779c98f2e813232b93d' },
+                url: 'https://general-runtime.voiceflow.com',
+                versionID: 'production'
+              });
+            }
+            v.src = "https://cdn.voiceflow.com/widget/bundle.mjs"; v.type = "text/javascript"; s.parentNode.insertBefore(v, s);
+        })(document, 'script');
+    </script>
+    <!--============================
+        CHATBOT NI LAWRENCE END
     ==============================-->
 
 

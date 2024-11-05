@@ -5,22 +5,22 @@
                 @csrf
                 @method('PUT')
                 <div class="form-group">
-                    <label>puhser app id</label>
+                    <label>Pusher Aap id</label>
                     <input type="text" class="form-control" name="pusher_app_id" value="{{ $pusherSetting?->pusher_app_id }}">
                 </div>
 
                 <div class="form-group">
-                    <label>puhser key</label>
+                    <label>Pusher Key</label>
                     <input type="text" class="form-control" name="pusher_key" value="{{ $pusherSetting?->pusher_key }}">
                 </div>
 
                 <div class="form-group">
-                    <label>puhser secret</label>
+                    <label>Pusher Secret</label>
                     <input type="text" class="form-control" name="pusher_secret" value="{{ $pusherSetting?->pusher_secret }}">
                 </div>
 
                 <div class="form-group">
-                    <label>puhser cluster</label>
+                    <label>Pusher Cluster</label>
                     <input type="text" class="form-control" name="pusher_cluster" value="{{ $pusherSetting?->pusher_cluster }}">
                 </div>
 

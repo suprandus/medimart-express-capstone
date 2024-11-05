@@ -173,7 +173,7 @@ Route::put('generale-setting-update', [SettingController::class, 'generalSetting
 Route::put('email-setting-update', [SettingController::class, 'emailConfigSettingUpdate'])->name('email-setting-update');
 Route::put('logo-setting-update', [SettingController::class, 'logoSettingUpdate'])->name('logo-setting-update');
 Route::put('pusher-setting-update', [SettingController::class, 'pusherSettingUpdate'])->name('pusher-setting-update');
-
+Route::put('chabot-setting-update', [SettingController::class, 'chatbotSettingUpdate'])->name('chatbot-setting-update');
 
 
 
@@ -265,10 +265,3 @@ Route::put('paymongo-setting/{id}', [PayMongoSettingController::class, 'update']
 Route::put('stripe-setting/{id}', [StripeSettingController::class, 'update'])->name('stripe-setting.update');
 Route::put('razorpay-setting/{id}', [RazorpaySettingController::class, 'update'])->name('razorpay-setting.update');
 Route::put('cod-setting/{id}', [CodSettingController::class, 'update'])->name('cod-setting.update');
-
-
-
-
-
-
-

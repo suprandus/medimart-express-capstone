@@ -8,6 +8,7 @@ use App\Models\GeneralSetting;
 use App\Models\LogoSetting;
 use App\Models\PusherSetting;
 use App\Traits\ImageUploadTrait;
+use App\Models\ChatBotSetting;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
@@ -22,7 +23,9 @@ class SettingController extends Controller
         $emailSettings = EmailConfiguration::first();
         $logoSetting = LogoSetting::first();
         $pusherSetting = PusherSetting::first();
-        return view('admin.setting.index', compact('generalSettings', 'emailSettings', 'logoSetting', 'pusherSetting'));
+        $chatbotSetting = ChatBotSetting::first();
+
+        return view('admin.setting.index', compact('generalSettings', 'emailSettings', 'logoSetting', 'pusherSetting', 'chatbotSetting'));
     }
 
 
@@ -56,7 +59,6 @@ class SettingController extends Controller
         toastr('Updated successfully!', 'success', 'Success');
 
         return redirect()->back();
-
     }
 
     public function emailConfigSettingUpdate(Request $request)
@@ -70,7 +72,7 @@ class SettingController extends Controller
             'encryption' => ['required', 'max:200'],
         ]);
 
-         EmailConfiguration::updateOrCreate(
+        EmailConfiguration::updateOrCreate(
             ['id' => 1],
             [
                 'email' => $request->email,
@@ -82,7 +84,7 @@ class SettingController extends Controller
             ]
         );
 
-        toastr('Updates successfully!', 'success', 'success');
+        toastr('Updated successfully!', 'success', 'success');
         return redirect()->back();
     }
 
@@ -96,10 +98,10 @@ class SettingController extends Controller
         $logoPath = $this->updateImage($request, 'logo', 'uploads', $request->old_logo);
         $favicon = $this->updateImage($request, 'favicon', 'uploads', $request->old_favicon);
 
-       LogoSetting::updateOrCreate(
+        LogoSetting::updateOrCreate(
             ['id' => 1],
             [
-                'logo' =>  (!empty($logoPath)) ? $logoPath : $request->old_logo,
+                'logo' => (!empty($logoPath)) ? $logoPath : $request->old_logo,
                 'favicon' => (!empty($favicon)) ? $favicon : $request->old_favicon
             ]
         );
@@ -111,7 +113,8 @@ class SettingController extends Controller
 
 
     /** Pusher settings update */
-    function pusherSettingUpdate(Request $request) : RedirectResponse {
+    function pusherSettingUpdate(Request $request): RedirectResponse
+    {
         $validatedData = $request->validate([
             'pusher_app_id' => ['required'],
             'pusher_key' => ['required'],
@@ -126,6 +129,31 @@ class SettingController extends Controller
 
         toastr('Updated successfully!', 'success', 'success');
         return redirect()->back();
+    }
 
+    /** Chat bot settings update */
+    public function chatbotSettingUpdate(Request $request)
+    {
+
+        // dd($request->all());
+
+        $request->validate([
+            'project_id' => ['required'],
+            'url' => ['required'],
+            'version_id' => ['required'],
+        ]);
+
+        ChatbotSetting::updateOrCreate(
+            ['id' => 1],
+            [
+                'project_id' => $request->project_id,
+                'url' => $request->url,
+                'version_id' => $request->version_id,
+            ]
+        );
+
+        toastr('Updated successfully!', 'success', 'Success');
+
+        return redirect()->back();
     }
 }

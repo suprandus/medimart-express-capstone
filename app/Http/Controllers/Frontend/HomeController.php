@@ -16,6 +16,7 @@ use App\Models\Slider;
 use App\Models\SubCategory;
 use App\Models\Vendor;
 use Illuminate\Http\Request;
+use App\Models\ChatbotSetting;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Response;
 
@@ -23,7 +24,10 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $sliders = Cache::rememberForever('sliders', function(){
+        // chatbot settings
+        $chatbotSettings = ChatBotSetting::first();
+
+        $sliders = Cache::rememberForever('sliders', function () {
             return Slider::where('status', 1)->orderBy('serial', 'asc')->get();
         });
 
@@ -53,10 +57,14 @@ class HomeController extends Controller
         $homepage_secion_banner_four = Adverisement::where('key', 'homepage_secion_banner_four')->first();
         $homepage_secion_banner_four = json_decode($homepage_secion_banner_four?->value);
 
-        $recentBlogs = Blog::with(['category', 'user'])->where('status',1)->orderBy('id', 'DESC')->take(8)->get();
+        $recentBlogs = Blog::with(['category', 'user'])->where('status', 1)->orderBy('id', 'DESC')->take(8)->get();
 
-        return view('frontend.home.home',
+        // dd($chatbotSettings);
+        
+        return view(
+            'frontend.home.home',
             compact(
+                'chatbotSettings',
                 'sliders',
                 'flashSaleDate',
                 'flashSaleItems',
@@ -71,9 +79,10 @@ class HomeController extends Controller
                 'homepage_secion_banner_two',
                 'homepage_secion_banner_three',
                 'homepage_secion_banner_four',
-                'recentBlogs'
-
-            ));
+                
+                'recentBlogs',
+            )
+        );
     }
 
     public function getTypeBaseProduct()
@@ -81,28 +90,28 @@ class HomeController extends Controller
         $typeBaseProducts = [];
 
         $typeBaseProducts['new_arrival'] = Product::withAvg('reviews', 'rating')->withCount('reviews')
-        ->with(['variants', 'category', 'productImageGalleries'])
-        ->where(['product_type' => 'new_arrival', 'is_approved' => 1, 'status' => 1])->orderBy('id', 'DESC')->take(8)->get();
+            ->with(['variants', 'category', 'productImageGalleries'])
+            ->where(['product_type' => 'new_arrival', 'is_approved' => 1, 'status' => 1])->orderBy('id', 'DESC')->take(8)->get();
 
         $typeBaseProducts['featured_product'] = Product::withAvg('reviews', 'rating')->withCount('reviews')
-        ->with(['variants', 'category', 'productImageGalleries'])
-        ->where(['product_type' => 'featured_product', 'is_approved' => 1, 'status' => 1])->orderBy('id', 'DESC')->take(8)->get();
+            ->with(['variants', 'category', 'productImageGalleries'])
+            ->where(['product_type' => 'featured_product', 'is_approved' => 1, 'status' => 1])->orderBy('id', 'DESC')->take(8)->get();
 
         $typeBaseProducts['top_product'] = Product::withAvg('reviews', 'rating')->withCount('reviews')
-        ->with(['variants', 'category', 'productImageGalleries'])
-        ->where(['product_type' => 'top_product', 'is_approved' => 1, 'status' => 1])->orderBy('id', 'DESC')->take(8)->get();
+            ->with(['variants', 'category', 'productImageGalleries'])
+            ->where(['product_type' => 'top_product', 'is_approved' => 1, 'status' => 1])->orderBy('id', 'DESC')->take(8)->get();
 
         $typeBaseProducts['best_product'] = Product::withAvg('reviews', 'rating')->withCount('reviews')
-        ->with(['variants', 'category', 'productImageGalleries'])
-        ->where(['product_type' => 'best_product', 'is_approved' => 1, 'status' => 1])->orderBy('id', 'DESC')->take(8)->get();
+            ->with(['variants', 'category', 'productImageGalleries'])
+            ->where(['product_type' => 'best_product', 'is_approved' => 1, 'status' => 1])->orderBy('id', 'DESC')->take(8)->get();
 
         return $typeBaseProducts;
     }
 
     public function vendorPage()
     {
-       $vendors = Vendor::where('status',1)->paginate(20);
-       return view('frontend.pages.vendor', compact('vendors'));
+        $vendors = Vendor::where('status', 1)->paginate(20);
+        return view('frontend.pages.vendor', compact('vendors'));
     }
 
     public function vendorProductsPage(string $id)
@@ -115,14 +124,14 @@ class HomeController extends Controller
         $vendor = Vendor::findOrFail($id);
 
         return view('frontend.pages.vendor-product', compact('products', 'categories', 'brands', 'vendor'));
-
     }
 
-    function ShowProductModal(string $id) {
-       $product = Product::findOrFail($id);
+    function ShowProductModal(string $id)
+    {
+        $product = Product::findOrFail($id);
 
-       $content = view('frontend.layouts.modal', compact('product'))->render();
+        $content = view('frontend.layouts.modal', compact('product'))->render();
 
-       return Response::make($content, 200, ['Content-Type' => 'text/html']);
+        return Response::make($content, 200, ['Content-Type' => 'text/html']);
     }
 }

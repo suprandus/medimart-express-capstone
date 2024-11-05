@@ -24,11 +24,10 @@ return new class extends Migration
             $table->integer('user_id');
             $table->boolean('status')->default(0);
             //new rows
-            $table->decimal('latitude', 10, 8)->nullable(); // Latitude
-            $table->decimal('longitude', 11, 8)->nullable(); // Longitude
-            $table->string('tin', 20)->nullable(); // TIN
-            $table->string('bir_certificate')->nullable(); // BIR Certificate image path
-            $table->timestamps();
+            $table->decimal('latitude', 10, 8)->nullable();
+            $table->decimal('longitude', 11, 8)->nullable();
+            $table->string('tin', 20)->nullable(); 
+            $table->string('bir_certificate')->nullable();
         });
     }
 

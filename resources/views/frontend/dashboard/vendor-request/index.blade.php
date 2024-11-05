@@ -11,10 +11,10 @@
       <div class="col-12">
         <div class="card">
           <div class="card-body">
-            {!!@$content->content!!}
+            {!! @$content->content !!}
           </div>
           <div class="card-body">
-            <form action="{{route('user.vendor-request.create')}}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('user.vendor-request.create') }}" method="POST" enctype="multipart/form-data">
               @csrf
               {{-- Below is for necessary document to apply as verified pharmacy --}}
               <div class="form-group">
@@ -22,40 +22,149 @@
                 <input type="file" name="shop_image" class="form-control">
               </div>
               <div class="form-group">
-                <label>License</label>
-                <input type="file" class="form-control" name="">
-              </div>
-              <div class="form-group">
                 <label>Name</label>
-                <input type="text" class="form-control" name="shop_name" value="" placeholder="Pharmacy Name" required
-                  autofocus>
+                <input type="text" class="form-control" name="shop_name" required autofocus>
               </div>
               <div class="row">
                 <div class="col-md-6">
                   <div class="form-group">
                     <label>Email</label>
-                    <input type="email" class="form-control" name="shop_email" value="" placeholder="Pharmacy Email"
-                      required>
+                    <input type="email" class="form-control" name="shop_email" required>
                   </div>
                 </div>
                 <div class="col-md-6">
                   <div class="form-group">
                     <label>Phone</label>
-                    <input type="text" class="form-control" name="shop_phone" value="" placeholder="Pharmacy Phone"
-                      required>
+                    <input type="text" class="form-control" name="shop_phone" required>
                   </div>
                 </div>
               </div>
+<!--license and location-->
+<div class="form-group">
+    <label>Taxpayer Identification Number (TIN)</label>
+    <input type="text" class="form-control" name="tin" required pattern="\d*" title="Please enter numbers only.">
+</div>
+<div class="form-group">
+    <label>BIR Certificate of Registration</label>
+    <input type="file" class="form-control" name="bir_certificate" accept="image/*">
+</div>
               <div class="form-group">
                 <label>Address</label>
-                <input type="text" class="form-control" name="shop_address" value="" placeholder="Pharmacy Address"
-                  required>
+                <input type="text" class="form-control" name="shop_address" id="shop_address" required readonly>
+                <input type="text" name="latitude" id="latitude" readonly hidden>
+                <input type="text" name="longitude" id="longitude" readonly hidden><br><br>
+                <input type="text" id="address-input" placeholder="Search for an address" class="form-control mb-2">
+                <div id="map" style="height: 400px; width: 100%;"></div>
+                
+                <!-- Script to initialize the Google Map, Geocode, and Places Search -->
+                <script>
+                    let map, marker, geocoder, autocomplete;
+
+                    function initMap() {
+                        // Default location
+                        const defaultLocation = { lat: -34.397, lng: 150.644 };
+
+                        // Initialize the map
+                        map = new google.maps.Map(document.getElementById("map"), {
+                            center: defaultLocation,
+                            zoom: 8,
+                        });
+
+                        // Initialize the geocoder
+                        geocoder = new google.maps.Geocoder();
+
+                        // Create a draggable marker
+                        marker = new google.maps.Marker({
+                            position: defaultLocation,
+                            map: map,
+                            draggable: true,
+                            title: "Drag to set location"
+                        });
+
+                        // Update inputs on marker drag end
+                        marker.addListener("dragend", function(event) {
+                            const lat = event.latLng.lat();
+                            const lng = event.latLng.lng();
+                            document.getElementById('latitude').value = lat;
+                            document.getElementById('longitude').value = lng;
+                            geocodeLatLng(geocoder, lat, lng);
+                        });
+
+                        // Update inputs on map click
+                        map.addListener("click", function(event) {
+                            const lat = event.latLng.lat();
+                            const lng = event.latLng.lng();
+                            marker.setPosition(event.latLng);
+                            document.getElementById('latitude').value = lat;
+                            document.getElementById('longitude').value = lng;
+                            geocodeLatLng(geocoder, lat, lng);
+                        });
+
+                        // Initialize the autocomplete input
+                        const input = document.getElementById('address-input');
+                        autocomplete = new google.maps.places.Autocomplete(input);
+
+                        // Bind the map's bounds (viewport) to the autocomplete object
+                        autocomplete.bindTo('bounds', map);
+
+                        // Set the data fields to return when the user selects a place
+                        autocomplete.setFields(['address_components', 'geometry', 'name']);
+
+                        // When a user selects a place from the search box
+                        autocomplete.addListener('place_changed', function() {
+                            const place = autocomplete.getPlace();
+                            if (!place.geometry) {
+                                console.error("Place has no geometry");
+                                return;
+                            }
+
+                            // If the place has a geometry, move the marker and the map
+                            if (place.geometry.viewport) {
+                                map.fitBounds(place.geometry.viewport);
+                            } else {
+                                map.setCenter(place.geometry.location);
+                                map.setZoom(17);  // Zoom in on the place
+                            }
+
+                            // Move the marker to the new location
+                            marker.setPosition(place.geometry.location);
+
+                            // Update the latitude and longitude inputs
+                            document.getElementById('latitude').value = place.geometry.location.lat();
+                            document.getElementById('longitude').value = place.geometry.location.lng();
+
+                            // Update the address input
+                            geocodeLatLng(geocoder, place.geometry.location.lat(), place.geometry.location.lng());
+                        });
+                    }
+
+                    // Function to get the address from latitude/longitude
+                    function geocodeLatLng(geocoder, lat, lng) {
+                        const latlng = { lat: parseFloat(lat), lng: parseFloat(lng) };
+                        geocoder.geocode({ location: latlng }, function(results, status) {
+                            if (status === 'OK') {
+                                if (results[0]) {
+                                    const address = results[0].formatted_address;
+                                    document.getElementById('shop_address').value = address;
+                                } else {
+                                    console.error('No results found');
+                                }
+                            } else {
+                                console.error('Geocoder failed due to: ' + status);
+                            }
+                        });
+                    }
+                </script>
+
+                <!-- Google Maps API with Places library -->
+                <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFfWKWjTQueC1E9sqRwJ9E1igYRM5zNYE&libraries=places&callback=initMap" async defer></script>
+
               </div>
               <div class="form-group">
                 <label>More Information</label>
-                <textarea name="about" class="form-control" placeholder="About You" required></textarea>
+                <textarea name="about" class="form-control" required></textarea>
               </div>
-              <button type="submmit" class="btn btn-primary">Submit</button>
+              <button type="submit" class="btn btn-primary">Submit</button>
             </form>
           </div>
         </div>
@@ -63,4 +172,5 @@
     </div>
   </div>
 </section>
+
 @endsection

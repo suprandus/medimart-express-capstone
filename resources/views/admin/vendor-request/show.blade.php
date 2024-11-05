@@ -83,7 +83,6 @@
 @push('scripts')
 <script>
   $(document).ready(function(){
-
             $('#order_status').on('change', function(){
                 let status = $(this).val();
                 let id = $(this).data('id');
@@ -131,7 +130,6 @@
                 window.print();
 
                 $('body').html(originalContents);
-
             })
         })
 </script>

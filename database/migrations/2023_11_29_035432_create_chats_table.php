@@ -11,14 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('chats', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('sender_id');
-            $table->foreignId('receiver_id');
-            $table->text('message');
-            $table->boolean('seen')->default(0);
-            $table->timestamps();
-        });
+        // Check if the 'chats' table already exists
+        if (!Schema::hasTable('chats')) {
+            Schema::create('chats', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('sender_id')->constrained()->onDelete('cascade'); // Assuming you want cascading deletes
+                $table->foreignId('receiver_id')->constrained()->onDelete('cascade'); // Assuming you want cascading deletes
+                $table->text('message');
+                $table->boolean('seen')->default(0);
+                $table->timestamps();
+            });
+        }
     }
 
     /**

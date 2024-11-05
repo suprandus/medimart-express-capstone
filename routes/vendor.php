@@ -11,6 +11,7 @@ use App\Http\Controllers\Backend\VendorProductVariantItemController;
 use App\Http\Controllers\Backend\VendorProfileController;
 use App\Http\Controllers\Backend\VendorShopProfileController;
 use App\Http\Controllers\Backend\VendorWithdrawController;
+use App\Http\Controllers\Backend\VendorListController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -68,3 +69,4 @@ Route::get('reviews', [VendorProductReviewController::class, 'index'])->name('re
 Route::get('withdraw-request/{id}', [VendorWithdrawController::class, 'showRequest'])->name('withdraw-request.show');
 
 Route::resource('withdraw', VendorWithdrawController::class);
+

@@ -27,19 +27,24 @@ class UserVendorReqeustController extends Controller
             'shop_email' => ['required', 'email'],
             'shop_phone' => ['required', 'max:200'],
             'shop_address' => ['required'],
-            'about' => ['required']
+            'about' => ['required'],
+            'latitude' => ['required', 'numeric'], // Validate latitude
+            'longitude' => ['required', 'numeric'], // Validate longitude
+            'tin' => ['required', 'string', 'max:50'], // Validate TIN
+            'bir_certificate' => ['required', 'image', 'max:3000'], // Validate BIR certificate
         ]);
 
         if(Auth::user()->role === 'vendor'){
             return redirect()->back();
         }
 
-        $imagePath = $this->uploadImage($request, 'shop_image', 'uploads');
+        $imagePathProfile = $this->uploadImage($request, 'shop_image', 'uploads');
+        $imagePathBir = $this->uploadImage($request, 'bir_certificate', 'uploads');
 
 
         $vendor = new Vendor();
 
-        $vendor->banner = $imagePath;
+        $vendor->banner = $imagePathProfile;
         $vendor->phone = $request->shop_phone;
         $vendor->email = $request->shop_email;
         $vendor->address = $request->shop_address;
@@ -47,7 +52,10 @@ class UserVendorReqeustController extends Controller
         $vendor->shop_name = $request->shop_name;
         $vendor->user_id = Auth::user()->id;
         $vendor->status = 0;
-
+        $vendor->latitude = $request->latitude;
+        $vendor->longitude = $request->longitude;
+        $vendor->tin = $request->tin;
+        $vendor->bir_certificate = $imagePathBir;
         $vendor->save();
 
         toastr('Submitted successfully please wait for approve!', 'success', 'success');

@@ -1,0 +1,29 @@
+#nearbypharmacycontainer {
+    padding: 40px;
+}
+
+/* Center the h3 heading */
+#nearbypharmacycontainer h3 {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 1.5em;
+    color: #333;
+}
+
+#nearbypharmacycontainer #map {
+    height: 500px; /* Keep the height fixed or adjust as needed */
+    width: 100%; /* Set width to 100% to make it responsive */
+    max-width: 1200px; /* Set a maximum width */
+    display: block;
+    margin: 0 auto; /* Centers the div horizontally */
+}
+#nearbypharmacycontainer .search-container {
+    width: 1200px; 
+    margin: 0 auto; /* Center the container */
+}
+
+#nearbypharmacycontainer .input-group,
+#nearbypharmacycontainer .btn-primary {
+    height: 50px; /* Make input and button larger */
+    font-size: 1.2rem; /* Increase font size */
+}

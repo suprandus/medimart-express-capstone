@@ -27,6 +27,8 @@
     <!-- Template CSS -->
     <link rel="stylesheet" href="{{asset('frontend/assets/css/style.css')}}">
     <link rel="stylesheet" href="{{asset('frontend/assets/css/components.css')}}">
+    <link rel="stylesheet" href="{{asset('frontend/assets/modules/fontawesome/css/all.min.css')}}">
+
 
     @if($settings->layout === 'RTL')
     <link rel="stylesheet" href="{{asset('frontend/assets/css/rtl.css')}}">
@@ -68,6 +70,7 @@
 
         </div>
     </div>
+
 
     <!-- General JS Scripts -->
     <script src="{{asset('frontend/assets/modules/jquery.min.js')}}"></script>
@@ -167,7 +170,6 @@
 
     })
     </script>
-
 
     @stack('scripts')
 </body>

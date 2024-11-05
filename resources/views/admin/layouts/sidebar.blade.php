@@ -237,7 +237,7 @@
                         <li class="menu-header">Settings & More</li>
 
                         <li class="dropdown {{ setActive([
-                                'admin.vendor-requests.index',
+                                'admin.vendor-requests.*',
                                 'admin.customer.index',
                                 'admin.vendor-list.index',
                                 'admin.manage-user.index',
@@ -254,7 +254,7 @@
                                                         href="{{ route('admin.vendor-list.index') }}">Pharmacies</a>
                                         </li>
 
-                                        <li class="{{ setActive(['admin.vendor-requests.index']) }}"><a class="nav-link"
+                                        <li class="{{ setActive(['admin.vendor-requests.*']) }}"><a class="nav-link"
                                                         href="{{ route('admin.vendor-requests.index') }}">Pending
                                                         Pharmacies</a></li>
 

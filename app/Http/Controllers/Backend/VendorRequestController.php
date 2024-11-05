@@ -27,6 +27,7 @@ class VendorRequestController extends Controller
         $vendor->status = $request->status;
         $vendor->save();
 
+        
         $user = User::findOrFail($vendor->user_id);
         $user->role = 'vendor';
         $user->save();

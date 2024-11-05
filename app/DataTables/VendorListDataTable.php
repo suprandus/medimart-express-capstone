@@ -83,8 +83,8 @@ class VendorListDataTable extends DataTable
             Column::make('id'),
             Column::make('name'),
             Column::make('email'),
-            Column::make('shop_name'),
-            Column::make('role'),
+            Column::make('shop_name')->title('Pharmacy Name'),
+            // Column::make('role'),
             Column::make('status'),
         ];
     }

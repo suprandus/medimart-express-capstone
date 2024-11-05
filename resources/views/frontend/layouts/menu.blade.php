@@ -54,27 +54,37 @@ $query->where('status', 1);
                         <li><a class="{{setActive(['home'])}}" href="{{url('/')}}">home</a></li>
                         <li><a class="{{setActive(['vendor.index'])}}" href="{{route('vendor.index')}}">pharmacies</a>
                         </li>
-                        <li><a class="{{setActive(['flash-sale'])}}" href="{{route('flash-sale')}}">flash Sale</a></li>
-                        <li><a class="{{setActive(['blog'])}}" href="{{route('blog')}}">Pharmacies near you</a></li>
+                        <li><a class="{{setActive(['flash-sale'])}}" href="{{route('flash-sale')}}">sale</a></li>
+                        <li><a class="{{ setActive(['nearby-pharmacies']) }}"
+                                href="{{ route('nearby-pharmacies') }}">nearby pharmacies</a></li>
                         <li><a class="{{setActive(['about'])}}" href="{{route('about')}}">about</a></li>
                         <li><a class="{{setActive(['contact'])}}" href="{{route('contact')}}">contact</a></li>
                     </ul>
 
-
                     <ul class="wsus__menu_item wsus__menu_item_right">
                         <li><a href="{{route('product-traking.index')}}">track order</a></li>
-                        @if (auth()->check())
-                        @if (auth()->user()->role === 'user')
-                        <li><a href="{{route('user.dashbaord')}}"><img src="{{asset(auth()->user()->image)}}" alt="Profile" class="rounded-circle" style="width: 30px; height: 30px; object-fit: cover; margin-right: 5px;">{{auth()->user()->name}}</a></li>
-                        @elseif (auth()->user()->role === 'vendor')
+                        @if (Auth()->check())
 
-                        <li><a href="{{route('vendor.dashbaord')}}">pharmacy dashboard</a></li>
-                        @elseif (auth()->user()->role === 'admin')
-                        <li><a href="{{route('admin.dashbaord')}}">admin dashboard</a></li>
+                        @if (Auth()->user()->role === 'user')
+                        <li><a href="{{route('user.dashboard')}}"><img alt="image" style="width: 40px;height: 40px;
+        object-fit: cover;" src="{{asset(Auth()->user()->image)}}" class="rounded-circle mr-1">
+                                {{Auth()->user()->name}}</a>
+                        </li>
 
+                        @elseif (Auth()->user()->role === 'vendor')
+                        <li><a href="{{route('vendor.dashbaord')}}"><img alt="image" style="width: 40px;height: 40px;
+        object-fit: cover;" src="{{asset(Auth()->user()->image)}}" class="rounded-circle mr-1"> {{
+                                Auth()->user()->name}}</a>
+                        </li>
+
+                        @elseif (Auth()->user()->role === 'admin')
+                        <li><a href="{{route('admin.dashbaord')}}"><img alt="image" style="width: 40px;height: 40px;
+        object-fit: cover;" src="{{asset(Auth()->user()->image)}}" class="rounded-circle mr-1">
+                                {{Auth()->user()->name}}</a>
+                        </li>
                         @endif
-                        @else
 
+                        @else
                         <li><a href="{{route('login')}}">login</a></li>
                         @endif
                     </ul>
@@ -90,19 +100,19 @@ $query->where('status', 1);
     <ul class="wsus__mobile_menu_header_icon d-inline-flex">
 
         <li><a href="{{route('user.wishlist.index')}}"><i class="fal fa-heart"></i><span id="wishlist_count">
-                    @if (auth()->check())
-                    {{\App\Models\Wishlist::where('user_id', auth()->user()->id)->count()}}
+                    @if (Auth()->check())
+                    {{\App\Models\Wishlist::where('user_id', Auth()->user()->id)->count()}}
                     @else
                     0
                     @endif
                 </span></a></li>
 
-        @if (auth()->check())
-        @if (auth()->user()->role === 'user')
+        @if (Auth()->check())
+        @if (Auth()->user()->role === 'user')
         <li><a href="{{route('user.dashboard')}}"><i class="fal fa-user"></i></a></li>
-        @elseif (auth()->user()->role === 'vendor')
+        @elseif (Auth()->user()->role === 'vendor')
         <li><a href="{{route('vendor.dashbaord')}}"><i class="fal fa-user"></i></a></li>
-        @elseif (auth()->user()->role === 'admin')
+        @elseif (Auth()->user()->role === 'admin')
         <li><a href="{{route('admin.dashbaord')}}"><i class="fal fa-user"></i></a></li>
         @endif
         @else

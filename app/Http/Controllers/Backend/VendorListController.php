@@ -25,17 +25,15 @@ class VendorListController extends Controller
         return response(['message' => 'Status has been updated!']);
     }
 
-    //finding the nearest pharmacy
     public function nearestVendors(Request $request)
     {
         $latitude = $request->latitude;
         $longitude = $request->longitude;
-        $selectedLocation = $request->user_address; // Capture the address
+        $selectedLocation = $request->user_address; 
     
         // Radius in kilometers (e.g., 5km)
         $radius = 5;
     
-        // Use Haversine formula to calculate the distance between points
         $vendors = Vendor::selectRaw("*, (6371 * acos(cos(radians(?)) * cos(radians(latitude)) * cos(radians(longitude) - radians(?)) + sin(radians(?)) * sin(radians(latitude)))) AS distance", 
             [$latitude, $longitude, $latitude])
             ->having("distance", "<", $radius)

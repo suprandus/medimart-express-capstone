@@ -18,15 +18,17 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label>Smtp username</label>
-                            <input type="text" class="form-control" name="username" value="{{$emailSettings->username}}">
+                            <label>SMTP Username</label>
+                            <input type="text" class="form-control" name="username"
+                                value="{{$emailSettings->username}}">
                         </div>
                     </div>
 
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label>Smtp password</label>
-                            <input type="text" class="form-control" name="password" value="{{$emailSettings->password}}">
+                            <label>SMTP Password</label>
+                            <input type="text" class="form-control" name="password"
+                                value="{{$emailSettings->password}}">
                         </div>
                     </div>
                 </div>
@@ -35,7 +37,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="form-group">
-                            <label>Mail port</label>
+                            <label>Mail Port</label>
                             <input type="text" class="form-control" name="port" value="{{$emailSettings->port}}">
                         </div>
                     </div>
@@ -44,8 +46,10 @@
                         <div class="form-group">
                             <label>Mail Encryption</label>
                             <select name="encryption" id="" class="form-control">
-                                    <option {{$emailSettings->encryption == 'tls' ? 'selected' : ''}} value="tls">TLS</option>
-                                    <option {{$emailSettings->encryption == 'ssl' ? 'selected' : ''}} value="ssl">SSL</option>
+                                <option {{$emailSettings->encryption == 'tls' ? 'selected' : ''}} value="tls">TLS
+                                </option>
+                                <option {{$emailSettings->encryption == 'ssl' ? 'selected' : ''}} value="ssl">SSL
+                                </option>
                             </select>
                         </div>
                     </div>

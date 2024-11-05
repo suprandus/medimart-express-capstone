@@ -12,10 +12,12 @@ use App\Models\Product;
 use App\Models\RazorpaySetting;
 use App\Models\StripeSetting;
 use App\Models\Transaction;
+use App\Models\PaymongoSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
+use Luigel\Paymongo\Facades\Paymongo;
 use Stripe\Charge;
 use Stripe\Stripe;
 use Razorpay\Api\Api;
@@ -24,10 +26,13 @@ class PaymentController extends Controller
 {
     public function index()
     {
-        if(!Session::has('address')){
+        $paymongoSetting = PaymongoSetting::first();
+        $codSetting = CodSetting::first();
+
+        if (!Session::has('address')) {
             return redirect()->route('user.checkout');
         }
-        return view('frontend.pages.payment');
+        return view('frontend.pages.payment', compact('paymongoSetting', 'codSetting'));
     }
 
     public function paymentSuccess()
@@ -56,7 +61,7 @@ class PaymentController extends Controller
         $order->save();
 
         // store order products
-        foreach(\Cart::content() as $item){
+        foreach (\Cart::content() as $item) {
             $product = Product::find($item->id);
             $orderProduct = new OrderProduct();
             $orderProduct->order_id = $order->id;
@@ -84,7 +89,6 @@ class PaymentController extends Controller
         $transaction->amount_real_currency = $paidAmount;
         $transaction->amount_real_currency_name = $paidCurrencyName;
         $transaction->save();
-
     }
 
     public function clearSession()
@@ -93,11 +97,87 @@ class PaymentController extends Controller
         Session::forget('address');
         Session::forget('shipping_method');
         Session::forget('coupon');
+        Session::forget('checkoutId');
     }
 
+    /** PayMongo config */
+    function paymongoConfig()
+    {
+        $paymongoSetting = PaymongoSetting::first();
 
+        if ($paymongoSetting) {
+            // Update the config in the application environment
+            config(['paymongo.livemode' => $paymongoSetting->live_mode == 1 ? 'true' : 'false']);
+            config(['paymongo.secret_key' => $paymongoSetting->secret_key]);
+            config(['paymongo.public_key' => $paymongoSetting->public_key]);
+        }
+
+        // Return the config array
+        return [
+            'secret_key' => config('paymongo.secret_key', env('PAYMONGO_SECRET_KEY')),
+            'public_key' => config('paymongo.public_key', env('PAYMONGO_PUBLIC_KEY')),
+            'livemode' => config('paymongo.livemode', false),
+        ];
+    }
+
+    /** PayMongo redirect */
+    public function payWithPayMongo()
+    {
+        $this->paymongoConfig();
+
+        $lineItems = createLineItems();
+
+        $checkout = Paymongo::checkout()->create([
+            'cancel_url' => route('user.paymongo.cancel'),
+            'billing' => [
+                'name' => Auth::user()->name,
+                'email' => Auth::user()->email,
+            ],
+            'line_items' => $lineItems,
+            'payment_method_types' => [
+                'card',
+                'gcash',
+                'paymaya',
+                'grab_pay'
+            ],
+            'success_url' => route('user.paymongo.success'),
+            'customer_email' => Auth::user()->email,
+            'send_email_receipt' => true,
+        ]);
+
+        Session::put('checkoutId', $checkout->id);
+
+        return redirect()->away($checkout->checkout_url);
+    }
+
+    public function paymongoSuccess()
+    {
+        $this->paymongoConfig();
+        $checkout = Paymongo::checkout()->find(Session::get('checkoutId'));
+
+        $paymentIntentStatus = $checkout->payment_intent['attributes']['status'];
+
+        if ($paymentIntentStatus === 'succeeded') {
+            $this->storeOrder('paymongo', 1, $checkout->id, $checkout->payment_intent['attributes']['amount'] / 100, $checkout->payment_intent['attributes']['currency']);
+
+            $this->clearSession();
+
+            // dd(session()->all());
+
+            return redirect()->route('user.payment.success');
+        }
+    }
+
+    public function paymongoCancel()
+    {
+        toastr('Someting went wrong try again later!', 'error', 'Error');
+        return redirect()->route('user.payment');
+    }
+
+    /** Paypal config */
     public function paypalConfig()
     {
+
         $paypalSetting = PaypalSetting::first();
         $config = [
             'mode'    => $paypalSetting->mode === 1 ? 'live' : 'sandbox',
@@ -133,7 +213,7 @@ class PaymentController extends Controller
 
         // calculate payable amount depending on currency rate
         $total = getFinalPayableAmount();
-        $payableAmount = round($total*$paypalSetting->currency_rate, 2);
+        $payableAmount = round($total * $paypalSetting->currency_rate, 2);
 
 
         $response = $provider->createOrder([
@@ -152,16 +232,15 @@ class PaymentController extends Controller
             ]
         ]);
 
-        if(isset($response['id']) && $response['id'] != null){
-            foreach($response['links'] as $link){
-                if($link['rel'] === 'approve'){
+        if (isset($response['id']) && $response['id'] != null) {
+            foreach ($response['links'] as $link) {
+                if ($link['rel'] === 'approve') {
                     return redirect()->away($link['href']);
                 }
             }
         } else {
             return redirect()->route('user.paypal.cancel');
         }
-
     }
 
     public function paypalSuccess(Request $request)
@@ -177,7 +256,7 @@ class PaymentController extends Controller
             // calculate payable amount depending on currency rate
             $paypalSetting = PaypalSetting::first();
             $total = getFinalPayableAmount();
-            $paidAmount = round($total*$paypalSetting->currency_rate, 2);
+            $paidAmount = round($total * $paypalSetting->currency_rate, 2);
 
             $this->storeOrder('paypal', 1, $response['id'], $paidAmount, $paypalSetting->currency_name);
 
@@ -192,13 +271,11 @@ class PaymentController extends Controller
 
     public function paypalCancel()
     {
-        toastr('Someting went wrong try agin later!', 'error', 'Error');
+        toastr('Someting went wrong try again later!', 'error', 'Error');
         return redirect()->route('user.payment');
     }
 
-
     /** Stripe Payment */
-
     public function payWithStripe(Request $request)
     {
 
@@ -208,56 +285,54 @@ class PaymentController extends Controller
         $payableAmount = round($total * $stripeSetting->currency_rate, 2);
 
         Stripe::setApiKey($stripeSetting->secret_key);
-       $response = Charge::create([
+        $response = Charge::create([
             "amount" => $payableAmount * 100,
             "currency" => $stripeSetting->currency_name,
             "source" => $request->stripe_token,
             "description" => "product purchase!"
         ]);
 
-        if($response->status === 'succeeded'){
+        if ($response->status === 'succeeded') {
             $this->storeOrder('stripe', 1, $response->id, $payableAmount, $stripeSetting->currency_name);
             // clear session
             $this->clearSession();
 
             return redirect()->route('user.payment.success');
-        }else {
-            toastr('Someting went wrong try agin later!', 'error', 'Error');
+        } else {
+            toastr('Someting went wrong try again later!', 'error', 'Error');
             return redirect()->route('user.payment');
         }
-
     }
 
     /** Razorpay payment */
     public function payWithRazorPay(Request $request)
     {
-       $razorPaySetting = RazorpaySetting::first();
-       $api = new Api($razorPaySetting->razorpay_key, $razorPaySetting->razorpay_secret_key);
+        $razorPaySetting = RazorpaySetting::first();
+        $api = new Api($razorPaySetting->razorpay_key, $razorPaySetting->razorpay_secret_key);
 
-       // amount calculation
-       $total = getFinalPayableAmount();
-       $payableAmount = round($total * $razorPaySetting->currency_rate, 2);
-       $payableAmountInPaisa = $payableAmount * 100;
+        // amount calculation
+        $total = getFinalPayableAmount();
+        $payableAmount = round($total * $razorPaySetting->currency_rate, 2);
+        $payableAmountInPaisa = $payableAmount * 100;
 
-       if($request->has('razorpay_payment_id') && $request->filled('razorpay_payment_id')){
-            try{
+        if ($request->has('razorpay_payment_id') && $request->filled('razorpay_payment_id')) {
+            try {
                 $response = $api->payment->fetch($request->razorpay_payment_id)
                     ->capture(['amount' => $payableAmountInPaisa]);
-            }catch(\Exception $e){
+            } catch (\Exception $e) {
                 toastr($e->getMessage(), 'error', 'Error');
                 return redirect()->back();
             }
 
 
-            if($response['status'] == 'captured'){
+            if ($response['status'] == 'captured') {
                 $this->storeOrder('razorpay', 1, $response['id'], $payableAmount, $razorPaySetting->currency_name);
                 // clear session
                 $this->clearSession();
 
                 return redirect()->route('user.payment.success');
             }
-
-       }
+        }
     }
 
     /** pay with cod */
@@ -265,13 +340,13 @@ class PaymentController extends Controller
     {
         $codPaySetting = CodSetting::first();
         $setting = GeneralSetting::first();
-        if($codPaySetting->status == 0){
+        if ($codPaySetting->status == 0) {
             return redirect()->back();
         }
 
         // amount calculation
-       $total = getFinalPayableAmount();
-       $payableAmount = round($total, 2);
+        $total = getFinalPayableAmount();
+        $payableAmount = round($total, 2);
 
 
         $this->storeOrder('COD', 0, \Str::random(10), $payableAmount, $setting->currency_name);
@@ -279,8 +354,5 @@ class PaymentController extends Controller
         $this->clearSession();
 
         return redirect()->route('user.payment.success');
-            
-
     }
-
 }

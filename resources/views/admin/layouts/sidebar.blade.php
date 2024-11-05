@@ -58,7 +58,6 @@
                             'admin.products-image-gallery.*',
                             'admin.products-variant.*',
                             'admin.products-variant-item.*',
-                            'admin.reviews.*',
                         ]) }}">
                                                 <a class="nav-link"
                                                         href="{{ route('admin.products.index') }}">Products</a>
@@ -121,7 +120,7 @@
 
                                         <li class="{{ setActive(['admin.canceled-orders']) }}"><a class="nav-link"
                                                         href="{{ route('admin.canceled-orders') }}">All Canceled
-                                                        Orders</a></li>=
+                                                        Orders</a></li>
                                 </ul>
                         </li>
 
@@ -149,7 +148,7 @@
                                                         href="{{ route('admin.shipping-rule.index') }}">Shipping
                                                         Rule</a></li>
                                         <li class="{{ setActive(['admin.vendor-profile.*']) }}"><a class="nav-link"
-                                                        href="{{ route('admin.vendor-profile.index') }}">Vendor
+                                                        href="{{ route('admin.vendor-profile.index') }}">Pharmacy
                                                         Profile</a></li>
                                         <li class="{{ setActive(['admin.payment-settings.*']) }}"><a class="nav-link"
                                                         href="{{ route('admin.payment-settings.index') }}">Payment
@@ -195,11 +194,11 @@
 
                                         <li class="{{ setActive(['admin.vendor-condition.index']) }}"><a
                                                         class="nav-link"
-                                                        href="{{ route('admin.vendor-condition.index') }}">Vendor
+                                                        href="{{ route('admin.vendor-condition.index') }}">Pharmacy
                                                         Condition</a></li>
 
                                         <li class="{{ setActive(['admin.about.index']) }}"><a class="nav-link"
-                                                        href="{{ route('admin.about.index') }}">About page</a></li>
+                                                        href="{{ route('admin.about.index') }}">About Page</a></li>
 
                                         <li class="{{ setActive(['admin.terms-and-conditions.index']) }}"><a
                                                         class="nav-link"
@@ -237,6 +236,38 @@
 
                         <li class="menu-header">Settings & More</li>
 
+                        <li class="dropdown {{ setActive([
+                                'admin.vendor-requests.index',
+                                'admin.customer.index',
+                                'admin.vendor-list.index',
+                                'admin.manage-user.index',
+                                'admin.admin-list.index',
+                            ]) }}">
+                                <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i
+                                                class="fas fa-users"></i>
+                                        <span>Manage Users</span></a>
+                                <ul class="dropdown-menu">
+                                        <li class="{{ setActive(['admin.customer.index']) }}"><a class="nav-link"
+                                                        href="{{ route('admin.customer.index') }}">Customers</a>
+                                        </li>
+                                        <li class="{{ setActive(['admin.vendor-list.index']) }}"><a class="nav-link"
+                                                        href="{{ route('admin.vendor-list.index') }}">Pharmacies</a>
+                                        </li>
+
+                                        <li class="{{ setActive(['admin.vendor-requests.index']) }}"><a class="nav-link"
+                                                        href="{{ route('admin.vendor-requests.index') }}">Pending
+                                                        Pharmacies</a></li>
+
+                                        <li class="{{ setActive(['admin.admin-list.*']) }}"><a class="nav-link"
+                                                        href="{{ route('admin.admin-list.index') }}">Administrators</a>
+                                        </li>
+
+                                        <li class="{{ setActive(['admin.manage-user.index']) }}"><a class="nav-link"
+                                                        href="{{ route('admin.manage-user.index') }}">Create User</a>
+                                        </li>
+
+                                </ul>
+                        </li>
 
                         <li class="dropdown {{ setActive([
                     'admin.footer-info.index',
@@ -265,39 +296,6 @@
 
                                 </ul>
                         </li>
-                        <li class="dropdown {{ setActive([
-                    'admin.vendor-requests.index',
-                    'admin.customer.index',
-                    'admin.vendor-list.index',
-                    'admin.manage-user.index',
-                    'admin.admin-list.index',
-                ]) }}">
-                                <a href="#" class="nav-link has-dropdown" data-toggle="dropdown"><i
-                                                class="fas fa-users"></i>
-                                        <span>Users</span></a>
-                                <ul class="dropdown-menu">
-                                        <li class="{{ setActive(['admin.customer.index']) }}"><a class="nav-link"
-                                                        href="{{ route('admin.customer.index') }}">Customer List</a>
-                                        </li>
-                                        <li class="{{ setActive(['admin.vendor-list.index']) }}"><a class="nav-link"
-                                                        href="{{ route('admin.vendor-list.index') }}">Pharmacy List</a>
-                                        </li>
-
-                                        <li class="{{ setActive(['admin.vendor-requests.index']) }}"><a class="nav-link"
-                                                        href="{{ route('admin.vendor-requests.index') }}">Pending
-                                                        Pharmacies</a></li>
-
-                                        <li class="{{ setActive(['admin.admin-list.*']) }}"><a class="nav-link"
-                                                        href="{{ route('admin.admin-list.index') }}">Admin Lists</a>
-                                        </li>
-
-                                        <li class="{{ setActive(['admin.manage-user.index']) }}"><a class="nav-link"
-                                                        href="{{ route('admin.manage-user.index') }}">Manage Users</a>
-                                        </li>
-
-                                </ul>
-                        </li>
-
 
                         {{-- <li><a class="nav-link {{ setActive(['admin.subscribers.*']) }}"
                                         href="{{ route('admin.subscribers.index') }}"><i class="fas fa-user"></i>

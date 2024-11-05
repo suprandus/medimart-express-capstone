@@ -67,9 +67,10 @@ $query->where('status', 1);
                         @if (auth()->user()->role === 'user')
                         <li><a href="{{route('user.dashbaord')}}"><img src="{{asset(auth()->user()->image)}}" alt="Profile" class="rounded-circle" style="width: 30px; height: 30px; object-fit: cover; margin-right: 5px;">{{auth()->user()->name}}</a></li>
                         @elseif (auth()->user()->role === 'vendor')
-                        <li><a href="{{route('vendor.dashbaord')}}"><img src="{{asset(auth()->user()->image)}}" alt="Profile" class="rounded-circle" style="width: 30px; height: 30px; object-fit: cover; margin-right: 5px;">{{auth()->user()->name}}</a></li>
+
+                        <li><a href="{{route('vendor.dashbaord')}}">pharmacy dashboard</a></li>
                         @elseif (auth()->user()->role === 'admin')
-                        <li><a href="{{route('admin.dashbaord')}}"><img src="{{asset(auth()->user()->image)}}" alt="Profile" class="rounded-circle" style="width: 30px; height: 30px; object-fit: cover; margin-right: 5px;">{{auth()->user()->name}}</a></li>
+                        <li><a href="{{route('admin.dashbaord')}}">admin dashboard</a></li>
 
                         @endif
                         @else
@@ -162,15 +163,10 @@ $query->where('status', 1);
                 <div class="accordion accordion-flush" id="accordionFlushExample2">
                     <ul>
                         <li><a href="{{route('home')}}">home</a></li>
-
-                        <li><a href="{{route('vendor.index')}}">vendor</a></li>
-
+                        <li><a href="{{route('vendor.index')}}">pharmacy</a></li>
                         <li><a href="{{route('blog')}}">blog</a></li>
                         <li><a href="{{route('about')}}">about us</a></li>
                         <li><a href="{{route('contact')}}">contact</a></li>
-
-
-
                         <li><a href="{{route('product-traking.index')}}">track order</a></li>
                         <li><a href="{{route('flash-sale')}}">flash sale</a></li>
                     </ul>

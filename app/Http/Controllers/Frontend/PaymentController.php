@@ -157,12 +157,12 @@ class PaymentController extends Controller
 
         $paymentIntentStatus = $checkout->payment_intent['attributes']['status'];
 
-        // dd($paymentIntentStatus);
-
         if ($paymentIntentStatus === 'succeeded') {
             $this->storeOrder('paymongo', 1, $checkout->id, $checkout->payment_intent['attributes']['amount'] / 100, $checkout->payment_intent['attributes']['currency']);
 
             $this->clearSession();
+
+            // dd(session()->all());
 
             return redirect()->route('user.payment.success');
         }

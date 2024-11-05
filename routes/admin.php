@@ -210,9 +210,9 @@ Route::put('advertisement/productpage-banner', [AdvertisementController::class, 
 Route::put('advertisement/cartpage-banner', [AdvertisementController::class, 'cartPageBanner'])->name('cartpage-banner');
 
 /** Vendor request routes */
-Route::get('vendor-requests', [VendorRequestController::class, 'index'])->name('vendor-requests.index');
-Route::get('vendor-requests/{id}/show', [VendorRequestController::class, 'show'])->name('vendor-requests.show');
-Route::put('vendor-requests/{id}/change-status', [VendorRequestController::class, 'changeStatus'])->name('vendor-requests.change-status');
+Route::get('pharmacy-requests', [VendorRequestController::class, 'index'])->name('vendor-requests.index');
+Route::get('pharmacy-requests/{id}/show', [VendorRequestController::class, 'show'])->name('vendor-requests.show');
+Route::put('pharmacy-requests/{id}/change-status', [VendorRequestController::class, 'changeStatus'])->name('pharmacy-requests.change-status');
 
 /** coustomer list routes */
 Route::get('customer', [CustomerListController::class, 'index'])->name('customer.index');
@@ -227,11 +227,11 @@ Route::delete('admin-list/{id}', [AdminListController::class, 'destory'])->name(
 Route::get('manage-user', [ManageUserController::class, 'index'])->name('manage-user.index');
 Route::post('manage-user', [ManageUserController::class, 'create'])->name('manage-user.create');
 
-Route::get('vendor-list', [VendorListController::class, 'index'])->name('vendor-list.index');
-Route::put('vendor-list/status-change', [VendorListController::class, 'changeStatus'])->name('vendor-list.status-change');
+Route::get('pharmacy-list', [VendorListController::class, 'index'])->name('vendor-list.index');
+Route::put('pharmacy-list/status-change', [VendorListController::class, 'changeStatus'])->name('vendor-list.status-change');
 
-Route::get('vendor-condition', [VendorConditionController::class, 'index'])->name('vendor-condition.index');
-Route::put('vendor-condition/update', [VendorConditionController::class, 'update'])->name('vendor-condition.update');
+Route::get('pharmacy-condition', [VendorConditionController::class, 'index'])->name('vendor-condition.index');
+Route::put('pharmacy-condition/update', [VendorConditionController::class, 'update'])->name('vendor-condition.update');
 
 /** about routes */
 Route::get('about', [AboutController::class, 'index'])->name('about.index');

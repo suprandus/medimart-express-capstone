@@ -22,6 +22,7 @@ use App\Http\Controllers\Frontend\UserVendorReqeustController;
 use App\Http\Controllers\Frontend\WishlistController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Backend\VendorListController;
+use App\Http\Controllers\Frontend\NearbyPharmacyController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -87,6 +88,9 @@ Route::post('contact', [PageController::class, 'handleContactForm'])->name('hand
 
 /** Product track route */
 Route::get('product-traking', [ProductTrackController::class, 'index'])->name('product-traking.index');
+
+/** Nearby Pharmacies routes */
+Route::get('/nearby-pharmacies', [NearbyPharmacyController::class, 'index'])->name('nearby-pharmacies');
 
 /** blog routes */
 Route::get('blog-details/{slug}', [BlogController::class, 'blogDetails'])->name('blog-details');

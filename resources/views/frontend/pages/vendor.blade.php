@@ -49,8 +49,7 @@
                                         {{$vendor->phone}}</a>
                                     <a href="javascript:;"><i class="fal fa-envelope"></i>
                                         {{$vendor->email}}</a>
-                                    <a href="{{route('vendor.products', $vendor->id)}}" class="common_btn">visit
-                                        store</a>
+                                    <a href="{{route('vendor.products', $vendor->id)}}" class="common_btn">visit</a>
                                 </div>
                             </div>
                         </div>

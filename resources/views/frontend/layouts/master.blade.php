@@ -89,6 +89,25 @@
 
 
     <!--============================
+       CHATBOT NI LAWRENCE START
+    ==============================-->
+    <script type="text/javascript">
+        (function(d, t) {
+            var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
+            v.onload = function() {
+              window.voiceflow.chat.load({
+                verify: { projectID: '6728c779c98f2e813232b93d' },
+                url: 'https://general-runtime.voiceflow.com',
+                versionID: 'production',
+              });
+            }
+            v.src = "https://cdn.voiceflow.com/widget/bundle.mjs"; v.type = "text/javascript"; s.parentNode.insertBefore(v, s);
+        })(document, 'script');
+    </script>
+    <!--============================
+        CHATBOT NI LAWRENCE END
+
+    <!--============================
         SCROLL BUTTON START
     ==============================-->
     <div class="wsus__scroll_btn">

@@ -4,7 +4,7 @@
 <!-- Main Content -->
 <section class="section">
   <div class="section-header">
-    <h1>Pharmacy Verification</h1>
+    <h1>Pharmacy Application</h1>
   </div>
   <div class="section-body">
     <div class="row">
@@ -39,30 +39,33 @@
                   </div>
                 </div>
               </div>
-<!--license and location-->
-<div class="form-group">
-    <label>Taxpayer Identification Number (TIN)</label>
-    <input type="text" class="form-control" name="tin" required pattern="\d*" title="Please enter numbers only.">
-</div>
-<div class="form-group">
-    <label>BIR Certificate of Registration</label>
-    <input type="file" class="form-control" name="bir_certificate" accept="image/*">
-</div>
+              <!--license and location-->
+              <div class="form-group">
+                <label>Taxpayer Identification Number (TIN)</label>
+                <input type="text" class="form-control" name="tin" required pattern="\d*"
+                  title="Please enter numbers only.">
+              </div>
+              <div class="form-group">
+                <label>BIR Certificate of Registration</label>
+                <input type="file" class="form-control" name="bir_certificate" accept="image/*">
+              </div>
               <div class="form-group">
                 <label>Address</label>
                 <input type="text" class="form-control" name="shop_address" id="shop_address" required readonly>
                 <input type="text" name="latitude" id="latitude" readonly hidden>
-                <input type="text" name="longitude" id="longitude" readonly hidden><br><br>
+                <input type="text" name="longitude" id="longitude" readonly hidden>
+                <br>
+                <br>
                 <input type="text" id="address-input" placeholder="Search for an address" class="form-control mb-2">
                 <div id="map" style="height: 400px; width: 100%;"></div>
-                
+
                 <!-- Script to initialize the Google Map, Geocode, and Places Search -->
                 <script>
-                    let map, marker, geocoder, autocomplete;
+                  let map, marker, geocoder, autocomplete;
 
                     function initMap() {
                         // Default location
-                        const defaultLocation = { lat: -34.397, lng: 150.644 };
+                        const defaultLocation = { lat: 10.3168646, lng: 123.9649095 };
 
                         // Initialize the map
                         map = new google.maps.Map(document.getElementById("map"), {
@@ -157,7 +160,10 @@
                 </script>
 
                 <!-- Google Maps API with Places library -->
-                <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFfWKWjTQueC1E9sqRwJ9E1igYRM5zNYE&libraries=places&callback=initMap" async defer></script>
+                <script
+                  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFfWKWjTQueC1E9sqRwJ9E1igYRM5zNYE&libraries=places&callback=initMap"
+                  async defer>
+                </script>
 
               </div>
               <div class="form-group">

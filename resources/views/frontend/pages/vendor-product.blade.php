@@ -13,10 +13,10 @@
             <div class="container">
                 <div class="row">
                     <div class="col-12">
-                        <h4>vendor products</h4>
+                        <h4>pharmacy products</h4>
                         <ul>
                             <li><a href="{{url('/')}}">home</a></li>
-                            <li><a href="javascript:;">vendor products</a></li>
+                            <li><a href="javascript:;">pharmacy products</a></li>
                         </ul>
                     </div>
                 </div>

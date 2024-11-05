@@ -209,7 +209,7 @@ Route::put('advertisement/homepage-banner-secion-four', [AdvertisementController
 Route::put('advertisement/productpage-banner', [AdvertisementController::class, 'productPageBanner'])->name('productpage-banner');
 Route::put('advertisement/cartpage-banner', [AdvertisementController::class, 'cartPageBanner'])->name('cartpage-banner');
 
-/** Vendor request routes */
+/** Pharmacy request routes */
 Route::get('pharmacy-requests', [VendorRequestController::class, 'index'])->name('vendor-requests.index');
 Route::get('pharmacy-requests/{id}/show', [VendorRequestController::class, 'show'])->name('vendor-requests.show');
 Route::put('pharmacy-requests/{id}/change-status', [VendorRequestController::class, 'changeStatus'])->name('pharmacy-requests.change-status');

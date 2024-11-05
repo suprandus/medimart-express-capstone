@@ -15,45 +15,71 @@
             <div class="table-responsive">
               <table class="table table-striped table-hover table-md">
                 <tr>
-                  <td>User Name: </td>
+                  <td>Name: </td>
                   <td>{{$vendor->user->name}}</td>
                 </tr>
+
                 <tr>
-                  <td>User Email: </td>
+                  <td>Email: </td>
                   <td>{{$vendor->user->email}}</td>
                 </tr>
+
+                <tr>
+                  <td>Pharmacy Banner: </td>
+                  <td>
+                    <img src="{{ asset($vendor->banner) }}" alt="Pharmacy Banner" class="img-fluid"
+                      style="max-width: 100%; height: auto;">
+                  </td>
+                </tr>
+
                 <tr>
                   <td>Pharmacy Name: </td>
                   <td>{{$vendor->shop_name}}</td>
                 </tr>
+
                 <tr>
                   <td>Pharmacy Email: </td>
                   <td>{{$vendor->email}}</td>
 
                 </tr>
+
                 <tr>
                   <td>Pharmacy Phone: </td>
                   <td>{{$vendor->phone}}</td>
-
-
                 </tr>
+
                 <tr>
                   <td>Pharmacy Address: </td>
                   <td>{{$vendor->address}}</td>
-
                 </tr>
+
                 <tr>
                   <td>Description: </td>
                   <td>{{$vendor->description}}</td>
                 </tr>
 
+                <tr>
+                  <td>Taxpayer Identification Number: </td>
+                  <td>{{$vendor->tin}}</td>
+                </tr>
+
+                <tr>
+                  <td>BIR Certificate: </td>
+                  <td>
+                    <a href="{{ asset($vendor->bir_certificate) }}" target="_blank">
+                      <img src="{{ asset($vendor->bir_certificate) }}" alt="BIR Certificate" class="img-fluid"
+                        style="max-width: 100%; height: auto;">
+                    </a>
+                  </td>
+                </tr>
 
               </table>
             </div>
             <div class="row mt-4">
               <div class="col-lg-8">
                 <div class="col-md-4">
-                  <form action="{{route('admin.vendor-requests.change-status', $vendor->id)}}" method="POST">
+
+                  <form action=" {{route('admin.pharmacy-requests.change-status', $vendor->id)}}" method="POST">
                     @csrf
                     @method('PUT')
                     <div class="form-group">
@@ -61,7 +87,6 @@
                       <select name="status" class="form-control">
                         <option {{$vendor->status == 0 ? 'selected': ''}} value="0">Pending</option>
                         <option {{$vendor->status == 1 ? 'selected': ''}} value="1">Approve</option>
-
                       </select>
                     </div>
                     <button class="btn btn-primary"> Update</button>

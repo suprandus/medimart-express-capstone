@@ -52,7 +52,7 @@
                             </div>
 
                             <!-- Submit Button -->
-                            {{-- <input type="submit" value="Search" class="btn btn-primary"> --}}
+                            <input type="submit" value="Search" class="btn btn-primary">
                         </div>
 
                         <!-- Google Map -->
@@ -154,9 +154,8 @@
                                         <a href="javascript:;"><i class="fal fa-map-marker-alt"></i> {{
                                             $vendor->address
                                             }}</a>
-                                        <a href="{{ route('vendor.products', $vendor->id) }}"
-                                            class="common_btn">Visit
-                                            Store</a>
+                                        <a href="{{ route('vendor.products', $vendor->id) }}" class="common_btn">Visit
+                                        </a>
                                     </div>
                                 </div>
                             </div>

@@ -135,7 +135,6 @@ class PaymentController extends Controller
             ],
             'line_items' => $lineItems,
             'payment_method_types' => [
-                'card',
                 'gcash',
                 'paymaya',
                 'grab_pay'

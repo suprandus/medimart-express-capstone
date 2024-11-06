@@ -36,7 +36,7 @@
             <div class="row">
                 <div class="col-xl-12">
                     <div class="wsus__pro_page_bammer vendor_det_banner">
-                        <img src="{{asset('frontend/images/vendor_details_banner.jpg')}}" alt="banner" class="img-fluid w-100">
+                        <img src="{{asset($vendor->banner)}}" alt="banner" class="img-fluid w-100">
                         <div class="wsus__pro_page_bammer_text wsus__vendor_det_banner_text">
                             <div class="wsus__vendor_text_center">
                                 <h4>{{$vendor->shop_name}}</h4>

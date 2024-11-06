@@ -90,7 +90,7 @@ Route::post('contact', [PageController::class, 'handleContactForm'])->name('hand
 Route::get('product-traking', [ProductTrackController::class, 'index'])->name('product-traking.index');
 
 /** Nearby Pharmacies routes */
-Route::get('/nearby-pharmacies', [NearbyPharmacyController::class, 'index'])->name('nearby-pharmacies');
+Route::get('nearby-pharmacies', [NearbyPharmacyController::class, 'index'])->name('nearby-pharmacies');
 
 /** blog routes */
 Route::get('blog-details/{slug}', [BlogController::class, 'blogDetails'])->name('blog-details');
@@ -104,11 +104,10 @@ Route::get('wishlist/add-product', [WishlistController::class, 'addToWishlist'])
 
 
 /**nearest pharmacy**/
-Route::post('nearest-vendors', [VendorListController::class, 'nearestVendors'])->name('nearest-vendors');
+Route::post('nearest-pharmacies', [VendorListController::class, 'nearestVendors'])->name('nearest-vendors');
 
 
-
-
+/**Route groups**/
 Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'user', 'as' => 'user.'], function () {
     Route::get('dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
     Route::get('profile', [UserProfileController::class, 'index'])->name('profile'); // user.profile

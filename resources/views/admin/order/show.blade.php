@@ -76,7 +76,7 @@
                           <th data-width="40">#</th>
                           <th>Item</th>
                           <th>Variant</th>
-                          <th>Vendor Name</th>
+                          <th>Pharmacy Name</th>
                           <th class="text-center">Price</th>
                           <th class="text-center">Quantity</th>
                           <th class="text-right">Totals</th>

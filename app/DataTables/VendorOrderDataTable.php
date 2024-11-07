@@ -65,8 +65,8 @@ class VendorOrderDataTable extends DataTable
                     case 'delivered':
                         return "<span class='badge bg-success'>delivered</span>";
                         break;
-                    case 'canceled':
-                        return "<span class='badge bg-danger'>canceled</span>";
+                    case 'cancelled':
+                        return "<span class='badge bg-secondary'>cancelled</span>";
                         break;
                     default:
                         # code...

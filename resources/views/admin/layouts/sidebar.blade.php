@@ -119,7 +119,7 @@
                                                         Orders</a></li>
 
                                         <li class="{{ setActive(['admin.canceled-orders']) }}"><a class="nav-link"
-                                                        href="{{ route('admin.canceled-orders') }}">All Canceled
+                                                        href="{{ route('admin.canceled-orders') }}">All Cancelled
                                                         Orders</a></li>
                                 </ul>
                         </li>

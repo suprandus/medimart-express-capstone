@@ -143,15 +143,19 @@ $address = json_decode($order->order_address);
             <form action="{{ route('vendor.orders.status', $order->id) }}">
                 <div class="form-group mt-3">
                     <label for="" class="mb-2">Order Status</label>
-                    <select name="status" class="form-control">
+                    <select name="status" class="form-control" {{ $order->order_status === 'cancelled' ? 'disabled' : ''
+                        }}>
                         @foreach (config('order_status.order_status_vendor') as $key => $status)
                         <option {{ $key===$order->order_status ? 'selected' : '' }}
                             value="{{ $key }}">{{ $status['status'] }}</option>
                         @endforeach
                     </select>
+                    @if($order->order_status !== 'cancelled')
                     <button class="btn btn-primary mt-3" type="submit">Save</button>
-                    <button class="btn btn-warning btn-icon icon-left print_invoice mt-3"><i class="fas fa-print"></i>
-                        Print</button>
+                    @endif
+                    <button class="btn btn-warning btn-icon icon-left print_invoice mt-3">
+                        <i class="fas fa-print"></i> Print
+                    </button>
                 </div>
             </form>
         </div>

@@ -136,18 +136,14 @@ $coupon = json_decode($order->coupon);
         </div>
       </div>
       <hr class="mt-2 mb-2">
-      @csrf <form action="{{ route('user.orders.status', $order->id) }}" method="POST">
+      <form action="{{ route('user.orders.status', $order->id) }}" method="POST">
         @csrf
         <div class="form-group mt-3">
           <label for="" class="mb-2">Order Status</label>
-          <select name="status" class="form-control" {{ $order->order_status === 'cancelled' ? 'disabled' : '' }}>
-            @foreach (config('order_status.order_status_user') as $key => $status)
-            <option {{ $key===$order->order_status ? 'selected' : '' }}
-              value="{{ $key }}">{{ $status['status'] }}</option>
-            @endforeach
-          </select>
-          @if($order->order_status !== 'cancelled')
-          <button class="btn btn-primary mt-3" type="submit">Save</button>
+          <input type="text" class="form-control" value="{{ $order->order_status }}" readonly>
+          @if($order->order_status == 'pending')
+          <input type="hidden" name="status" value="cancelled">
+          <button class="btn btn-primary mt-3" type="submit">Cancel</button>
           @endif
           <button class="btn btn-warning btn-icon icon-left print_invoice mt-3">
             <i class="fas fa-print"></i> Print

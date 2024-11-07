@@ -104,10 +104,21 @@ class OrderController extends Controller
     public function changeOrderStatus(Request $request)
     {
         $order = Order::findOrFail($request->id);
+
+        if ($order->order_status === 'cancelled') {
+            return response([
+                'status' => 'error',
+                'message' => 'Cancelled orders cannot be updated'
+            ], 422);
+        }
+
         $order->order_status = $request->status;
         $order->save();
 
-        return response(['status' => 'success', 'message' => 'Updated Order Status']);
+        return response([
+            'status' => 'success',
+            'message' => 'Updated order status'
+        ]);
     }
 
     public function changePaymentStatus(Request $request)

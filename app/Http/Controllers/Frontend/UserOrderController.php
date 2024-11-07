@@ -19,4 +19,20 @@ class UserOrderController extends Controller
         $order = Order::findOrFail($id);
         return view('frontend.dashboard.order.show', compact('order'));
     }
+
+    public function orderStatus(Request $request, string $id)
+    {
+        $order = Order::findOrFail($id);
+
+        if ($order->order_status === 'cancelled') {
+            return back()->with('error', 'Cannot update cancelled orders');
+        }
+
+        $order->order_status = $request->status;
+        $order->save();
+
+        toastr('Updated order status', 'success', 'Success');
+
+        return redirect()->back();
+    }
 }

@@ -23,10 +23,15 @@ class VendorOrderController extends Controller
     public function orderStatus(Request $request, string $id)
     {
         $order = Order::findOrFail($id);
+
+        if ($order->order_status === 'cancelled') {
+            return back()->with('error', 'Cannot update cancelled orders');
+        }
+
         $order->order_status = $request->status;
         $order->save();
 
-        toastr('Status Updated Successfully!', 'success', 'Success');
+        toastr('Updated order status', 'success', 'Success');
 
         return redirect()->back();
     }

@@ -127,6 +127,6 @@ class OrderController extends Controller
         $paymentStatus->payment_status = $request->status;
         $paymentStatus->save();
 
-        return response(['status' => 'success', 'message' => 'Updated Payment Status Successfully']);
+        return response(['status' => 'success', 'message' => 'Updated payment status successfully']);
     }
 }

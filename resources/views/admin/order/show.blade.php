@@ -124,18 +124,15 @@ $coupon = json_decode($order->coupon);
 
                   <div class="form-group">
                     <label for="">Order Status</label>
-                    <select name="order_status" 
-                            id="order_status" 
-                            data-id="{{$order->id}}" 
-                            class="form-control" 
-                            {{ $order->order_status === 'cancelled' ? 'disabled' : '' }}>
-                        @foreach (config('order_status.order_status_admin') as $key => $orderStatus)
-                        <option {{$order->order_status === $key ? 'selected' : ''}}
-                            value="{{$key}}">{{$orderStatus['status']}}</option>
-                        @endforeach
+                    <select name="order_status" id="order_status" data-id="{{$order->id}}" class="form-control" {{
+                      $order->order_status === 'cancelled' ? 'disabled' : '' }}>
+                      @foreach (config('order_status.order_status_admin') as $key => $orderStatus)
+                      <option {{$order->order_status === $key ? 'selected' : ''}}
+                        value="{{$key}}">{{$orderStatus['status']}}</option>
+                      @endforeach
                     </select>
                     @if($order->order_status === 'cancelled')
-                        <small class="text-danger mt-1">Cancelled orders cannot be updated</small>
+                    <small class="text-danger mt-1">Cancelled orders cannot be updated</small>
                     @endif
                   </div>
                 </div>

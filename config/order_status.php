@@ -9,7 +9,7 @@ return [
         ],
         'processed_and_ready_to_ship' => [
             'status' => 'Processed and ready to ship',
-            'details' => 'Your pacakge has been processed and will be with our delivery parter soon'
+            'details' => 'Your package has been processed and will be with our delivery partner soon'
         ],
         'dropped_off' => [
             'status' => 'Dropped Off',
@@ -21,28 +21,46 @@ return [
         ],
         'out_for_delivery' => [
             'status' => 'Out For Delivery',
-            'details' => 'Our delivery partner will attempt to delivery your package'
+            'details' => 'Our delivery partner will attempt to deliver your package'
         ],
         'delivered' => [
             'status' => 'Delivered',
             'details' => 'Delivered'
         ],
-        'canceled' => [
-            'status' => 'Canceled',
-            'details' => 'Canceled'
+        'cancelled' => [
+            'status' => 'Cancelled',
+            'details' => 'Cancelled'
         ]
 
     ],
 
 
     'order_status_vendor' => [
+        'cancelled' => [
+            'status' => 'Cancelled',
+            'details' => 'Cancelled'
+        ],
         'pending' => [
             'status' => 'Pending',
             'details' => 'Your order is currently pending'
         ],
         'processed_and_ready_to_ship' => [
             'status' => 'Processed and ready to ship',
-            'details' => 'Your pacakge has been processed and will be with our delivery parter soon'
+            'details' => 'Your package has been processed and will be with our delivery partner soon'
+        ]
+    ],
+
+
+    'order_status_user' => [
+        'cancelled' => [
+            'status' => 'Cancelled',
+            'details' => 'Cancelled'
+        ],
+        'pending' => [
+            'status' => 'Pending',
+            'details' => 'Your order is currently pending',
         ]
     ]
+
 ];
+

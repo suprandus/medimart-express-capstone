@@ -6,9 +6,31 @@ use App\DataTables\VendorOrderDataTable;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Illuminate\Http\Request;
+use Luigel\Paymongo\Facades\Paymongo;
+use App\Models\PaymongoSetting;
 
 class VendorOrderController extends Controller
 {
+    /** PayMongo config */
+    function paymongoConfig()
+    {
+        $paymongoSetting = PaymongoSetting::first();
+
+        if ($paymongoSetting) {
+            // Update the config in the application environment
+            config(['paymongo.livemode' => $paymongoSetting->live_mode == 1 ? 'true' : 'false']);
+            config(['paymongo.secret_key' => $paymongoSetting->secret_key]);
+            config(['paymongo.public_key' => $paymongoSetting->public_key]);
+        }
+
+        // Return the config array
+        return [
+            'secret_key' => config('paymongo.secret_key', env('PAYMONGO_SECRET_KEY')),
+            'public_key' => config('paymongo.public_key', env('PAYMONGO_PUBLIC_KEY')),
+            'livemode' => config('paymongo.livemode', false),
+        ];
+    }
+
     public function index(VendorOrderDataTable $dataTable)
     {
         return $dataTable->render('vendor.order.index');
@@ -22,16 +44,41 @@ class VendorOrderController extends Controller
 
     public function orderStatus(Request $request, string $id)
     {
-        $order = Order::findOrFail($id);
+        $this->paymongoConfig();
+
+        $order = Order::with('transaction')->findOrFail($id);
+        $transactionId = $order->transaction->transaction_id;
+        $paymentMethod = $order->transaction->payment_method;
 
         if ($order->order_status === 'cancelled') {
             return back()->with('error', 'Cannot update cancelled orders');
         }
 
-        $order->order_status = $request->status;
-        $order->save();
+        if ($paymentMethod === 'COD') {
+            $order->order_status = $request->status;
+            $order->payment_status = 'cancelled';
 
-        toastr('Updated order status', 'success', 'Success');
+            $order->save();
+            toastr('Updated order status', 'success', 'Success');
+        } else if ($paymentMethod === 'paymongo') {
+            $response = Paymongo::checkout()->find($transactionId);
+            $paymentId = $response->payments[0]['id'];
+            $amount = $response->payments[0]['attributes']['amount'] / 100;
+
+            // Initiates the refund
+            $refund = Paymongo::refund()->create([
+                'amount' => $amount,
+                'notes' => 'Cancelled order',
+                'payment_id' => $paymentId,
+                'reason' => \Luigel\Paymongo\Models\Refund::REASON_REQUESTED_BY_CUSTOMER,
+            ]);
+
+            $order->order_status = $request->status;
+            $order->payment_status = 'refunded';
+
+            $order->save();
+            toastr('Updated order status', 'success', 'Success');
+        }
 
         return redirect()->back();
     }

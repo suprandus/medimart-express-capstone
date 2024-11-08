@@ -146,6 +146,8 @@ class PaymentController extends Controller
 
         Session::put('checkoutId', $checkout->id);
 
+        // dd(session('checkoutId'));
+
         return redirect()->away($checkout->checkout_url);
     }
 
@@ -157,7 +159,7 @@ class PaymentController extends Controller
         $paymentIntentStatus = $checkout->payment_intent['attributes']['status'];
 
         if ($paymentIntentStatus === 'succeeded') {
-            $this->storeOrder('paymongo', 1, $checkout->id, $checkout->payment_intent['attributes']['amount'] / 100, $checkout->payment_intent['attributes']['currency']);
+            $this->storeOrder('paymongo', 'completed', $checkout->id, $checkout->payment_intent['attributes']['amount'] / 100, $checkout->payment_intent['attributes']['currency']);
 
             $this->clearSession();
 
@@ -348,7 +350,7 @@ class PaymentController extends Controller
         $payableAmount = round($total, 2);
 
 
-        $this->storeOrder('COD', 0, \Str::random(10), $payableAmount, $setting->currency_name);
+        $this->storeOrder('COD', 'pending', \Str::random(10), $payableAmount, $setting->currency_name);
         // clear session
         $this->clearSession();
 

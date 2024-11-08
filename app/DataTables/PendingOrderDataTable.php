@@ -39,11 +39,23 @@ class PendingOrderDataTable extends DataTable
             ->addColumn('date', function($query){
                 return date('d-M-Y', strtotime($query->created_at));
             })
-            ->addColumn('payment_status', function($query){
-                if($query->payment_status === 1){
-                    return "<span class='badge bg-success'>complete</span>";
-                }else {
-                    return "<span class='badge bg-warning'>pending</span>";
+            ->addColumn('payment_status', function ($query) {
+                switch ($query->payment_status) {
+                    case 'pending':
+                        return "<span class='badge bg-warning'>pending</span>";
+                        break;
+                    case 'completed':
+                        return "<span class='badge bg-success'>completed</span>";
+                        break;
+                    case 'refunded':
+                        return "<span class='badge bg-secondary'>refunded</span>";
+                        break;
+                    case 'cancelled':
+                        return "<span class='badge bg-secondary'>cancelled</span>";
+                        break;
+                    default:
+                        # code...
+                        break;
                 }
             })
             ->addColumn('order_status', function($query){

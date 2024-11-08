@@ -71,7 +71,7 @@ class OrderDataTable extends DataTable
                         return "<span class='badge bg-info'>shipped</span>";
                         break;
                     case 'out_for_delivery':
-                        return "<span class='badge bg-primary'>out for delivery</span>";
+                        return "<span class='badge bg-info'>out for delivery</span>";
                         break;
                     case 'delivered':
                         return "<span class='badge bg-success'>delivered</span>";

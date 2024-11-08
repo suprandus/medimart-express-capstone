@@ -3,6 +3,10 @@
 return [
 
     'order_status_admin' => [
+        'cancelled' => [
+            'status' => 'Cancelled',
+            'details' => 'Cancelled'
+        ],
         'pending' => [
             'status' => 'Pending',
             'details' => 'Your order is currently pending'
@@ -26,12 +30,7 @@ return [
         'delivered' => [
             'status' => 'Delivered',
             'details' => 'Delivered'
-        ],
-        'cancelled' => [
-            'status' => 'Cancelled',
-            'details' => 'Cancelled'
         ]
-
     ],
 
 

@@ -122,6 +122,7 @@ class ProductDataTable extends DataTable
             Column::make('id'),
             Column::make('image'),
             Column::make('name'),
+            Column::make('qty')->title('Quantity'),
             Column::make('price'),
             Column::make('type')->width(150),
             Column::make('status'),

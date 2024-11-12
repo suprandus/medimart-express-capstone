@@ -17,7 +17,8 @@
                                         <span>Home</span></a>
                         </li>
 
-                        <li class=""><a class="nav-link" href=""><i class="fas fa-envelope"></i>
+                        <li class="{{setActive(['user.messages.*'])}}"><a class="nav-link" href="{{
+                                        route('user.messages.index') }}"><i class="fas fa-envelope"></i>
                                         <span>Messages</span></a>
                         </li>
 

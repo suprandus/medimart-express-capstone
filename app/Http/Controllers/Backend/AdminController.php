@@ -78,4 +78,13 @@ class AdminController extends Controller
     {
         return view('admin.auth.login');
     }
+
+    public function salesReport()
+    {
+        return view('admin.reports.sales-reports');
+    }
+    public function productsReport()
+    {
+        return view('admin.reports.product-reports');
+    }
 }

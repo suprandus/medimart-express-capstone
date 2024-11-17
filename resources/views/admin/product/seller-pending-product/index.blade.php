@@ -4,7 +4,7 @@
       <!-- Main Content -->
         <section class="section">
           <div class="section-header">
-            <h1>Sellers Pending Products</h1>
+            <h1>Pharmacy Pending Products</h1>
           </div>
 
           <div class="section-body">

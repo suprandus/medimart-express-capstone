@@ -4,7 +4,7 @@
       <!-- Main Content -->
         <section class="section">
           <div class="section-header">
-            <h1>Sellers Products</h1>
+            <h1>Pharmacy Products</h1>
           </div>
 
           <div class="section-body">

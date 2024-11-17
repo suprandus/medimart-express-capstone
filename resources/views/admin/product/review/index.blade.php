@@ -4,7 +4,7 @@
       <!-- Main Content -->
         <section class="section">
           <div class="section-header">
-            <h1>Product Review</h1>
+            <h1>Product Reviews</h1>
           </div>
 
           <div class="section-body">

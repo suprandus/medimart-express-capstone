@@ -12,6 +12,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.8",
         "luigel/laravel-paymongo": "^2.5",
+        "phpoffice/phpspreadsheet": "^2.3",
         "pusher/pusher-php-server": "^7.2",
         "razorpay/razorpay": "2.*",
         "srmklive/paypal": "~3.0",

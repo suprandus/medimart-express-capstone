@@ -41,6 +41,7 @@ use App\Http\Controllers\Backend\SliderController;
 use App\Http\Controllers\Backend\StripeSettingController;
 use App\Http\Controllers\Backend\SubCategoryController;
 use App\Http\Controllers\Backend\SubscribersController;
+use App\Http\Controllers\SalesController;
 use App\Http\Controllers\Backend\TermsAndConditionController;
 use App\Http\Controllers\Backend\TransactionController;
 use App\Http\Controllers\Backend\VendorConditionController;
@@ -55,8 +56,17 @@ use Illuminate\Support\Facades\Route;
 
 
 /** Admin Routes */
+Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
 
-Route::get('dashboard', [AdminController::class, 'dashboard'])->name('dashbaord');
+/** Reports Routes */
+Route::get('reports/products', [AdminController::class, 'productsReport'])->name('products-reports');
+
+// Route to fetch sales data based on the period
+Route::get('reports/sales', [SalesController::class, 'showSalesReport'])->name('sales-reports');
+
+// Excel export
+Route::get('reports/sales/export/{period}', [SalesController::class, 'exportSalesToExcel'])->name('sales.export');
+//Route::get('reports/sales/test-download', [SalesController::class, 'testDownload'])->name('sales.testDownload');
 
 /** Profile Routes */
 Route::get('profile', [ProfileController::class, 'index'])->name('profile');

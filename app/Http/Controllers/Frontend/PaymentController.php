@@ -13,6 +13,7 @@ use App\Models\RazorpaySetting;
 use App\Models\StripeSetting;
 use App\Models\Transaction;
 use App\Models\PaymongoSetting;
+use App\Models\SalesAdmin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
@@ -78,6 +79,22 @@ class PaymentController extends Controller
             $updatedQty = ($product->qty - $item->qty);
             $product->qty = $updatedQty;
             $product->save();
+
+            //save to sales_admin table
+            $salesAdmin = new SalesAdmin();
+            $salesAdmin->vendor_id = $product->vendor_id;
+            $salesAdmin->product_id = $product->id;
+            $salesAdmin->product_name = $product->name;
+            $salesAdmin->product_brand_id = $product->brand_id; // Assuming the product model has a brand_id
+            $salesAdmin->product_category_id = $product->category_id; // Assuming the product model has a category_id
+            $salesAdmin->product_sub_category_id = $product->sub_category_id; // Assuming the product model has a sub_category_id
+            $salesAdmin->product_child_category_id = $product->child_category_id; // Assuming the product model has a child_category_id
+            $salesAdmin->product_price = $item->price;
+            $salesAdmin->product_order_quantity = $item->qty;
+            $salesAdmin->order_cost = getFinalPayableAmount();
+            $salesAdmin->sales = ($item->price * $item->qty) * 0.1; // 10% commission revenue of medimart
+            $salesAdmin->created_at = now();
+            $salesAdmin->save();
         }
 
         // store transaction details

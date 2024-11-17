@@ -44,7 +44,6 @@ class AuthenticatedSessionController extends Controller
         } elseif ($request->user()->role === 'vendor') {
             return redirect()->intended('/pharmacy/dashboard');
         }
-
         return redirect()->intended(RouteServiceProvider::HOME);
     }
 

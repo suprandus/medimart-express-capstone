@@ -23,8 +23,8 @@ $query->where('status', 1);
                         @foreach ($categories as $category)
                         <li>
                             <a class="{{ count($category->subCategories) > 0 ? 'wsus__droap_arrow' : '' }}"
-                               href="{{ route('products.index', ['category' => $category->slug]) }}">
-                               <i class="{{ $category->icon }}"></i> {{ $category->name }}
+                                href="{{ route('products.index', ['category' => $category->slug]) }}">
+                                <i class="{{ $category->icon }}"></i> {{ $category->name }}
                             </a>
                             @if(count($category->subCategories) > 0)
                             <ul class="wsus_menu_cat_droapdown">
@@ -32,13 +32,15 @@ $query->where('status', 1);
                                 <li>
                                     <a href="{{ route('products.index', ['subcategory' => $subCategory->slug]) }}">
                                         {{ $subCategory->name }}
-                                        <i class="{{ count($subCategory->childCategories) > 0 ? 'fas fa-angle-right' : '' }}"></i>
+                                        <i
+                                            class="{{ count($subCategory->childCategories) > 0 ? 'fas fa-angle-right' : '' }}"></i>
                                     </a>
                                     @if(count($subCategory->childCategories) > 0)
                                     <ul class="wsus__sub_category">
                                         @foreach ($subCategory->childCategories as $childCategory)
                                         <li>
-                                            <a href="{{ route('products.index', ['childcategory' => $childCategory->slug]) }}">
+                                            <a
+                                                href="{{ route('products.index', ['childcategory' => $childCategory->slug]) }}">
                                                 {{ $childCategory->name }}
                                             </a>
                                         </li>
@@ -56,9 +58,11 @@ $query->where('status', 1);
                     <!-- Main Navbar Links -->
                     <ul class="wsus__menu_item">
                         <li><a class="{{ setActive(['home']) }}" href="{{ url('/') }}">home</a></li>
-                        <li><a class="{{ setActive(['vendor.index']) }}" href="{{ route('vendor.index') }}">pharmacies</a></li>
+                        <li><a class="{{ setActive(['vendor.index']) }}"
+                                href="{{ route('vendor.index') }}">pharmacies</a></li>
                         <li><a class="{{ setActive(['flash-sale']) }}" href="{{ route('flash-sale') }}">sale</a></li>
-                        <li><a class="{{ setActive(['nearby-pharmacies']) }}" href="{{ route('nearby-pharmacies') }}">nearby pharmacies</a></li>
+                        <li><a class="{{ setActive(['nearby-pharmacies']) }}"
+                                href="{{ route('nearby-pharmacies') }}">nearby pharmacies</a></li>
                         <li><a class="{{ setActive(['about']) }}" href="{{ route('about') }}">about</a></li>
                         <li><a class="{{ setActive(['contact']) }}" href="{{ route('contact') }}">contact</a></li>
                     </ul>
@@ -69,26 +73,27 @@ $query->where('status', 1);
 
                         @if (Auth::check())
                         <li class="nav-item dropdown">
-                            <a href="#" class="nav-link dropdown-toggle d-flex align-items-center" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <img alt="image" style="width: 40px; height: 40px; object-fit: cover;" 
-                                    src="{{ asset(Auth::user()->image) }}" class="rounded-circle mr-2">
+                            <a class="dropdown-toggle align-items-center" data-toggle="dropdown" aria-haspopup="true"
+                                aria-expanded="false">
+                                <img alt="image" style="width: 38px; height: 38px; object-fit: cover;"
+                                    src="{{ asset(Auth::user()->image) }}" class="rounded-circle mr-1">
                                 <span>{{ Auth::user()->name }}</span>
                             </a>
 
                             <!-- Dropdown Menu -->
                             <div class="dropdown-menu dropdown-menu-right">
                                 @if (Auth::user()->role === 'user')
-                                    <a href="{{ route('user.dashboard') }}" class="dropdown-item has-icon">
-                                        <i class="fas fa-th-large"></i> User Dashboard
-                                    </a>
+                                <a href="{{ route('user.dashboard') }}" class="dropdown-item has-icon">
+                                    <i class="fas fa-th-large"></i> User Dashboard
+                                </a>
                                 @elseif (Auth::user()->role === 'vendor')
-                                    <a href="{{ route('vendor.dashboard') }}" class="dropdown-item has-icon">
-                                        <i class="fas fa-th-large"></i> Pharmacy Dashboard
-                                    </a>
+                                <a href="{{ route('vendor.dashboard') }}" class="dropdown-item has-icon">
+                                    <i class="fas fa-th-large"></i> Pharmacy Dashboard
+                                </a>
                                 @elseif (Auth::user()->role === 'admin')
-                                    <a href="{{ route('admin.dashboard') }}" class="dropdown-item has-icon">
-                                        <i class="fas fa-th-large"></i> Admin Dashboard
-                                    </a>
+                                <a href="{{ route('admin.dashboard') }}" class="dropdown-item has-icon">
+                                    <i class="fas fa-th-large"></i> Admin Dashboard
+                                </a>
                                 @endif
                                 <div class="dropdown-divider"></div>
                                 <form method="POST" action="{{ route('logout') }}" style="display: inline;">
@@ -97,13 +102,13 @@ $query->where('status', 1);
                                         <i class="fas fa-sign-out-alt"></i> Logout
                                     </button>
                                 </form>
-                                
+
                             </div>
                         </li>
                         @else
-                        <li><a href="{{ route('login') }}" class="nav-link">Login</a></li>
+                        <li><a href="{{route('login')}}">login</a></li>
                         @endif
-                    </ul>                    
+                    </ul>
                 </div>
             </div>
         </div>
@@ -123,15 +128,15 @@ $query->where('status', 1);
         </li>
 
         @if (Auth()->check())
-            @if (Auth()->user()->role === 'user')
-            <li><a href="{{route('user.dashboard')}}"><i class="fal fa-user"></i></a></li>
-            @elseif (auth()->user()->role === 'vendor')
-            <li><a href="{{route('vendor.dashboard')}}"><i class="fal fa-user"></i></a></li>
-            @elseif (auth()->user()->role === 'admin')
-            <li><a href="{{route('admin.dashboard')}}"><i class="fal fa-user"></i></a></li>
-            @endif
+        @if (Auth()->user()->role === 'user')
+        <li><a href="{{route('user.dashboard')}}"><i class="fal fa-user"></i></a></li>
+        @elseif (auth()->user()->role === 'vendor')
+        <li><a href="{{route('vendor.dashboard')}}"><i class="fal fa-user"></i></a></li>
+        @elseif (auth()->user()->role === 'admin')
+        <li><a href="{{route('admin.dashboard')}}"><i class="fal fa-user"></i></a></li>
+        @endif
         @else
-            <li><a href="{{route('login')}}"><i class="fal fa-user"></i></a></li>
+        <li><a href="{{route('login')}}"><i class="fal fa-user"></i></a></li>
         @endif
     </ul>
     <form action="{{route('products.index')}}">
@@ -197,7 +202,7 @@ $query->where('status', 1);
         </div>
     </div>
 </section>
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- Bootstrap JavaScript -->
+<!--jquery library js-->
+<script src="{{asset('frontend/js/jquery-3.6.0.min.js')}}"></script>
+<!--bootstrap js-->
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>

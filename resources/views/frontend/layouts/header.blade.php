@@ -10,7 +10,7 @@
                 <div class="wsus_logo_area">
                     <a class="wsus__header_logo" href="{{url('/')}}">
                         {{-- <img src="{{asset($logoSetting->logo)}}" alt="logo" class="img-fluid w-100"> --}}
-                        
+
                     </a>
                 </div>
             </div>
@@ -29,18 +29,19 @@
                             <i class="fas fa-comments"></i>
                         </div>
                         <div class="wsus__call_text">
-                            <p>{{$settings->contact_email}}</p>
-                            <p>{{$settings->contact_phone}}</p>
+                            <p style="text-transform: lowercase;">{{ $settings->contact_email }}</p>
+                            <p style="text-transform: lowercase;">{{ $settings->contact_phone }}</p>
                         </div>
                     </div>
                     <ul class="wsus__icon_area">
-                        <li><a href="{{route('user.wishlist.index')}}"><i class="fal fa-heart"></i><span id="wishlist_count">
-                            @if (auth()->check())
-                            {{\App\Models\Wishlist::where('user_id', auth()->user()->id)->count()}}
-                            @else
-                            0
-                            @endif
-                        </span></a></li>
+                        <li><a href="{{route('user.wishlist.index')}}"><i class="fal fa-heart"></i><span
+                                    id="wishlist_count">
+                                    @if (auth()->check())
+                                    {{\App\Models\Wishlist::where('user_id', auth()->user()->id)->count()}}
+                                    @else
+                                    0
+                                    @endif
+                                </span></a></li>
                         {{-- <li><a href="compare.html"><i class="fal fa-random"></i><span>03</span></a></li> --}}
                         <li><a class="wsus__cart_icon" href="#"><i class="fal fa-shopping-bag"></i><span
                                     id="cart-count">{{Cart::content()->count()}}</span></a></li>

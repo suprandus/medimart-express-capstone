@@ -4,7 +4,7 @@
       <a href="{{ route('home') }}">{{ $settings->site_name }}</a>
     </div>
     <div class="sidebar-brand sidebar-brand-sm">
-      <a href="">||</a>
+      <a href="">ME</a>
     </div>
     <ul class="sidebar-menu">
       <li class="menu-header">Dashboard</li>

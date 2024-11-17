@@ -126,8 +126,8 @@ Route::get('reviews', [AdminReviewController::class, 'index'])->name('reviews.in
 Route::put('reviews/change-status', [AdminReviewController::class, 'changeStatus'])->name('reviews.change-status');
 
 /** Seller product routes */
-Route::get('seller-products', [SellerProductController::class, 'index'])->name('seller-products.index');
-Route::get('seller-pending-products', [SellerProductController::class, 'pendingProducts'])->name('seller-pending-products.index');
+Route::get('pharmacy-products', [SellerProductController::class, 'index'])->name('seller-products.index');
+Route::get('pharmacy-pending-products', [SellerProductController::class, 'pendingProducts'])->name('seller-pending-products.index');
 Route::put('change-approve-status', [SellerProductController::class, 'changeApproveStatus'])->name('change-approve-status');
 
 /** Flash Sale Routes */

@@ -8,6 +8,7 @@
     <title>{{ $settings->site_name }}</title>
 
     <!-- General CSS Files -->
+    <link rel="icon" type="image/png" href="{{asset($logoSetting->favicon)}}">
     <link rel="stylesheet" href="{{asset('frontend/assets/modules/bootstrap/css/bootstrap.min.css')}}">
     <link rel="stylesheet" href="{{asset('frontend/assets/modules/fontawesome/css/all.min.css')}}">
 
@@ -77,7 +78,7 @@
     <script src="{{asset('frontend/assets/modules/nicescroll/jquery.nicescroll.min.js')}}"></script>
     <script src="{{asset('frontend/assets/modules/moment.min.js')}}"></script>
     <script src="{{asset('frontend/assets/js/stisla.js')}}"></script>
-    
+
 
 
     <!-- JS Libraies -->

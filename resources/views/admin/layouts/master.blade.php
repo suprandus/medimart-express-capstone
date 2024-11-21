@@ -8,6 +8,7 @@
     <title>{{ $settings->site_name }}</title>
 
     <!-- General CSS Files -->
+    <link rel="icon" type="image/png" href="{{asset($logoSetting->favicon)}}">
     <link rel="stylesheet" href="{{asset('backend/assets/modules/bootstrap/css/bootstrap.min.css')}}">
     <link rel="stylesheet" href="{{asset('backend/assets/modules/fontawesome/css/all.min.css')}}">
 

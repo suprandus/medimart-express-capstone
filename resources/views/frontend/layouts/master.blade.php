@@ -91,14 +91,17 @@
     <!--============================
        CHATBOT NI LAWRENCE START
     ==============================-->
+    @php
+    $chatbotSettings = \App\Models\ChatBotSetting::first();
+    @endphp
     <script type="text/javascript">
         (function(d, t) {
             var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
             v.onload = function() {
               window.voiceflow.chat.load({
-                verify: { projectID: '6728c779c98f2e813232b93d' },
-                url: 'https://general-runtime.voiceflow.com',
-                versionID: 'production',
+                verify: { projectID: '{{ $chatbotSettings->project_id }}' },
+                url: '{{ $chatbotSettings->url }}',
+                versionID: '{{ $chatbotSettings->version_id }}',
               });
             }
             v.src = "https://cdn.voiceflow.com/widget/bundle.mjs"; v.type = "text/javascript"; s.parentNode.insertBefore(v, s);

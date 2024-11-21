@@ -106,26 +106,6 @@
     ==============================-->
 
 <!--============================
-       CHATBOT NI LAWRENCE START
-    ==============================-->
-{{-- <script type="text/javascript">
-    (function(d, t) {
-            var v = d.createElement(t), s = d.getElementsByTagName(t)[0];
-            v.onload = function() {
-              window.voiceflow.chat.load({
-                verify: { projectID: '{{ $chatbotSettings->project_id }}' },
-                url: '{{ $chatbotSettings->url }}',
-                versionID: '{{ $chatbotSettings->version_id }}',
-              });
-            }
-            v.src = "https://cdn.voiceflow.com/widget/bundle.mjs"; v.type = "text/javascript"; s.parentNode.insertBefore(v, s);
-        })(document, 'script');
-</script> --}}
-<!--============================
-        CHATBOT NI LAWRENCE END
-    ==============================-->
-
-<!--============================
         HOME BLOGS START
     ==============================-->
 {{-- @include('frontend.home.sections.blog') --}}

@@ -6,7 +6,7 @@
         <h1>Dashboard</h1>
     </div>
     <div class="row">
-        <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+        {{-- <div class="col-lg-3 col-md-6 col-sm-6 col-12">
             <a href="{{ route('admin.order.index') }}" class="card-link">
                 <div class="card card-statistic-1">
                     <div class="card-icon bg-primary">
@@ -14,7 +14,7 @@
                     </div>
                     <div class="card-wrap">
                         <div class="card-header">
-                            <h4>Todays Orders</h4>
+                            <h4>Today's Orders</h4>
                         </div>
                         <div class="card-body">
                             {{ $todaysOrder }}
@@ -22,9 +22,9 @@
                     </div>
                 </div>
             </a>
-        </div>
+        </div> --}}
 
-        <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+        {{-- <div class="col-lg-3 col-md-6 col-sm-6 col-12">
             <a href="{{ route('admin.pending-orders') }}" class="card-link">
                 <div class="card card-statistic-1">
                     <div class="card-icon bg-primary">
@@ -32,7 +32,7 @@
                     </div>
                     <div class="card-wrap">
                         <div class="card-header">
-                            <h4>Todays Peding Orders</h4>
+                            <h4>Today's Pending Orders</h4>
                         </div>
                         <div class="card-body">
                             {{ $todaysPendingOrder }}
@@ -40,12 +40,12 @@
                     </div>
                 </div>
             </a>
-        </div>
+        </div> --}}
 
         <div class="col-lg-3 col-md-6 col-sm-6 col-12">
             <a href="{{ route('admin.order.index') }}" class="card-link">
                 <div class="card card-statistic-1">
-                    <div class="card-icon bg-primary">
+                    <div class="card-icon bg-danger">
                         <i class="fas fa-cart-plus"></i>
                     </div>
                     <div class="card-wrap">
@@ -63,8 +63,8 @@
         <div class="col-lg-3 col-md-6 col-sm-6 col-12">
             <a href="{{ route('admin.pending-orders') }}" class="card-link">
                 <div class="card card-statistic-1">
-                    <div class="card-icon bg-primary">
-                        <i class="fas fa-cart-plus"></i>
+                    <div class="card-icon bg-danger">
+                        <i class="fas fa-hourglass-half"></i>
                     </div>
                     <div class="card-wrap">
                         <div class="card-header">
@@ -78,7 +78,7 @@
             </a>
         </div>
 
-        <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+        {{-- <div class="col-lg-3 col-md-6 col-sm-6 col-12">
             <a href="{{ route('admin.canceled-orders') }}" class="card-link">
                 <div class="card card-statistic-1">
                     <div class="card-icon bg-danger">
@@ -94,9 +94,9 @@
                     </div>
                 </div>
             </a>
-        </div>
+        </div> --}}
 
-        <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+        {{-- <div class="col-lg-3 col-md-6 col-sm-6 col-12">
             <a href="{{ route('admin.delivered-orders') }}" class="card-link">
                 <div class="card card-statistic-1">
                     <div class="card-icon bg-danger">
@@ -112,16 +112,17 @@
                     </div>
                 </div>
             </a>
-        </div>
+        </div> --}}
+
         <div class="col-lg-3 col-md-6 col-sm-6 col-12">
             <a href="" class="card-link">
                 <div class="card card-statistic-1">
                     <div class="card-icon bg-danger">
-                        <i class="fas fa-money-bill-alt"></i>
+                        <i class="fas fa-chart-line"></i>
                     </div>
                     <div class="card-wrap">
                         <div class="card-header">
-                            <h4>Todays Earnings</h4>
+                            <h4>Today's Earnings</h4>
                         </div>
                         <div class="card-body">
                             {{$settings->currency_icon}}{{ $todaysEarnings }}
@@ -135,11 +136,11 @@
             <a href="" class="card-link">
                 <div class="card card-statistic-1">
                     <div class="card-icon bg-danger">
-                        <i class="fas fa-money-bill-alt"></i>
+                        <i class="fas fa-chart-bar"></i>
                     </div>
                     <div class="card-wrap">
                         <div class="card-header">
-                            <h4>This Month Earnings</h4>
+                            <h4>This Month's Earnings</h4>
                         </div>
                         <div class="card-body">
                             {{$settings->currency_icon}}{{ $monthEarnings }}
@@ -149,7 +150,7 @@
             </a>
         </div>
 
-        <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+        {{-- <div class="col-lg-3 col-md-6 col-sm-6 col-12">
             <a href="" class="card-link">
                 <div class="card card-statistic-1">
                     <div class="card-icon bg-info">
@@ -165,17 +166,17 @@
                     </div>
                 </div>
             </a>
-        </div>
+        </div> --}}
 
         <div class="col-lg-3 col-md-6 col-sm-6 col-12">
             <a href="{{route('admin.reviews.index')}}" class="card-link">
                 <div class="card card-statistic-1">
-                    <div class="card-icon bg-info">
+                    <div class="card-icon bg-danger">
                         <i class="fas fa-star"></i>
                     </div>
                     <div class="card-wrap">
                         <div class="card-header">
-                            <h4>Total Reviews</h4>
+                            <h4>Reviews</h4>
                         </div>
                         <div class="card-body">
                             {{ $totalReview }}
@@ -185,29 +186,10 @@
             </a>
         </div>
 
-
-        <div class="col-lg-3 col-md-6 col-sm-6 col-12">
-            <a href="{{route('admin.brand.index')}}" class="card-link">
-                <div class="card card-statistic-1">
-                    <div class="card-icon bg-info">
-                        <i class="fas fa-copyright"></i>
-                    </div>
-                    <div class="card-wrap">
-                        <div class="card-header">
-                            <h4>Total Brands</h4>
-                        </div>
-                        <div class="card-body">
-                            {{ $totalBrands }}
-                        </div>
-                    </div>
-                </div>
-            </a>
-        </div>
-
         <div class="col-lg-3 col-md-6 col-sm-6 col-12">
             <a href="{{route('admin.category.index')}}" class="card-link">
                 <div class="card card-statistic-1">
-                    <div class="card-icon bg-info">
+                    <div class="card-icon bg-danger">
                         <i class="fas fa-list"></i>
                     </div>
                     <div class="card-wrap">
@@ -223,6 +205,24 @@
         </div>
 
         <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+            <a href="{{route('admin.brand.index')}}" class="card-link">
+                <div class="card card-statistic-1">
+                    <div class="card-icon bg-danger">
+                        <i class="fas fa-copyright"></i>
+                    </div>
+                    <div class="card-wrap">
+                        <div class="card-header">
+                            <h4>Total Brands</h4>
+                        </div>
+                        <div class="card-body">
+                            {{ $totalBrands }}
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        {{-- <div class="col-lg-3 col-md-6 col-sm-6 col-12">
             <a href="{{route('admin.blog.index')}}" class="card-link">
                 <div class="card card-statistic-1">
                     <div class="card-icon bg-warning">
@@ -293,7 +293,7 @@
                     </div>
                 </div>
             </a>
-        </div>
+        </div> --}}
 
     </div>
 

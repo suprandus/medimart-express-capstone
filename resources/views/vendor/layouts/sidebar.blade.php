@@ -9,7 +9,7 @@
     <ul class="sidebar-menu">
       <li class="menu-header">Dashboard</li>
       <li class="{{setActive(['vendor.dashbaord'])}}">
-        <a class="nav-link" href="{{ route('vendor.dashbaord') }}"><i class="fas fa-prescription-bottle-alt"></i><span>
+        <a class="nav-link" href="{{ route('vendor.dashboard') }}"><i class="fas fa-prescription-bottle-alt"></i><span>
             Dashboard</span></a>
       </li>
       <li class=""><a class="nav-link" href="{{ route('home') }}"><i class="fas fa-home"></i>

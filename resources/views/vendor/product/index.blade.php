@@ -13,11 +13,24 @@
           <div class="card-header">
             <h4>All Products</h4>
             <div class="card-header-action">
-              <a href="{{route('vendor.products.create')}}" class="btn btn-primary"><i class="fas fa-plus"></i> Create
-                New</a>
+              <a href="{{ route('vendor.products.create') }}" class="btn btn-primary"><i class="fas fa-plus"></i> Create New</a>
             </div>
           </div>
+
           <div class="card-body">
+            <!-- Display warning if there are low stock products -->
+            @if ($lowStockProducts->isNotEmpty())
+            <div class="alert bg-danger-red">
+              <strong>Warning!</strong> The following products have low stock:
+              <ul>
+                  @foreach ($lowStockProducts as $product)
+                      <li>{{ $product->name }} (Quantity: {{ $product->qty }})</li>
+                  @endforeach
+              </ul>
+          </div>
+            @endif
+
+            <!-- Display the data table -->
             {{ $dataTable->table() }}
           </div>
         </div>
@@ -26,31 +39,31 @@
   </div>
 </section>
 @endsection
+
 @push('scripts')
 {{ $dataTable->scripts(attributes: ['type' => 'module']) }}
 
 <script>
   $(document).ready(function(){
-            $('body').on('click', '.change-status', function(){
-                let isChecked = $(this).is(':checked');
-                let id = $(this).data('id');
+    $('body').on('click', '.change-status', function(){
+        let isChecked = $(this).is(':checked');
+        let id = $(this).data('id');
 
-                $.ajax({
-                    url: "{{route('vendor.product.change-status')}}",
-                    method: 'PUT',
-                    data: {
-                        status: isChecked,
-                        id: id
-                    },
-                    success: function(data){
-                        toastr.success(data.message)
-                    },
-                    error: function(xhr, status, error){
-                        console.log(error);
-                    }
-                })
-
-            })
+        $.ajax({
+            url: "{{ route('vendor.product.change-status') }}",
+            method: 'PUT',
+            data: {
+                status: isChecked,
+                id: id
+            },
+            success: function(data){
+                toastr.success(data.message)
+            },
+            error: function(xhr, status, error){
+                console.log(error);
+            }
         })
+    })
+  })
 </script>
 @endpush

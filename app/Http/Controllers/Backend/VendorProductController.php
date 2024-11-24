@@ -19,12 +19,19 @@ use Str;
 class VendorProductController extends Controller
 {
     use ImageUploadTrait;
+
     /**
      * Display a listing of the resource.
      */
     public function index(VendorProductDataTable $dataTable)
     {
-        return $dataTable->render('vendor.product.index');
+        // Fetch products with low stock (less than 10 quantity)
+        $lowStockProducts = Product::where('vendor_id', Auth::user()->vendor->id)
+            ->where('qty', '<', 10)
+            ->get();
+
+        // Pass lowStockProducts to the view
+        return $dataTable->render('vendor.product.index', compact('lowStockProducts'));
     }
 
     /**
@@ -51,8 +58,8 @@ class VendorProductController extends Controller
             'qty' => ['required'],
             'short_description' => ['required', 'max: 600'],
             'long_description' => ['required'],
-            'seo_title' => ['nullable','max:200'],
-            'seo_description' => ['nullable','max:250'],
+            'seo_title' => ['nullable', 'max:200'],
+            'seo_description' => ['nullable', 'max:250'],
             'status' => ['required']
         ]);
 
@@ -87,42 +94,6 @@ class VendorProductController extends Controller
         toastr('Created Successfully!', 'success');
 
         return redirect()->route('vendor.products.index');
-
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        $product = Product::findOrFail($id);
-
-        /** Check if it's the owner of the product */
-        if($product->vendor_id != Auth::user()->vendor->id){
-            abort(404);
-        }
-
-        $subCategories = SubCategory::where('category_id', $product->category_id)->get();
-        $childCategories = ChildCategory::where('sub_category_id', $product->sub_category_id)->get();
-        $categories = Category::all();
-        $brands = Brand::all();
-
-        return view('vendor.product.edit',
-        compact(
-            'product',
-            'subCategories',
-            'childCategories',
-            'categories',
-            'brands'
-        ));
     }
 
     /**
@@ -130,24 +101,30 @@ class VendorProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
-
         $request->validate([
-            'image' => ['nullable', 'image', 'max:3000'],
-            'name' => ['required', 'max:200'],
-            'category' => ['required'],
-            'brand' => ['required'],
-            'price' => ['required'],
-            'qty' => ['required'],
-            'short_description' => ['required', 'max: 600'],
-            'long_description' => ['required'],
-            'seo_title' => ['nullable','max:200'],
-            'seo_description' => ['nullable','max:250'],
-            'status' => ['required']
+            'image' => ['nullable', 'image'],
+            'name' => ['required', 'string'],
+            'category' => ['required', 'integer'],
+            'sub_category' => ['nullable', 'integer'],
+            'child_category' => ['nullable', 'integer'],
+            'brand' => ['required', 'integer'],
+            'sku' => ['required', 'string'],
+            'price' => ['required', 'numeric'],
+            'offer_price' => ['nullable', 'numeric'],
+            'offer_start_date' => ['nullable', 'date', 'after_or_equal:today'],
+            'offer_end_date' => ['nullable', 'date', 'after_or_equal:offer_start_date'],
+            'qty' => ['required', 'integer', 'min:0'],
+            'video_link' => ['nullable', 'url'],
+            'short_description' => ['nullable', 'string'],
+            'long_description' => ['nullable', 'string'],
+            'seo_title' => ['nullable', 'string'],
+            'seo_description' => ['nullable', 'string'],
+            'status' => ['required', 'boolean'],
         ]);
 
         $product = Product::findOrFail($id);
 
-        if($product->vendor_id != Auth::user()->vendor->id){
+        if ($product->vendor_id != Auth::user()->vendor->id) {
             abort(404);
         }
 
@@ -181,7 +158,6 @@ class VendorProductController extends Controller
         toastr('Updated Successfully!', 'success');
 
         return redirect()->route('vendor.products.index');
-
     }
 
     /**
@@ -190,7 +166,7 @@ class VendorProductController extends Controller
     public function destroy(string $id)
     {
         $product = Product::findOrFail($id);
-        if($product->vendor_id != Auth::user()->vendor->id){
+        if ($product->vendor_id != Auth::user()->vendor->id) {
             abort(404);
         }
 
@@ -199,7 +175,7 @@ class VendorProductController extends Controller
 
         /** Delete product gallery images */
         $galleryImages = ProductImageGallery::where('product_id', $product->id)->get();
-        foreach($galleryImages as $image){
+        foreach ($galleryImages as $image) {
             $this->deleteImage($image->image);
             $image->delete();
         }
@@ -207,7 +183,7 @@ class VendorProductController extends Controller
         /** Delete product variants if exist */
         $variants = ProductVariant::where('product_id', $product->id)->get();
 
-        foreach($variants as $variant){
+        foreach ($variants as $variant) {
             $variant->productVariantItems()->delete();
             $variant->delete();
         }
@@ -227,20 +203,39 @@ class VendorProductController extends Controller
     }
 
     /**
-     * Get all product sub categores
+     * Get all product sub categories
      */
+    public function getSubCategories(Request $request)
+    {
+        $subCategories = SubCategory::where('category_id', $request->id)->get();
 
-     public function getSubCategories(Request $request)
-     {
-         $subCategories = SubCategory::where('category_id', $request->id)->get();
+        return $subCategories;
+    }
 
-         return $subCategories;
-     }
+    public function getChildCategories(Request $request)
+    {
+        $childCategories = ChildCategory::where('sub_category_id', $request->id)->get();
 
-     public function getChildCategories(Request $request)
-     {
-         $childCategories = ChildCategory::where('sub_category_id', $request->id)->get();
+        return $childCategories;
+    }
 
-         return $childCategories;
-     }
+    public function edit(string $id)
+{
+    // Fetch the product
+    $product = Product::findOrFail($id);
+
+    // Check if the vendor has permission to edit this product
+    if ($product->vendor_id != Auth::user()->vendor->id) {
+        abort(404); // You can redirect or handle permission failure as needed
+    }
+
+    // Fetch categories, brands, sub-categories, and child-categories
+    $categories = Category::all();
+    $brands = Brand::all();
+    $subCategories = SubCategory::where('category_id', $product->category_id)->get();
+    $childCategories = ChildCategory::where('sub_category_id', $product->sub_category_id)->get();
+
+    // Pass the product data to the view along with categories, brands, etc.
+    return view('vendor.product.edit', compact('product', 'categories', 'brands', 'subCategories', 'childCategories'));
+}
 }

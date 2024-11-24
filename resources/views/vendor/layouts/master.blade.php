@@ -27,7 +27,8 @@
     <!-- Template CSS -->
     <link rel="stylesheet" href="{{asset('frontend/assets/css/style.css')}}">
     <link rel="stylesheet" href="{{asset('frontend/assets/css/components.css')}}">
-
+    <!--warning css-->
+    <link rel="stylesheet" href="{{asset('frontend/css/warning.css')}}">
     @if($settings->layout === 'RTL')
     <link rel="stylesheet" href="{{asset('frontend/assets/css/rtl.css')}}">
     @endif

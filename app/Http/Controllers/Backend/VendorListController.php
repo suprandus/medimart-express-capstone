@@ -30,10 +30,8 @@ class VendorListController extends Controller
         $latitude = $request->latitude;
         $longitude = $request->longitude;
         $selectedLocation = $request->user_address;
-
-        // Radius in kilometers (e.g., 5km)
-        $radius = 5;
-
+        $radius = 5; // Radius in kilometers
+    
         $vendors = Vendor::selectRaw(
             "*, (6371 * acos(cos(radians(?)) * cos(radians(latitude)) * cos(radians(longitude) - radians(?)) + sin(radians(?)) * sin(radians(latitude)))) AS distance",
             [$latitude, $longitude, $latitude]
@@ -41,7 +39,7 @@ class VendorListController extends Controller
             ->having("distance", "<", $radius)
             ->orderBy("distance", "asc")
             ->get();
-
+    
         return view('frontend.pages.nearby-pharmacies', compact('vendors', 'selectedLocation'));
     }
 }

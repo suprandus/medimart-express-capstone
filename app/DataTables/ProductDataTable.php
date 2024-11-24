@@ -118,8 +118,7 @@ class ProductDataTable extends DataTable
     public function getColumns(): array
     {
         return [
-
-            Column::make('id'),
+            // Column::make('id'),
             Column::make('image'),
             Column::make('name'),
             Column::make('qty')->title('Quantity'),

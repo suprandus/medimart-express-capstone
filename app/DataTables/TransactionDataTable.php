@@ -77,10 +77,9 @@ class TransactionDataTable extends DataTable
     public function getColumns(): array
     {
         return [
-
-            Column::make('id'),
-            Column::make('invoice_id'),
-            Column::make('transaction_id'),
+            // Column::make('id'),
+            Column::make('invoice_id')->title('Invoice ID'),
+            Column::make('transaction_id')->title('Transaction ID'),
             Column::make('payment_method'),
             Column::make('amount_in_base_currency'),
             Column::make('amount_in_real_currency'),

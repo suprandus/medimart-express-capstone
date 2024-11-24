@@ -94,8 +94,7 @@ class BrandDataTable extends DataTable
     public function getColumns(): array
     {
         return [
-
-            Column::make('id'),
+            // Column::make('id'),
             Column::make('logo')->width(200),
             Column::make('name')->width(300),
             Column::make('is_featured'),

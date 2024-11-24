@@ -86,8 +86,7 @@ class VendorWithdrawDataTable extends DataTable
     public function getColumns(): array
     {
         return [
-
-            Column::make('id'),
+            // Column::make('id'),
             Column::make('method'),
             Column::make('total_amount'),
             Column::make('withdraw_amount'),

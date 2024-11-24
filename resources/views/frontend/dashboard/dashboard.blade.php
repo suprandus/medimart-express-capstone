@@ -6,7 +6,7 @@
     <h1>User Dashboard</h1>
   </div>
   <div class="row">
-    <!-- Wishlist Card -->
+    <!-- Wishlist Supplies Card -->
     <div class="col-lg-3 col-md-6 col-sm-6 col-12">
       <a href="{{route('user.wishlist.index')}}" class="card-link">
         <div class="card card-statistic-1">
@@ -44,7 +44,7 @@
       </a>
     </div>
 
-    <!-- Product Reviews Card -->
+    <!-- Reviews Card -->
     <div class="col-lg-3 col-md-6 col-sm-6 col-12">
       <a href="{{route('user.review.index')}}" class="card-link">
         <div class="card card-statistic-1">
@@ -63,7 +63,7 @@
       </a>
     </div>
 
-    <!-- Completed Orders Card -->
+    <!-- Track Card -->
     <div class="col-lg-3 col-md-6 col-sm-6 col-12">
       <a href="{{route('product-traking.index')}}" class="card-link">
         <div class="card card-statistic-1">

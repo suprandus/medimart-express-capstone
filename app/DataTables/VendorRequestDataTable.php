@@ -84,8 +84,7 @@ class VendorRequestDataTable extends DataTable
     public function getColumns(): array
     {
         return [
-
-            Column::make('id'),
+            // Column::make('id'),
             Column::make('user_name'),
             Column::make('shop_name')->title('Pharmacy Name'),
             Column::make('shop_email')->title('Pharmacy Email'),

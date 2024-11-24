@@ -125,11 +125,11 @@ class UserOrderDataTable extends DataTable
     public function getColumns(): array
     {
         return [
-            Column::make('id'),
-            Column::make('invocie_id'),
+            // Column::make('id'),
+            Column::make('invocie_id')->title('Invoice ID'),
             Column::make('customer'),
             Column::make('date'),
-            Column::make('product_qty'),
+            Column::make('product_qty')->title('Product Quantity'),
             Column::make('amount'),
             Column::make('order_status'),
             Column::make('payment_status'),

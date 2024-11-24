@@ -6,6 +6,7 @@
     <h1>Pharmacy Dashboard</h1>
   </div>
   <div class="row">
+
     <!-- Today's Order Card -->
     <div class="col-lg-3 col-md-6 col-sm-6 col-12">
       <a href="{{route('vendor.orders.index')}}" class="card-link">
@@ -25,7 +26,6 @@
       </a>
     </div>
 
-    <!-- Pendasdasdasdasdang Orders Card -->
     <!-- Pending Orders Card -->
     <div class="col-lg-3 col-md-6 col-sm-6 col-12">
       <a href="{{route('vendor.orders.index')}}" class="card-link">
@@ -45,8 +45,7 @@
       </a>
     </div>
 
-
-    <!-- Total Orders Card -->
+    <!-- Completed Orders Card -->
     <div class="col-lg-3 col-md-6 col-sm-6 col-12">
       <a href="{{route('vendor.orders.index')}}" class="card-link">
         <div class="card card-statistic-1">
@@ -65,6 +64,7 @@
       </a>
     </div>
 
+    <!--Reviews Card -->
     <div class="col-lg-3 col-md-6 col-sm-6 col-12">
       <a href="{{route('vendor.reviews.index')}}" class="card-link">
         <div class="card card-statistic-1">
@@ -83,6 +83,7 @@
       </a>
     </div>
 
+    <!--Today's Earnings Card -->
     <div class="col-lg-3 col-md-6 col-sm-6 col-12">
       <a href="{{route('vendor.orders.index')}}" class="card-link">
         <div class="card card-statistic-1">
@@ -101,6 +102,7 @@
       </a>
     </div>
 
+    <!--This Month's Earnings Card -->
     <div class="col-lg-3 col-md-6 col-sm-6 col-12">
       <a href="{{route('vendor.orders.index')}}" class="card-link">
         <div class="card card-statistic-1">
@@ -119,6 +121,7 @@
       </a>
     </div>
 
+    <!--Total Earnings Card -->
     <div class="col-lg-3 col-md-6 col-sm-6 col-12">
       <a href="{{route('vendor.orders.index')}}" class="card-link">
         <div class="card card-statistic-1">
@@ -137,6 +140,24 @@
       </a>
     </div>
 
+    <!-- Track Orders Card -->
+    <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+      <a href="{{route('product-traking.index')}}" class="card-link">
+        <div class="card card-statistic-1">
+          <div class="card-icon bg-danger">
+            <i class="fas fa-map-marker-alt"></i>
+          </div>
+          <div class="card-wrap">
+            <div class="card-header">
+              <h4>Track Orders</h4>
+            </div>
+            <div class="card-body">
+              <i class="fas fa-arrow-right"></i>
+            </div>
+          </div>
+        </div>
+      </a>
+    </div>
   </div>
 </section>
 @endsection

@@ -85,7 +85,7 @@ class SubCategoryDataTable extends DataTable
     public function getColumns(): array
     {
         return [
-            Column::make('id'),
+            // Column::make('id'),
             Column::make('name'),
             Column::make('slug'),
             Column::make('category'),

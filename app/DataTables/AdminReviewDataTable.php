@@ -83,7 +83,7 @@ class AdminReviewDataTable extends DataTable
     public function getColumns(): array
     {
         return [
-            Column::make('id'),
+            // Column::make('id'),
             Column::make('product'),
             Column::make('user'),
             Column::make('rating'),

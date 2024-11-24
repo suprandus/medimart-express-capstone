@@ -85,8 +85,7 @@ class CategoryDataTable extends DataTable
     public function getColumns(): array
     {
         return [
-
-            Column::make('id')->width(100),
+            // Column::make('id')->width(100),
             Column::make('icon')->width(300),
             Column::make('name'),
             Column::make('status')->width(200),

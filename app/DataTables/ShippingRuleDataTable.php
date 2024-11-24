@@ -107,11 +107,10 @@ class ShippingRuleDataTable extends DataTable
     public function getColumns(): array
     {
         return [
-
-            Column::make('id'),
+            // Column::make('id'),
             Column::make('name'),
             Column::make('type'),
-            Column::make('min_cost'),
+            Column::make('min_cost')->title('Minimum Order Amount'),
             Column::make('cost'),
             Column::make('status'),
             Column::computed('action')

@@ -126,7 +126,7 @@ class VendorProductDataTable extends DataTable
     public function getColumns(): array
     {
         return [
-            Column::make('id'),
+            // Column::make('id'),
             Column::make('image')->width(150),
             Column::make('name'),
             Column::make('qty')->title('Quantity'),

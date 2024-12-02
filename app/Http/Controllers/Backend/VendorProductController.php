@@ -10,11 +10,13 @@ use App\Models\ChildCategory;
 use App\Models\Product;
 use App\Models\ProductImageGallery;
 use App\Models\ProductVariant;
-use App\Models\SubCategory;
+use App\Models\SubCategory; // Import SubCategory model
 use App\Traits\ImageUploadTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Str;
+use Spatie\Activitylog\Models\Activity;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class VendorProductController extends Controller
 {
@@ -25,12 +27,10 @@ class VendorProductController extends Controller
      */
     public function index(VendorProductDataTable $dataTable)
     {
-        // Fetch products with low stock (less than 10 quantity)
         $lowStockProducts = Product::where('vendor_id', Auth::user()->vendor->id)
             ->where('qty', '<', 10)
             ->get();
 
-        // Pass lowStockProducts to the view
         return $dataTable->render('vendor.product.index', compact('lowStockProducts'));
     }
 
@@ -63,7 +63,6 @@ class VendorProductController extends Controller
             'status' => ['required']
         ]);
 
-        /** Handle the image upload */
         $imagePath = $this->uploadImage($request, 'image', 'uploads');
 
         $product = new Product();
@@ -91,13 +90,38 @@ class VendorProductController extends Controller
         $product->seo_description = $request->seo_description;
         $product->save();
 
+        activity()
+            ->performedOn($product)
+            ->causedBy(Auth::user())
+            ->withProperties(['name' => $product->name])
+            ->log('Product created');
+
         toastr('Created Successfully!', 'success');
 
         return redirect()->route('vendor.products.index');
     }
 
     /**
-     * Update the specified resource in storage.
+     * Show the form for editing a product.
+     */
+    public function edit(string $id)
+    {
+        $product = Product::findOrFail($id);
+
+        if ($product->vendor_id != Auth::user()->vendor->id) {
+            abort(404);
+        }
+
+        $categories = Category::all();
+        $brands = Brand::all();
+        $subCategories = SubCategory::where('category_id', $product->category_id)->get();
+        $childCategories = ChildCategory::where('sub_category_id', $product->sub_category_id)->get();
+
+        return view('vendor.product.edit', compact('product', 'categories', 'brands', 'subCategories', 'childCategories'));
+    }
+
+    /**
+     * Update the specified product in storage.
      */
     public function update(Request $request, string $id)
     {
@@ -128,7 +152,6 @@ class VendorProductController extends Controller
             abort(404);
         }
 
-        /** Handle the image upload */
         $imagePath = $this->updateImage($request, 'image', 'uploads', $product->thumb_image);
 
         $product->thumb_image = empty(!$imagePath) ? $imagePath : $product->thumb_image;
@@ -155,87 +178,39 @@ class VendorProductController extends Controller
         $product->seo_description = $request->seo_description;
         $product->save();
 
+        activity()
+            ->performedOn($product)
+            ->causedBy(Auth::user())
+            ->withProperties(['name' => $product->name])
+            ->log('Product updated');
+
         toastr('Updated Successfully!', 'success');
 
         return redirect()->route('vendor.products.index');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified product from storage.
      */
     public function destroy(string $id)
     {
         $product = Product::findOrFail($id);
+    
+        // Check if the authenticated vendor owns the product
         if ($product->vendor_id != Auth::user()->vendor->id) {
             abort(404);
         }
-
-        /** Delte the main product image */
-        $this->deleteImage($product->thumb_image);
-
-        /** Delete product gallery images */
-        $galleryImages = ProductImageGallery::where('product_id', $product->id)->get();
-        foreach ($galleryImages as $image) {
-            $this->deleteImage($image->image);
-            $image->delete();
-        }
-
-        /** Delete product variants if exist */
-        $variants = ProductVariant::where('product_id', $product->id)->get();
-
-        foreach ($variants as $variant) {
-            $variant->productVariantItems()->delete();
-            $variant->delete();
-        }
-
+    
+        $productName = $product->name;
         $product->delete();
-
+    
+        activity()
+            ->performedOn($product)
+            ->causedBy(Auth::user())
+            ->withProperties(['name' => $productName])
+            ->log('Product deleted');
+    
         return response(['status' => 'success', 'message' => 'Deleted Successfully!']);
     }
-
-    public function changeStatus(Request $request)
-    {
-        $product = Product::findOrFail($request->id);
-        $product->status = $request->status == 'true' ? 1 : 0;
-        $product->save();
-
-        return response(['message' => 'Status has been updated!']);
-    }
-
-    /**
-     * Get all product sub categories
-     */
-    public function getSubCategories(Request $request)
-    {
-        $subCategories = SubCategory::where('category_id', $request->id)->get();
-
-        return $subCategories;
-    }
-
-    public function getChildCategories(Request $request)
-    {
-        $childCategories = ChildCategory::where('sub_category_id', $request->id)->get();
-
-        return $childCategories;
-    }
-
-    public function edit(string $id)
-{
-    // Fetch the product
-    $product = Product::findOrFail($id);
-
-    // Check if the vendor has permission to edit this product
-    if ($product->vendor_id != Auth::user()->vendor->id) {
-        abort(404); // You can redirect or handle permission failure as needed
-    }
-
-    // Fetch categories, brands, sub-categories, and child-categories
-    $categories = Category::all();
-    $brands = Brand::all();
-    $subCategories = SubCategory::where('category_id', $product->category_id)->get();
-    $childCategories = ChildCategory::where('sub_category_id', $product->sub_category_id)->get();
-
-    // Pass the product data to the view along with categories, brands, etc.
-    return view('vendor.product.edit', compact('product', 'categories', 'brands', 'subCategories', 'childCategories'));
-}
+    
 }

@@ -8,7 +8,7 @@
 <!--============================
         BANNER PART 2 START
     ==============================-->
-{{-- @include('frontend.home.sections.banner-slider') --}}
+@include('frontend.home.sections.banner-slider')
 <!--============================
         BANNER PART 2 END
     ==============================-->
@@ -26,7 +26,7 @@
 <!--============================
        MONTHLY TOP PRODUCT START
     ==============================-->
-{{-- @include('frontend.home.sections.top-category-product') --}}
+@include('frontend.home.sections.top-category-product')
 <!--============================
        MONTHLY TOP PRODUCT END
     ==============================-->
@@ -35,7 +35,7 @@
 <!--============================
         BRAND SLIDER START
     ==============================-->
-{{-- @include('frontend.home.sections.brand-slider') --}}
+@include('frontend.home.sections.brand-slider')
 <!--============================
         BRAND SLIDER END
     ==============================-->
@@ -44,7 +44,7 @@
 <!--============================
         SINGLE BANNER START
     ==============================-->
-{{-- @include('frontend.home.sections.single-banner') --}}
+@include('frontend.home.sections.single-banner')
 <!--============================
         SINGLE BANNER END
     ==============================-->
@@ -53,7 +53,7 @@
 <!--============================
         HOT DEALS START
     ==============================-->
-{{-- @include('frontend.home.sections.hot-deals') --}}
+@include('frontend.home.sections.hot-deals')
 <!--============================
         HOT DEALS END
     ==============================-->

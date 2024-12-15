@@ -278,9 +278,9 @@
                                                         href="{{ route('admin.admin-list.index') }}">Administrators</a>
                                         </li>
 
-                                        {{-- <li class="{{ setActive(['admin.manage-user.index']) }}"><a class="nav-link"
+                                        <li class="{{ setActive(['admin.manage-user.index']) }}"><a class="nav-link"
                                                         href="{{ route('admin.manage-user.index') }}">Create User</a>
-                                        </li> --}}
+                                        </li>
 
                                 </ul>
                         </li>

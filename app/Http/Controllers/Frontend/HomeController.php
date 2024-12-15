@@ -24,9 +24,6 @@ class HomeController extends Controller
 {
     public function index()
     {
-        // chatbot settings
-        $chatbotSettings = ChatBotSetting::first();
-
         $sliders = Cache::rememberForever('sliders', function () {
             return Slider::where('status', 1)->orderBy('serial', 'asc')->get();
         });
@@ -64,7 +61,6 @@ class HomeController extends Controller
         return view(
             'frontend.home.home',
             compact(
-                'chatbotSettings',
                 'sliders',
                 'flashSaleDate',
                 'flashSaleItems',

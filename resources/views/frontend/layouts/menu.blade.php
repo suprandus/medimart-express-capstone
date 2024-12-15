@@ -17,73 +17,94 @@ $query->where('status', 1);
                     <div class="wsus_menu_category_bar">
                         <i class="far fa-bars"></i>
                     </div>
-                    <ul class="wsus_menu_cat_item show_home toggle_menu">
-                        {{-- <li><a href="#"><i class="fas fa-star"></i> hot promotions</a></li> --}}
 
+                    <!-- Category Menu -->
+                    <ul class="wsus_menu_cat_item show_home toggle_menu">
                         @foreach ($categories as $category)
-                        <li><a class="{{count($category->subCategories) > 0 ? 'wsus__droap_arrow' : ''}}"
-                                href="{{route('products.index', ['category' => $category->slug])}}"><i
-                                    class="{{$category->icon}}"></i> {{$category->name}} </a>
+                        <li>
+                            <a class="{{ count($category->subCategories) > 0 ? 'wsus__droap_arrow' : '' }}"
+                                href="{{ route('products.index', ['category' => $category->slug]) }}">
+                                <i class="{{ $category->icon }}"></i> {{ $category->name }}
+                            </a>
                             @if(count($category->subCategories) > 0)
                             <ul class="wsus_menu_cat_droapdown">
                                 @foreach ($category->subCategories as $subCategory)
-                                <li><a href="{{route('products.index', ['subcategory' => $subCategory->slug])}}">{{$subCategory->name}}
+                                <li>
+                                    <a href="{{ route('products.index', ['subcategory' => $subCategory->slug]) }}">
+                                        {{ $subCategory->name }}
                                         <i
-                                            class="{{count($subCategory->childCategories) > 0 ? 'fas fa-angle-right' : ''}}"></i></a>
+                                            class="{{ count($subCategory->childCategories) > 0 ? 'fas fa-angle-right' : '' }}"></i>
+                                    </a>
                                     @if(count($subCategory->childCategories) > 0)
                                     <ul class="wsus__sub_category">
                                         @foreach ($subCategory->childCategories as $childCategory)
-                                        <li><a
-                                                href="{{route('products.index', ['childcategory' => $childCategory->slug])}}">{{$childCategory->name}}</a>
+                                        <li>
+                                            <a
+                                                href="{{ route('products.index', ['childcategory' => $childCategory->slug]) }}">
+                                                {{ $childCategory->name }}
+                                            </a>
                                         </li>
                                         @endforeach
                                     </ul>
                                     @endif
                                 </li>
                                 @endforeach
-
                             </ul>
                             @endif
                         </li>
                         @endforeach
-
-                        {{-- <li><a href="#"><i class="fal fa-gem"></i> View All Categories</a></li> --}}
                     </ul>
 
+                    <!-- Main Navbar Links -->
                     <ul class="wsus__menu_item">
-                        <li><a class="{{setActive(['home'])}}" href="{{url('/')}}">home</a></li>
-                        <li><a class="{{setActive(['vendor.index'])}}" href="{{route('vendor.index')}}">pharmacies</a>
-                        </li>
-                        <li><a class="{{setActive(['flash-sale'])}}" href="{{route('flash-sale')}}">sale</a></li>
+                        <li><a class="{{ setActive(['home']) }}" href="{{ url('/') }}">home</a></li>
+                        <li><a class="{{ setActive(['vendor.index']) }}"
+                                href="{{ route('vendor.index') }}">pharmacies</a></li>
+                        <li><a class="{{ setActive(['flash-sale']) }}" href="{{ route('flash-sale') }}">sale</a></li>
                         <li><a class="{{ setActive(['nearby-pharmacies']) }}"
                                 href="{{ route('nearby-pharmacies') }}">nearby pharmacies</a></li>
-                        <li><a class="{{setActive(['about'])}}" href="{{route('about')}}">about</a></li>
-                        <li><a class="{{setActive(['contact'])}}" href="{{route('contact')}}">contact</a></li>
+                        <li><a class="{{ setActive(['about']) }}" href="{{ route('about') }}">about</a></li>
+                        <li><a class="{{ setActive(['contact']) }}" href="{{ route('contact') }}">contact</a></li>
                     </ul>
 
+                    <!-- Right Side Menu Items -->
                     <ul class="wsus__menu_item wsus__menu_item_right">
-                        <li><a href="{{route('product-traking.index')}}">track order</a></li>
-                        @if (Auth()->check())
+                        <li><a href="{{ route('product-traking.index') }}">Track Order</a></li>
 
-                        @if (Auth()->user()->role === 'user')
-                        <li><a href="{{route('user.dashboard')}}"><img alt="image" style="width: 40px;height: 40px;
-        object-fit: cover;" src="{{asset(Auth()->user()->image)}}" class="rounded-circle mr-1">
-                                {{Auth()->user()->name}}</a>
+                        @if (Auth::check())
+                        <li class="nav-item dropdown">
+                            <a class="dropdown-toggle align-items-center" data-toggle="dropdown" aria-haspopup="true"
+                                aria-expanded="false">
+                                <img alt="image" style="width: 38px; height: 38px; object-fit: cover;"
+                                    src="{{ asset(Auth::user()->image) }}" class="rounded-circle mr-1">
+                                <span>{{ Auth::user()->name }}</span>
+                            </a>
+
+                            <!-- Dropdown Menu -->
+                            <div class="dropdown-menu dropdown-menu-right">
+                                @if (Auth::user()->role === 'user')
+                                <a href="{{ route('user.dashboard') }}" class="dropdown-item has-icon">
+                                    <i class="fas fa-th-large"></i> User Dashboard
+                                </a>
+                                @elseif (Auth::user()->role === 'vendor')
+                                <a href="{{ route('vendor.dashboard') }}" class="dropdown-item has-icon">
+                                    <i class="fas fa-th-large"></i> Pharmacy Dashboard
+                                </a>
+                                @elseif (Auth::user()->role === 'admin')
+                                <a href="{{ route('admin.dashboard') }}" class="dropdown-item has-icon">
+                                    <i class="fas fa-th-large"></i> Admin Dashboard
+                                </a>
+                                @endif
+                                <div class="dropdown-divider"></div>
+                                <form method="POST" action="{{ route('logout') }}" style="display: inline;">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item has-icon text-danger">
+                                        <i class="fas fa-sign-out-alt"></i> Logout
+                                    </button>
+                                </form>
+
+                            </div>
                         </li>
-
-                        @elseif (Auth()->user()->role === 'vendor')
-                        <li><a href="{{route('vendor.dashbaord')}}"><img alt="image" style="width: 40px;height: 40px;
-        object-fit: cover;" src="{{asset(Auth()->user()->image)}}" class="rounded-circle mr-1"> {{
-                                Auth()->user()->name}}</a>
-                        </li>
-
-                        @elseif (Auth()->user()->role === 'admin')
-                        <li><a href="{{route('admin.dashbaord')}}"><img alt="image" style="width: 40px;height: 40px;
-        object-fit: cover;" src="{{asset(Auth()->user()->image)}}" class="rounded-circle mr-1">
-                                {{Auth()->user()->name}}</a>
-                        </li>
-                        @endif
-
                         @else
                         <li><a href="{{route('login')}}">login</a></li>
                         @endif
@@ -94,7 +115,6 @@ $query->where('status', 1);
     </div>
 </nav>
 
-
 <section id="wsus__mobile_menu">
     <span class="wsus__mobile_menu_close"><i class="fal fa-times"></i></span>
     <ul class="wsus__mobile_menu_header_icon d-inline-flex">
@@ -102,24 +122,22 @@ $query->where('status', 1);
         <li><a href="{{route('user.wishlist.index')}}"><i class="fal fa-heart"></i><span id="wishlist_count">
                     @if (Auth()->check())
                     {{\App\Models\Wishlist::where('user_id', Auth()->user()->id)->count()}}
-                    @else
-                    0
                     @endif
-                </span></a></li>
+                </span>
+            </a>
+        </li>
 
         @if (Auth()->check())
         @if (Auth()->user()->role === 'user')
         <li><a href="{{route('user.dashboard')}}"><i class="fal fa-user"></i></a></li>
-        @elseif (Auth()->user()->role === 'vendor')
-        <li><a href="{{route('vendor.dashbaord')}}"><i class="fal fa-user"></i></a></li>
-        @elseif (Auth()->user()->role === 'admin')
-        <li><a href="{{route('admin.dashbaord')}}"><i class="fal fa-user"></i></a></li>
+        @elseif (auth()->user()->role === 'vendor')
+        <li><a href="{{route('vendor.dashboard')}}"><i class="fal fa-user"></i></a></li>
+        @elseif (auth()->user()->role === 'admin')
+        <li><a href="{{route('admin.dashboard')}}"><i class="fal fa-user"></i></a></li>
         @endif
         @else
         <li><a href="{{route('login')}}"><i class="fal fa-user"></i></a></li>
         @endif
-
-
     </ul>
     <form action="{{route('products.index')}}">
         <input type="text" placeholder="Search..." name="search" value="{{request()->search}}">
@@ -163,7 +181,6 @@ $query->where('status', 1);
                             @endif
                         </li>
                         @endforeach
-
                     </ul>
                 </div>
             </div>
@@ -185,3 +202,7 @@ $query->where('status', 1);
         </div>
     </div>
 </section>
+<!--jquery library js-->
+<script src="{{asset('frontend/js/jquery-3.6.0.min.js')}}"></script>
+<!--bootstrap js-->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>

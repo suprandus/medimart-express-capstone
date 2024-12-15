@@ -128,8 +128,8 @@ class SellerProductsDataTable extends DataTable
     public function getColumns(): array
     {
         return [
-            Column::make('id'),
-            Column::make('vendor'),
+            // Column::make('id'),
+            Column::make('vendor')->title('Pharmacy'),
             Column::make('image'),
             Column::make('name'),
             Column::make('price'),

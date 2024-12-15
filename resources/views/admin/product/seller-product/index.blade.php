@@ -4,7 +4,7 @@
       <!-- Main Content -->
         <section class="section">
           <div class="section-header">
-            <h1>Sellers Products</h1>
+            <h1>Pharmacy Products</h1>
           </div>
 
           <div class="section-body">
@@ -13,7 +13,7 @@
               <div class="col-12">
                 <div class="card">
                   <div class="card-header">
-                    <h4>All Seller Products</h4>
+                    <h4>All Pharmacy Products</h4>
                   </div>
                   <div class="card-body">
                     {{ $dataTable->table() }}

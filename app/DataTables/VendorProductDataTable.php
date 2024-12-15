@@ -135,7 +135,7 @@ class VendorProductDataTable extends DataTable
     {
         return [
             Column::computed('warning')->width(50)->addClass('text-center')->title('Warning'),
-            Column::make('id'),
+            // Column::make('id'),
             Column::make('image')->width(150),
             Column::make('name'),
             Column::make('qty')->title('Quantity'),

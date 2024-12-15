@@ -156,7 +156,6 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'user', 'as' => 
     Route::get('paymongo/success', [PaymentController::class, 'paymongoSuccess'])->name('paymongo.success');
     Route::get('paymongo/cancel', [PaymentController::class, 'paymongoCancel'])->name('paymongo.cancel');
 
-
     /** Paypal routes */
     Route::get('paypal/payment', [PaymentController::class, 'payWithPaypal'])->name('paypal.payment');
     Route::get('paypal/success', [PaymentController::class, 'paypalSuccess'])->name('paypal.success');

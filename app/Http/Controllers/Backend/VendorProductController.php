@@ -53,7 +53,6 @@ class VendorProductController extends Controller
             'image' => ['required', 'image', 'max:3000'],
             'name' => ['required', 'max:200'],
             'category' => ['required'],
-            'brand' => ['required'],
             'price' => ['required'],
             'qty' => ['required'],
             'short_description' => ['required', 'max: 600'],

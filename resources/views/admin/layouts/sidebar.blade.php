@@ -8,12 +8,28 @@
                 </div>
                 <ul class="sidebar-menu">
                         <li class="menu-header">Dashboard</li>
-                        <li class="dropdown {{ setActive(['admin.dashbaord'])}} ">
-                                <a href="{{ route('admin.dashbaord') }}" class="nav-link"><i
+                        <li class="dropdown {{ setActive(['admin.dashboard'])}} ">
+                                <a href="{{ route('admin.dashboard') }}" class="nav-link"><i
                                                 class="fas fa-prescription-bottle-alt"></i><span>Dashboard</span></a>
 
                         </li>
-                        <li class="menu-header">Ecommerce</li>
+                        <li class="dropdown {{ setActive(['admin.sales-reports', 'admin.products-reports'])}} ">
+                                <a href="#" class="nav-link has-dropdown" data-toggle="dropdown">
+                                        <i class="fas fa-chart-line"></i>
+                                        <span>Reports</span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                        <li class="{{ setActive(['admin.sales-reports']) }}">
+                                                <a class="nav-link" href="{{ route('admin.sales-reports') }}">Sales</a>
+                                                {{--error in here--}}
+                                        </li>
+                                        {{-- <li class="{{ setActive(['admin.products-reports.*']) }}">
+                                                <a class="nav-link"
+                                                        href="{{ route('admin.products-reports') }}">Products</a>
+                                        </li> --}}
+                                </ul>
+                        </li>
+
 
                         <li
                                 class="dropdown {{ setActive(['admin.category.*', 'admin.sub-category.*', 'admin.child-category.*']) }}">
@@ -63,11 +79,11 @@
                                                         href="{{ route('admin.products.index') }}">Products</a>
                                         </li>
                                         <li class="{{ setActive(['admin.seller-products.*']) }}"><a class="nav-link"
-                                                        href="{{ route('admin.seller-products.index') }}">Seller
+                                                        href="{{ route('admin.seller-products.index') }}">Pharmacy
                                                         Products</a></li>
                                         <li class="{{ setActive(['admin.seller-pending-products.*']) }}"><a
                                                         class="nav-link"
-                                                        href="{{ route('admin.seller-pending-products.index') }}">Seller
+                                                        href="{{ route('admin.seller-pending-products.index') }}">
                                                         Pending Products</a></li>
 
                                         <li class="{{ setActive(['admin.reviews.*']) }}"><a class="nav-link"

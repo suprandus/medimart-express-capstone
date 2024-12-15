@@ -41,6 +41,7 @@ use App\Http\Controllers\Backend\SliderController;
 use App\Http\Controllers\Backend\StripeSettingController;
 use App\Http\Controllers\Backend\SubCategoryController;
 use App\Http\Controllers\Backend\SubscribersController;
+use App\Http\Controllers\SalesController;
 use App\Http\Controllers\Backend\TermsAndConditionController;
 use App\Http\Controllers\Backend\TransactionController;
 use App\Http\Controllers\Backend\VendorConditionController;
@@ -55,8 +56,17 @@ use Illuminate\Support\Facades\Route;
 
 
 /** Admin Routes */
+Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
 
-Route::get('dashboard', [AdminController::class, 'dashboard'])->name('dashbaord');
+/** Reports Routes */
+Route::get('reports/products', [AdminController::class, 'productsReport'])->name('products-reports');
+
+// Route to fetch sales data based on the period
+Route::get('reports/sales', [SalesController::class, 'showSalesReport'])->name('sales-reports');
+
+// Excel export
+Route::get('reports/sales/export/{period}', [SalesController::class, 'exportSalesToExcel'])->name('sales.export');
+//Route::get('reports/sales/test-download', [SalesController::class, 'testDownload'])->name('sales.testDownload');
 
 /** Profile Routes */
 Route::get('profile', [ProfileController::class, 'index'])->name('profile');
@@ -116,8 +126,8 @@ Route::get('reviews', [AdminReviewController::class, 'index'])->name('reviews.in
 Route::put('reviews/change-status', [AdminReviewController::class, 'changeStatus'])->name('reviews.change-status');
 
 /** Seller product routes */
-Route::get('seller-products', [SellerProductController::class, 'index'])->name('seller-products.index');
-Route::get('seller-pending-products', [SellerProductController::class, 'pendingProducts'])->name('seller-pending-products.index');
+Route::get('pharmacy-products', [SellerProductController::class, 'index'])->name('seller-products.index');
+Route::get('pharmacy-pending-products', [SellerProductController::class, 'pendingProducts'])->name('seller-pending-products.index');
 Route::put('change-approve-status', [SellerProductController::class, 'changeApproveStatus'])->name('change-approve-status');
 
 /** Flash Sale Routes */
@@ -147,7 +157,9 @@ Route::get('dropped-off-orders', [OrderController::class, 'droppedOfOrders'])->n
 Route::get('shipped-orders', [OrderController::class, 'shippedOrders'])->name('shipped-orders');
 Route::get('out-for-delivery-orders', [OrderController::class, 'outForDeliveryOrders'])->name('out-for-delivery-orders');
 Route::get('delivered-orders', [OrderController::class, 'deliveredOrders'])->name('delivered-orders');
-Route::get('canceled-orders', [OrderController::class, 'canceledOrders'])->name('canceled-orders');
+Route::get('cancelled-orders', [OrderController::class, 'canceledOrders'])->name('canceled-orders');
+Route::post('cancelled-paymongo-orders/{id}', [OrderController::class, 'orderPaymongoStatus'])->name('cancelled-paymongo-orders');
+
 Route::resource('order', OrderController::class);
 
 /** Order Transaction route */

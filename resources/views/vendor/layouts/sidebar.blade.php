@@ -4,18 +4,19 @@
       <a href="{{ route('home') }}">{{ $settings->site_name }}</a>
     </div>
     <div class="sidebar-brand sidebar-brand-sm">
-      <a href="">||</a>
+      <a href="">ME</a>
     </div>
     <ul class="sidebar-menu">
       <li class="menu-header">Dashboard</li>
       <li class="{{setActive(['vendor.dashbaord'])}}">
-        <a class="nav-link" href="{{ route('vendor.dashbaord') }}"><i class="fas fa-prescription-bottle-alt"></i><span>
+        <a class="nav-link" href="{{ route('vendor.dashboard') }}"><i class="fas fa-prescription-bottle-alt"></i><span>
             Dashboard</span></a>
       </li>
       <li class=""><a class="nav-link" href="{{ route('home') }}"><i class="fas fa-home"></i>
           <span> Home</span></a>
       </li>
-      <li class=""><a class="nav-link" href=""><i class="fas fa-envelope"></i>
+      <li class="{{setActive(['vendor.messages.*'])}}"><a class="nav-link"
+          href="{{ route('vendor.messages.index') }}"><i class="fas fa-envelope"></i>
           <span> Messages</span></a>
       </li>
       <li class="{{setActive(['vendor.orders.*'])}}"><a class="nav-link" href=" {{ route('vendor.orders.index' )}}"><i

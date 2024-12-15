@@ -113,28 +113,42 @@ $coupon = json_decode($order->coupon);
             <div class="row mt-4">
               <div class="col-lg-8">
                 <div class="col-md-4">
+
+                  {{-- Payment Status --}}
                   <div class="form-group">
                     <label for="">Payment status</label>
-
-                    <select name="" id="payment_status" class="form-control" data-id="{{$order->id}}">
-                      <option {{$order->payment_status === 0 ? 'selected': ''}} value="0">Pending</option>
-                      <option {{$order->payment_status === 1 ? 'selected': ''}} value="1">Completed</option>
-                    </select>
+                    @if ($paymentMethod === 'COD')
+                      @if ($order->payment_status === 'pending')
+                        <select name="" id="payment_status" class="form-control" data-id="{{$order->id}}">
+                          <option value="cancelled" {{$order->payment_status === 'cancelled' ? 'selected' : ''}}>Cancelled</option>
+                          <option value="pending" {{$order->payment_status === 'pending' ? 'selected' : ''}}>Pending</option>
+                          <option value="completed" {{$order->payment_status === 'completed' ? 'selected' : ''}}>Completed</option>
+                          <option value="refunded" {{$order->payment_status === 'refunded' ? 'selected' : ''}}>Refunded</option>
+                        </select>
+                      @else
+                        <input type="text" class="form-control" value="{{ $order->payment_status }}" readonly>
+                      @endif
+                    @elseif ($paymentMethod === 'paymongo')
+                      <input type="text" class="form-control" value="{{ $order->payment_status }}" readonly>
+                    @endif
                   </div>
 
-                  <div class="form-group">
+                    {{-- Order Status --}}
+                    <div class="form-group">
                     <label for="">Order Status</label>
-                    <select name="order_status" id="order_status" data-id="{{$order->id}}" class="form-control" {{
-                      $order->order_status === 'cancelled' ? 'disabled' : '' }}>
+                    <select name="order_status" id="order_status" data-id="{{$order->id}}" class="form-control" {{$order->order_status === 'cancelled' ? 'disabled' : ''}}>
                       @foreach (config('order_status.order_status_admin') as $key => $orderStatus)
-                      <option {{$order->order_status === $key ? 'selected' : ''}}
-                        value="{{$key}}">{{$orderStatus['status']}}</option>
+                      @if ($paymentMethod === 'paymongo' && $key === 'cancelled')
+                        @continue
+                      @endif
+                      <option value="{{$key}}" {{$order->order_status === $key ? 'selected' : ''}}>{{$orderStatus['status']}}</option>
                       @endforeach
                     </select>
                     @if($order->order_status === 'cancelled')
-                    <small class="text-danger mt-1">Cancelled orders cannot be updated</small>
+                      <small class="text-danger mt-1">Cancelled orders cannot be updated</small>
                     @endif
-                  </div>
+                    </div>
+
                 </div>
               </div>
               <div class="col-lg-4 text-right">
@@ -163,9 +177,17 @@ $coupon = json_decode($order->coupon);
         </div>
       </div>
       <hr>
+
       <div class="text-md-right">
-        <button class="btn btn-warning btn-icon icon-left print_invoice"><i class="fas fa-print"></i> Print</button>
+        <form action="{{ route('admin.cancelled-paymongo-orders', $order->id) }}" method="POST">
+          @csrf
+          @if ($paymentMethod === 'paymongo')
+          <button class="btn btn-primary" type="submit">Cancel</button>
+          @endif
+          <button class="btn btn-warning btn-icon icon-left print_invoice"><i class="fas fa-print"></i> Print</button>
+        </form>
       </div>
+
     </div>
   </div>
 </section>

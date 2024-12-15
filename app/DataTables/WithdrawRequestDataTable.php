@@ -96,8 +96,8 @@ class WithdrawRequestDataTable extends DataTable
     public function getColumns(): array
     {
         return [
-            Column::make('id'),
-            Column::make('vendor'),
+            // Column::make('id'),
+            Column::make('vendor')->title('Pharmacy'),
             Column::make('method'),
             Column::make('total_amount'),
             Column::make('withdraw_amount'),

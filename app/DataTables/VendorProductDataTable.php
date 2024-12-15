@@ -9,8 +9,6 @@ use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
-use Yajra\DataTables\Html\Editor\Editor;
-use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 
 class VendorProductDataTable extends DataTable
@@ -23,21 +21,26 @@ class VendorProductDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
+            // Add the warning icon if quantity is less than 10
+            ->addColumn('warning', function ($query) {
+                $quantity = $query->qty;
+                // Add the warning icon if quantity is less than 10
+                return $quantity < 10 ? '<i class="fas fa-exclamation-circle text-danger warning-icon" title="Low stock"></i>' : '';
+            })
             ->addColumn('action', function ($query) {
                 $editBtn = "<a href='" . route('vendor.products.edit', $query->id) . "' class='btn btn-primary'><i class='far fa-edit'></i></a>";
 
                 $deleteBtn = "<a href='" . route('vendor.products.destroy', $query->id) . "' class='btn btn-danger ml-2 delete-item' ><i class='far fa-trash-alt'></i></a>";
 
-
                 $moreBtn = '<div class="dropdown dropleft d-inline">
-                <button class="btn btn-primary dropdown-toggle ml-1" type="button" id="dropdownMenuButton2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-cog"></i>
-                </button>
-                <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(0px, 28px, 0px); top: 0px; left: 0px; will-change: transform;">
-                  <a class="dropdown-item has-icon" href="' . route('vendor.products-image-gallery.index', ['product' => $query->id]) . '"><i class="far fa-heart"></i> Image Gallery</a>
-                  <a class="dropdown-item has-icon" href="' . route('vendor.products-variant.index', ['product' => $query->id]) . '"><i class="far fa-file"></i> Variants</a>
-                </div>
-              </div>';
+                    <button class="btn btn-primary dropdown-toggle ml-1" type="button" id="dropdownMenuButton2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="fas fa-cog"></i>
+                    </button>
+                    <div class="dropdown-menu" x-placement="bottom-start" style="position: absolute; transform: translate3d(0px, 28px, 0px); top: 0px; left: 0px; will-change: transform;">
+                      <a class="dropdown-item has-icon" href="' . route('vendor.products-image-gallery.index', ['product' => $query->id]) . '"><i class="far fa-heart"></i> Image Gallery</a>
+                      <a class="dropdown-item has-icon" href="' . route('vendor.products-variant.index', ['product' => $query->id]) . '"><i class="far fa-file"></i> Variants</a>
+                    </div>
+                  </div>';
 
                 return $editBtn . $deleteBtn . $moreBtn;
             })
@@ -57,7 +60,7 @@ class VendorProductDataTable extends DataTable
                         break;
 
                     case 'best_product':
-                        return '<i class="badge bg-danger">Top Product</i>';
+                        return '<i class="badge bg-danger">Best Product</i>';
                         break;
 
                     default:
@@ -86,7 +89,13 @@ class VendorProductDataTable extends DataTable
                     return '<i class="badge bg-warning">Pending</i>';
                 }
             })
-            ->rawColumns(['image', 'type', 'status', 'action', 'approved'])
+            // Add conditional row class for low stock products
+            ->setRowClass(function ($query) {
+                return $query->qty < 10 
+                    ? 'bg-light-danger'  // Custom class for light red background
+                    : '';
+            })
+            ->rawColumns(['image', 'type', 'status', 'action', 'approved', 'warning'])
             ->setRowId('id');
     }
 
@@ -107,7 +116,6 @@ class VendorProductDataTable extends DataTable
             ->setTableId('vendorproduct-table')
             ->columns($this->getColumns())
             ->minifiedAjax()
-            //->dom('Bfrtip')
             ->orderBy(0)
             ->selectStyleSingle()
             ->buttons([
@@ -126,6 +134,7 @@ class VendorProductDataTable extends DataTable
     public function getColumns(): array
     {
         return [
+            Column::computed('warning')->width(50)->addClass('text-center')->title('Warning'),
             // Column::make('id'),
             Column::make('image')->width(150),
             Column::make('name'),

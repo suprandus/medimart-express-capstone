@@ -43,6 +43,8 @@ class VendorShopProfileController extends Controller
             'fb_link' => ['nullable', 'url'],
             'tw_link' => ['nullable', 'url'],
             'insta_link' => ['nullable', 'url'],
+            'latitude' => ['required', 'numeric'], 
+            'longitude' => ['required', 'numeric'],
         ]);
 
         $vendor = Vendor::where('user_id', Auth::user()->id)->first();
@@ -56,6 +58,8 @@ class VendorShopProfileController extends Controller
         $vendor->fb_link = $request->fb_link;
         $vendor->tw_link = $request->tw_link;
         $vendor->insta_link = $request->insta_link;
+        $vendor->latitude = $request->latitude;
+        $vendor->longitude = $request->longitude;
         $vendor->save();
 
         toastr('Updated Successfully!', 'success');

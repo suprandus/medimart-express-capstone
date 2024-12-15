@@ -1,5 +1,5 @@
 <div class="col-xl-3 col-sm-6 col-lg-4 {{ @$key }}">
-    <div class="wsus__product_item">
+    <div class="wsus__product_item d-flex flex-column" style="min-height: 450px; height: 100%;">
         <span class="wsus__new">{{productType($product->product_type)}}</span>
         @if(checkDiscount($product))
             <span class="wsus__minus">-{{calculateDiscountPercent($product->price, $product->offer_price)}}%</span>

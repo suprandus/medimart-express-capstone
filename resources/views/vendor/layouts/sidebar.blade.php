@@ -27,7 +27,8 @@
             class="fas fa-shopping-cart"></i>
           <span> Products</span></a>
       </li>
-      <li class=""><a class="nav-link" href="{{ route('vendor.coupons.index') }}"><i class="fas fa-ticket-alt"></i>
+      <li class="{{setActive(['vendor.coupons.*'])}}"><a class="nav-link" href="{{ route('vendor.coupons.index') }}"><i
+            class="fas fa-ticket-alt"></i>
           <span> Coupons</span></a>
       </li>
       <li class="{{setActive(['vendor.reviews.*'])}}"><a class="nav-link" href="{{route('vendor.reviews.index')}}"><i

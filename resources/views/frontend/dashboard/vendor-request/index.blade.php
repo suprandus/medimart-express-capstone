@@ -55,7 +55,7 @@
                 <input type="text" name="latitude" id="latitude" readonly hidden>
                 <input type="text" name="longitude" id="longitude" readonly hidden>
                 <br>
-                <br>
+                <label>Please pin location on the map</label>
                 <input type="text" id="address-input" placeholder="Search for an address" class="form-control mb-2">
                 <div id="map" style="height: 400px; width: 100%;"></div>
 
@@ -161,7 +161,7 @@
 
                 <!-- Google Maps API with Places library -->
                 <script
-                  src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBFfWKWjTQueC1E9sqRwJ9E1igYRM5zNYE&libraries=places&callback=initMap"
+                  src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google_maps.api_key') }}&libraries=places&callback=initMap"
                   async defer>
                 </script>
 

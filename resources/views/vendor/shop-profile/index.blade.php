@@ -34,17 +34,18 @@
           </div>
           <div class="form-group">
             <label>Address</label>
-                <input type="text" class="form-control" name="address" id="address" value="{{$profile->address}}" required readonly>
-                <input type="text" name="latitude" id="latitude" value="{{$profile->latitude}}" readonly hidden>
-                <input type="text" name="longitude" id="longitude" value="{{$profile->longitude}}" readonly hidden>
-                <br>
-                <p>Please pin location on the map</p>
-                <input type="text" id="address-input" placeholder="Search for an address" class="form-control mb-2">
-                <div id="map" style="height: 400px; width: 100%;"></div>
+            <input type="text" class="form-control" name="address" id="address" value="{{$profile->address}}" required
+              readonly>
+            <input type="text" name="latitude" id="latitude" value="{{$profile->latitude}}" readonly hidden>
+            <input type="text" name="longitude" id="longitude" value="{{$profile->longitude}}" readonly hidden>
+            <br>
+            <label>Please pin location on the map</label>
+            <input type="text" id="address-input" placeholder="Search for an address" class="form-control mb-2">
+            <div id="map" style="height: 400px; width: 100%;"></div>
 
-                <!-- Script to initialize the Google Map, Geocode, and Places Search -->
-                <script>
-                  let map, marker, geocoder, autocomplete;
+            <!-- Script to initialize the Google Map, Geocode, and Places Search -->
+            <script>
+              let map, marker, geocoder, autocomplete;
 
                     function initMap() {
                         // Default location
@@ -140,13 +141,13 @@
                             }
                         });
                     }
-                </script>
+            </script>
 
-                <!-- Google Maps API with Places library -->
-                <script
-                src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google_maps.api_key') }}&libraries=places&callback=initMap"
-                async defer>
-                </script>
+            <!-- Google Maps API with Places library -->
+            <script
+              src="https://maps.googleapis.com/maps/api/js?key={{ config('services.google_maps.api_key') }}&libraries=places&callback=initMap"
+              async defer>
+            </script>
           </div>
           <div class="form-group">
             <label>Description</label>

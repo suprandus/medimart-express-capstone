@@ -55,18 +55,18 @@ use App\Models\VendorCondition;
 use Illuminate\Support\Facades\Route;
 
 
-/** Admin Routes */
+//Admin Dashboard
 Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
 
-/** Reports Routes */
+//Reports
+Route::get('reports/sales', [SalesController::class, 'showSalesReport'])->name('sales-reports');
 Route::get('reports/products', [AdminController::class, 'productsReport'])->name('products-reports');
 
-// Route to fetch sales data based on the period
-Route::get('reports/sales', [SalesController::class, 'showSalesReport'])->name('sales-reports');
-
-// Excel export
-Route::get('reports/sales/export/{period}', [SalesController::class, 'exportSalesToExcel'])->name('sales.export');
-//Route::get('reports/sales/test-download', [SalesController::class, 'testDownload'])->name('sales.testDownload');
+//Admin/medimart Sales Export
+Route::get('reports/export-sales-medimart-pdf/{period}', [SalesController::class, 'exportLineGraphToPDF'])->name('sales.export-line-graph-pdf');
+Route::get('reports/sales/export-line-graph/{period}', [SalesController::class, 'exportLineGraphToExcel'])->name('sales.export-line-graph-excel');
+Route::get('reports/export-sales-by-pharmacy-pdf/{period}', [SalesController::class, 'exportBarGraphToPDF'])->name('sales.export-bar-graph-pdf');
+Route::get('reports/sales/export-bar-graph/{period}', [SalesController::class, 'exportBarGraphToExcel'])->name('sales.export-bar-graph-excel');
 
 /** Profile Routes */
 Route::get('profile', [ProfileController::class, 'index'])->name('profile');

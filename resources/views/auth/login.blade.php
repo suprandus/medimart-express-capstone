@@ -65,38 +65,27 @@
                                             <input id="password" type="password" name="password" placeholder="Password">
                                         </div>
 
-
                                         <div class="wsus__login_save">
                                             <div class="form-check form-switch">
                                                 <input id="remember_me" name="remember" class="form-check-input" type="checkbox"
                                                     id="flexSwitchCheckDefault">
-                                                <label class="form-check-label" for="flexSwitchCheckDefault">Remember
-                                                    me</label>
+                                                <label class="form-check-label" for="flexSwitchCheckDefault">Remember me</label>
                                             </div>
                                             <a class="forget_p" href="{{ route('password.request') }}">forget password ?</a>
                                         </div>
-
                                         <button class="common_btn" type="submit">login</button>
-                                        {{-- <p class="social_text">Sign in with social account</p>
-                                        <ul class="wsus__login_link">
-                                            <li><a href="#"><i class="fab fa-google"></i></a></li>
-                                            <li><a href="#"><i class="fab fa-facebook-f"></i></a></li>
-                                            <li><a href="#"><i class="fab fa-twitter"></i></a></li>
-                                            <li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
-                                        </ul> --}}
                                     </form>
                                 </div>
                             </div>
                             <div class="tab-pane fade" id="pills-profiles" role="tabpanel"
                                 aria-labelledby="pills-profile-tab2">
                                 <div class="wsus__login">
-                                    <form method="POST" action="{{ route('register') }}">
+                                    <form met6od="POST" action="{{ route('register') }}">
                                         @csrf
                                         <div class="wsus__login_input">
                                             <i class="fas fa-user-tie"></i>
                                             <input id="name" name="name" value="{{old('name')}}" type="text" placeholder="Name">
                                         </div>
-
 
                                         <div class="wsus__login_input">
                                             <i class="far fa-envelope"></i>

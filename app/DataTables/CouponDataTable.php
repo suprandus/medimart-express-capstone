@@ -27,10 +27,17 @@ class CouponDataTable extends DataTable
 
         return (new EloquentDataTable($query))
             ->addColumn('action', function ($query) {
-                $editBtn = "<a href='" . route('admin.coupons.edit', $query->id) . "' class='btn btn-primary'><i class='far fa-edit'></i></a>";
-                $deleteBtn = "<a href='" . route('admin.coupons.destroy', $query->id) . "' class='btn btn-danger ml-2 delete-item'><i class='far fa-trash-alt'></i></a>";
+                if (Auth::user()->role == 'admin') {
+                    $editBtn = "<a href='" . route('admin.coupons.edit', $query->id) . "' class='btn btn-primary'><i class='far fa-edit'></i></a>";
+                    $deleteBtn = "<a href='" . route('admin.coupons.destroy', $query->id) . "' class='btn btn-danger ml-2 delete-item'><i class='far fa-trash-alt'></i></a>";
 
-                return $editBtn . $deleteBtn;
+                    return $editBtn . $deleteBtn;
+                } else {
+                    $editBtn = "<a href='" . route('vendor.coupons.edit', $query->id) . "' class='btn btn-primary'><i class='far fa-edit'></i></a>";
+                    $deleteBtn = "<a href='" . route('vendor.coupons.destroy', $query->id) . "' class='btn btn-danger ml-2 delete-item'><i class='far fa-trash-alt'></i></a>";
+
+                    return $editBtn . $deleteBtn;
+                }
             })
             ->addColumn('discount', function ($query) {
                 if ($query->discount_type == 'percent') {
@@ -95,6 +102,7 @@ class CouponDataTable extends DataTable
         return [
             // Column::make('id'),
             Column::make('name'),
+            Column::make('code'),
             Column::make('discount_type'),
             Column::make('discount'),
             Column::make('start_date'),

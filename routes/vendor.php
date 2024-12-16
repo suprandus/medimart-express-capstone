@@ -13,6 +13,7 @@ use App\Http\Controllers\Backend\VendorShopProfileController;
 use App\Http\Controllers\Backend\VendorWithdrawController;
 use App\Http\Controllers\Backend\VendorListController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Frontend\CouponController;
 
 
 /** Vendor Routes */
@@ -70,3 +71,6 @@ Route::get('withdraw-request/{id}', [VendorWithdrawController::class, 'showReque
 
 Route::resource('withdraw', VendorWithdrawController::class);
 
+/** Coupon Routes */
+Route::put('coupons/change-status', [CouponController::class, 'changeStatus'])->name('coupons.change-status');
+Route::resource('coupons', CouponController::class);

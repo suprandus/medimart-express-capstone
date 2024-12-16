@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Backend;
+namespace App\Http\Controllers\Frontend;
 
 use App\DataTables\CouponDataTable;
 use App\Http\Controllers\Controller;
@@ -14,7 +14,7 @@ class CouponController extends Controller
      */
     public function index(CouponDataTable $dataTable)
     {
-        return $dataTable->render('admin.coupon.index');
+        return $dataTable->render('vendor.coupon.index');
     }
 
     /**
@@ -22,8 +22,9 @@ class CouponController extends Controller
      */
     public function create()
     {
-        return view('admin.coupon.create');
+        return view('vendor.coupon.create');
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -59,7 +60,7 @@ class CouponController extends Controller
 
         toastr('Created Successfully', 'success', 'Success');
 
-        return redirect()->route('admin.coupons.index');
+        return redirect()->route('vendor.coupons.index');
     }
 
     /**
@@ -76,7 +77,7 @@ class CouponController extends Controller
     public function edit(string $id)
     {
         $coupon = Coupon::findOrFail($id);
-        return view('admin.coupon.edit', compact('coupon'));
+        return view('vendor.coupon.edit', compact('coupon'));
     }
 
     /**
@@ -111,8 +112,9 @@ class CouponController extends Controller
 
         toastr('Updated Successfully', 'success', 'Success');
 
-        return redirect()->route('admin.coupons.index');
+        return redirect()->route('vendor.coupons.index');
     }
+
 
     /**
      * Remove the specified resource from storage.

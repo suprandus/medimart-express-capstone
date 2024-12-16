@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Frontend;
 use App\DataTables\CouponDataTable;
 use App\Http\Controllers\Controller;
 use App\Models\Coupon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 
 class CouponController extends Controller
@@ -42,7 +43,6 @@ class CouponController extends Controller
             'discount_type' => ['required', 'max:200'],
             'discount' => ['required', 'integer'],
             'status' => ['required', 'integer']
-
         ]);
 
         $coupon = new Coupon();
@@ -56,6 +56,7 @@ class CouponController extends Controller
         $coupon->discount = $request->discount;
         $coupon->total_used = 0;
         $coupon->status = $request->status;
+        $coupon->created_by = Auth::user()->id;
         $coupon->save();
 
         toastr('Created Successfully', 'success', 'Success');

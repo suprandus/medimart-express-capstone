@@ -99,9 +99,13 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1"></script>
-    <script>
-        //MEDIMART SALES LINE CHART
+</section>
+@endsection
+
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1"></script>
+<script>
+    //MEDIMART SALES LINE CHART
         const ctx = document.getElementById('salesLineChart').getContext('2d');
         const dataSets = {
             overall: {
@@ -318,6 +322,5 @@
         });
         
         updateBarChart('overall');
-    </script>
-</section>
-@endsection
+</script>
+@endpush

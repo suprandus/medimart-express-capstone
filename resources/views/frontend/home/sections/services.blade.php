@@ -4,8 +4,8 @@
             <div class="col-xl-3 col-sm-6 col-lg-3 pe-lg-0">
                 <div class="wsus__home_services_single home_service_single_2 border_left">
                     <i class="fal fa-truck"></i>
-                    <h5>Free Worldwide Shipping</h5>
-                    <p>Free shipping coast for all country</p>
+                    <h5>Free Shipping</h5>
+                    <p>Free shipping within Lapu-Lapu City</p>
                 </div>
             </div>
             <div class="col-xl-3 col-sm-6 col-lg-3 pe-lg-0">

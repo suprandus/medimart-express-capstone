@@ -109,8 +109,9 @@
     </script>
     <!--============================
         CHATBOT NI LAWRENCE END
+    ==============================-->
 
-    ============================
+    <!--============================
         SCROLL BUTTON START
     ==============================-->
     <div class="wsus__scroll_btn">
@@ -119,7 +120,6 @@
     <!--============================
         SCROLL BUTTON  END
     ==============================-->
-
 
     <!--jquery library js-->
     <script src="{{asset('frontend/js/jquery-3.6.0.min.js')}}"></script>

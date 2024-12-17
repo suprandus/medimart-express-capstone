@@ -17,15 +17,16 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Frontend\CouponController;
 
 
-// Vendor Routes
+/** Vendor Routes */
 Route::get('/dashboard', [VendorController::class, 'dashboard'])->name('dashboard');
 Route::get('profile', [VendorProfileController::class, 'index'])->name('profile');
 Route::put('profile', [VendorProfileController::class, 'updateProfile'])->name('profile.update'); // vendor.profile.update
 Route::post('profile', [VendorProfileController::class, 'updatePassword'])->name('profile.update.password'); // vendor.profile.update.password
 
-// Sales Routes
+/** Sales Routes */
 Route::get('reports/sales', [SalesController::class, 'showPharmacySales'])->name('pharmacy-sales-reports');
-//Excel Export
+
+/** Excel Export Routes */
 Route::get('reports/sales-pharmacy-pdf/{period}', [SalesController::class, 'pharmacyExportLineGraphToPDF'])->name('sales.export-line-graph-pdf');
 Route::get('reports/sales/export/{period}', [SalesController::class, 'pharmacyExportLineGraphToExcel'])->name('sales.export-line-graph-excel');
 

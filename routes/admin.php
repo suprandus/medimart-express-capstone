@@ -55,14 +55,14 @@ use App\Models\VendorCondition;
 use Illuminate\Support\Facades\Route;
 
 
-//Admin Dashboard
+/** Admin Dashboard Routes */
 Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
 
-//Reports
+/** Admin Reports Routes */
 Route::get('reports/sales', [SalesController::class, 'showSalesReport'])->name('sales-reports');
 Route::get('reports/products', [AdminController::class, 'productsReport'])->name('products-reports');
 
-//Admin/medimart Sales Export
+/** Admin Sales Export Routes */
 Route::get('reports/export-sales-medimart-pdf/{period}', [SalesController::class, 'exportLineGraphToPDF'])->name('sales.export-line-graph-pdf');
 Route::get('reports/sales/export-line-graph/{period}', [SalesController::class, 'exportLineGraphToExcel'])->name('sales.export-line-graph-excel');
 Route::get('reports/export-sales-by-pharmacy-pdf/{period}', [SalesController::class, 'exportBarGraphToPDF'])->name('sales.export-bar-graph-pdf');

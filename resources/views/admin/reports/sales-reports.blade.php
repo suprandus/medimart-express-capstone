@@ -11,23 +11,29 @@
         <div class="col-lg-8 col-md-12 col-12 col-sm-12">
             <div class="card">
                 <div class="card-header">
-                    <h4>Medimart Sales</h4>
+                    <h4>MediMart Express Sales</h4>
                     <div class="card-header-action">
                         <div class="btn-group btn-group-line btn-medimart" role="group" aria-label="Time Periods">
-                            <button type="button" class="btn btn-outline-primary active" id="btn-medimart-overall">Overall</button>
+                            <button type="button" class="btn btn-outline-primary active"
+                                id="btn-medimart-overall">Overall</button>
                             <button type="button" class="btn btn-outline-primary" id="btn-medimart-today">Today</button>
-                            <button type="button" class="btn btn-outline-primary" id="btn-medimart-week">This Week</button>
-                            <button type="button" class="btn btn-outline-primary" id="btn-medimart-month">This Month</button>
-                            <button type="button" class="btn btn-outline-primary" id="btn-medimart-year">This Year</button>
+                            <button type="button" class="btn btn-outline-primary" id="btn-medimart-week">This
+                                Week</button>
+                            <button type="button" class="btn btn-outline-primary" id="btn-medimart-month">This
+                                Month</button>
+                            <button type="button" class="btn btn-outline-primary" id="btn-medimart-year">This
+                                Year</button>
                         </div>
                     </div>
                 </div>
                 <div class="card-body">
                     <canvas id="salesLineChart" height="182"></canvas>
-                    <div id="noSalesMessage" style="display: none; text-align: center; color: gray; font-size: 1.5em;">No sales for this period</div>
+                    <div id="noSalesMessage" style="display: none; text-align: center; color: gray; font-size: 1.5em;">
+                        No sales for this period</div>
                     <div class="statistic-details mt-sm-4">
                         <div class="statistic-details-item">
-                            <div class="detail-value today-sales">₱{{ number_format($totalTodaySalesMedimart, 2) }}</div>
+                            <div class="detail-value today-sales">₱{{ number_format($totalTodaySalesMedimart, 2) }}
+                            </div>
                             <div class="detail-name">Today's Sales</div>
                         </div>
                         <div class="statistic-details-item">
@@ -35,7 +41,8 @@
                             <div class="detail-name">This Week's Sales</div>
                         </div>
                         <div class="statistic-details-item">
-                            <div class="detail-value month-sales">₱{{ number_format($totalMonthSalesMedimart, 2) }}</div>
+                            <div class="detail-value month-sales">₱{{ number_format($totalMonthSalesMedimart, 2) }}
+                            </div>
                             <div class="detail-name">This Month's Sales</div>
                         </div>
                         <div class="statistic-details-item">
@@ -43,13 +50,15 @@
                             <div class="detail-name">This Years's Sales</div>
                         </div>
                         <div class="statistic-details-item">
-                            <div class="detail-value overall-sales">₱{{ number_format($totalOverallSalesMedimart, 2) }}</div>
+                            <div class="detail-value overall-sales">₱{{ number_format($totalOverallSalesMedimart, 2) }}
+                            </div>
                             <div class="detail-name">Overall Sales</div>
                         </div>
                     </div>
                     <div class="text-right mt-3">
                         <button type="button" class="btn btn-warning" id="btn-line-export-pdf">Export To PDF</button>
-                        <button type="button" class="btn btn-success" id="btn-line-export-excel">Export to Excel</button>
+                        <button type="button" class="btn btn-success" id="btn-line-export-excel">Export to
+                            Excel</button>
                     </div>
                 </div>
             </div>
@@ -61,20 +70,26 @@
         <div class="col-lg-8 col-md-12 col-12 col-sm-12 mt-4">
             <div class="card">
                 <div class="card-header">
-                    <h4>MediMart Sales by Pharmacy</h4>
+                    <h4>MediMart Express Sales by Pharmacy</h4>
                     <div class="card-header-action">
                         <div class="btn-group btn-group-bar btn-pharmacy" role="group" aria-label="Time Periods">
-                            <button type="button" class="btn btn-outline-primary" id="btn-pharmacy-overall">Overall</button>
+                            <button type="button" class="btn btn-outline-primary"
+                                id="btn-pharmacy-overall">Overall</button>
                             <button type="button" class="btn btn-outline-primary" id="btn-pharmacy-today">Today</button>
-                            <button type="button" class="btn btn-outline-primary" id="btn-pharmacy-week">This Week</button>
-                            <button type="button" class="btn btn-outline-primary" id="btn-pharmacy-month">This Month</button>
-                            <button type="button" class="btn btn-outline-primary" id="btn-pharmacy-year">This Year</button>
+                            <button type="button" class="btn btn-outline-primary" id="btn-pharmacy-week">This
+                                Week</button>
+                            <button type="button" class="btn btn-outline-primary" id="btn-pharmacy-month">This
+                                Month</button>
+                            <button type="button" class="btn btn-outline-primary" id="btn-pharmacy-year">This
+                                Year</button>
                         </div>
                     </div>
                 </div>
                 <div class="card-body">
                     <canvas id="salesBarChart" height="182"></canvas>
-                    <div id="noSalesMessageBar" style="display: none; text-align: center; color: gray; font-size: 1.5em;">No sales for this period</div>
+                    <div id="noSalesMessageBar"
+                        style="display: none; text-align: center; color: gray; font-size: 1.5em;">No sales for this
+                        period</div>
                 </div>
                 <div class="text-right mt-3" style="padding-right: 25px; padding-bottom: 25px;">
                     <button type="button" class="btn btn-warning" id="btn-bar-export-pdf">Export to PDF</button>

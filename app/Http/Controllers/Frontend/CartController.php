@@ -163,19 +163,19 @@ class CartController extends Controller
     public function applyCoupon(Request $request)
     {
         if ($request->coupon_code === null) {
-            return response(['status' => 'error', 'message' => 'Coupon filed is required']);
+            return response(['status' => 'error', 'message' => 'Coupon filed is required!']);
         }
 
         $coupon = Coupon::where(['code' => $request->coupon_code, 'status' => 1])->first();
 
         if ($coupon === null) {
-            return response(['status' => 'error', 'message' => 'Coupon not exist!']);
+            return response(['status' => 'error', 'message' => 'Coupon does not exist!']);
         } elseif ($coupon->start_date > date('Y-m-d')) {
-            return response(['status' => 'error', 'message' => 'Coupon not exist!']);
+            return response(['status' => 'error', 'message' => 'Coupon does not exist!']);
         } elseif ($coupon->end_date < date('Y-m-d')) {
-            return response(['status' => 'error', 'message' => 'Coupon is expired']);
+            return response(['status' => 'error', 'message' => 'Coupon is expired!']);
         } elseif ($coupon->total_used >= $coupon->quantity) {
-            return response(['status' => 'error', 'message' => 'you can not apply this coupon']);
+            return response(['status' => 'error', 'message' => 'You cannot apply this coupon!']);
         }
 
         if ($coupon->discount_type === 'amount') {

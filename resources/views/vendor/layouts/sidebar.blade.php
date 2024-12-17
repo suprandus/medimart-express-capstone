@@ -15,7 +15,7 @@
         <a class="nav-link" href="{{ route('vendor.dashboard') }}"><i class="fas fa-prescription-bottle-alt"></i><span>
             Dashboard</span></a>
       </li>
-      <li class="{{setActive(['vendor.pharmacy-sales-reports.*'])}}"><a class="nav-link"
+      <li class="{{setActive(['vendor.pharmacy-sales-reports'])}}"><a class="nav-link"
           href="{{ route('vendor.pharmacy-sales-reports') }}"><i class="fas fa-chart-line"></i>
           <span> Sales</span></a>
       </li>

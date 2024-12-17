@@ -495,19 +495,19 @@ class SalesController extends Controller
                 break;
             case 'week':
                 $query->whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()]);
-                $sheet->setTitle('Sales Report by Pharmacy This Week');
+                $sheet->setTitle('Sales by Pharmacy This Week');
                 $fileName = "MediMart_Sales_Report_by_Pharmacy_This_Week_" . now()->format('Y-m-d') . '.xlsx';
 
                 break;
             case 'month':
                 $query->whereMonth('created_at', Carbon::now()->month)
                     ->whereYear('created_at', Carbon::now()->year);
-                $sheet->setTitle('Sales Report by Pharmacy This Month');
+                $sheet->setTitle('Sales by Pharmacy This Month');
                 $fileName = "MediMart_Sales_Report_by_Pharmacy__This_Month" . now()->format('Y-m-d') . '.xlsx';
                 break;
             case 'year':
                 $query->whereYear('created_at', Carbon::now()->year);
-                $sheet->setTitle('Sales Report by Pharmacy This Year');
+                $sheet->setTitle('Sales by Pharmacy This Year');
                 $fileName = "MediMart_Sales_Report_by_Pharmacy_This_Year" . now()->format('Y-m-d') . '.xlsx';
                 break;
         }

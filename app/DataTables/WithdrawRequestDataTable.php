@@ -22,38 +22,38 @@ class WithdrawRequestDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->addColumn('action', function($query){
-                $showBtn = "<a href='".route('admin.withdraw.show', $query->id)."' class='btn btn-primary'><i class='far fa-eye'></i></a>";
+            ->addColumn('action', function ($query) {
+                $showBtn = "<a href='" . route('admin.withdraw.show', $query->id) . "' class='btn btn-primary'><i class='far fa-eye'></i></a>";
 
                 return $showBtn;
             })
-            ->addColumn('status', function($query){
-                if($query->status == 'pending'){
+            ->addColumn('status', function ($query) {
+                if ($query->status == 'pending') {
                     return "<span class='badge bg-warning'>pending</span>";
-                }elseif($query->status == 'paid'){
+                } elseif ($query->status == 'paid') {
                     return "<span class='badge bg-success'>Paid</span>";
-                }else {
+                } else {
                     return "<span class='badge bg-danger'>Declined</span>";
                 }
             })
-            ->addColumn('total_amount', function($query){
-                return getCurrencyIcon().$query->total_amount;
+            ->addColumn('total_amount', function ($query) {
+                return getCurrencyIcon() . $query->total_amount;
             })
-            ->addColumn('withdraw_amount', function($query){
-                return getCurrencyIcon().$query->withdraw_amount;
+            ->addColumn('withdraw_amount', function ($query) {
+                return getCurrencyIcon() . $query->withdraw_amount;
             })
-            ->addColumn('withdraw_charge', function($query){
-                return getCurrencyIcon().$query->withdraw_charge;
+            ->addColumn('withdraw_charge', function ($query) {
+                return getCurrencyIcon() . $query->withdraw_charge;
             })
-            ->addColumn('vendor', function($query){
+            ->addColumn('vendor', function ($query) {
                 return $query->vendor->shop_name;
             })
-            ->filterColumn('vendor', function($query, $keyword){
-                $query->whereHas('vendor', function($subQuery) use ($keyword){
-                    $subQuery->where('shop_name', 'like', '%'.$keyword.'%');
+            ->filterColumn('vendor', function ($query, $keyword) {
+                $query->whereHas('vendor', function ($subQuery) use ($keyword) {
+                    $subQuery->where('shop_name', 'like', '%' . $keyword . '%');
                 });
             })
-            ->addColumn('date', function($query){
+            ->addColumn('date', function ($query) {
                 return date('d M Y', strtotime($query->created_at));
             })
             ->rawColumns(['action', 'status'])
@@ -65,7 +65,9 @@ class WithdrawRequestDataTable extends DataTable
      */
     public function query(WithdrawRequest $model): QueryBuilder
     {
-        return $model->newQuery();
+        return $model
+            ->orderBy('created_at', 'desc')
+            ->newQuery();   
     }
 
     /**
@@ -74,20 +76,20 @@ class WithdrawRequestDataTable extends DataTable
     public function html(): HtmlBuilder
     {
         return $this->builder()
-                    ->setTableId('withdrawrequest-table')
-                    ->columns($this->getColumns())
-                    ->minifiedAjax()
-                    //->dom('Bfrtip')
-                    ->orderBy(1)
-                    ->selectStyleSingle()
-                    ->buttons([
-                        Button::make('excel'),
-                        Button::make('csv'),
-                        Button::make('pdf'),
-                        Button::make('print'),
-                        Button::make('reset'),
-                        Button::make('reload')
-                    ]);
+            ->setTableId('withdrawrequest-table')
+            ->columns($this->getColumns())
+            ->minifiedAjax()
+            //->dom('Bfrtip')
+            ->orderBy(1)
+            ->selectStyleSingle()
+            ->buttons([
+                Button::make('excel'),
+                Button::make('csv'),
+                Button::make('pdf'),
+                Button::make('print'),
+                Button::make('reset'),
+                Button::make('reload')
+            ]);
     }
 
     /**
@@ -105,10 +107,10 @@ class WithdrawRequestDataTable extends DataTable
             Column::make('status'),
             Column::make('date'),
             Column::computed('action')
-            ->exportable(false)
-            ->printable(false)
-            ->width(60)
-            ->addClass('text-center'),
+                ->exportable(false)
+                ->printable(false)
+                ->width(60)
+                ->addClass('text-center'),
         ];
     }
 

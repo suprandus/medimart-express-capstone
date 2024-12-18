@@ -23,17 +23,17 @@ class TransactionDataTable extends DataTable
     {
         return (new EloquentDataTable($query))
             ->addColumn('action', 'transaction.action')
-            ->addColumn('invoice_id', function($query){
-                return '#'.$query->order->invocie_id;
+            ->addColumn('invoice_id', function ($query) {
+                return '#' . $query->order->invocie_id;
             })
-            ->addColumn('amount_in_base_currency', function($query){
-                return $query->amount.' '.$query->order->currency_name;
+            ->addColumn('amount_in_base_currency', function ($query) {
+                return $query->amount . ' ' . $query->order->currency_name;
             })
-            ->addColumn('amount_in_real_currency', function($query){
-                return $query->amount_real_currency.' '.$query->amount_real_currency_name;
+            ->addColumn('amount_in_real_currency', function ($query) {
+                return $query->amount_real_currency . ' ' . $query->amount_real_currency_name;
             })
-            ->filterColumn('invoice_id', function($query, $keyword){
-                $query->whereHas('order', function($query) use ($keyword){
+            ->filterColumn('invoice_id', function ($query, $keyword) {
+                $query->whereHas('order', function ($query) use ($keyword) {
                     $query->where('invocie_id', 'like', "%$keyword%");
                 });
             })
@@ -46,7 +46,9 @@ class TransactionDataTable extends DataTable
      */
     public function query(Transaction $model): QueryBuilder
     {
-        return $model->newQuery();
+        return $model
+            ->orderBy('created_at', 'desc')
+            ->newQuery();
     }
 
     /**
@@ -55,20 +57,20 @@ class TransactionDataTable extends DataTable
     public function html(): HtmlBuilder
     {
         return $this->builder()
-                    ->setTableId('transaction-table')
-                    ->columns($this->getColumns())
-                    ->minifiedAjax()
-                    //->dom('Bfrtip')
-                    ->orderBy(0)
-                    ->selectStyleSingle()
-                    ->buttons([
-                        Button::make('excel'),
-                        Button::make('csv'),
-                        Button::make('pdf'),
-                        Button::make('print'),
-                        Button::make('reset'),
-                        Button::make('reload')
-                    ]);
+            ->setTableId('transaction-table')
+            ->columns($this->getColumns())
+            ->minifiedAjax()
+            //->dom('Bfrtip')
+            ->orderBy(0)
+            ->selectStyleSingle()
+            ->buttons([
+                Button::make('excel'),
+                Button::make('csv'),
+                Button::make('pdf'),
+                Button::make('print'),
+                Button::make('reset'),
+                Button::make('reload')
+            ]);
     }
 
     /**

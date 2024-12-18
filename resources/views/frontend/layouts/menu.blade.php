@@ -202,7 +202,9 @@ $query->where('status', 1);
         </div>
     </div>
 </section>
+@push('scripts')
 <!--jquery library js-->
 <script src="{{asset('frontend/js/jquery-3.6.0.min.js')}}"></script>
 <!--bootstrap js-->
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+@endpush

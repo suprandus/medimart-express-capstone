@@ -12,6 +12,7 @@ use App\DataTables\processedOrderDataTable;
 use App\DataTables\shippedOrderDataTable;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Luigel\Paymongo\Facades\Paymongo;
 use App\Models\PaymongoSetting;
@@ -117,6 +118,14 @@ class OrderController extends Controller
         }
 
         $order->order_status = $request->status;
+
+        // Add quantity back to products
+        foreach ($order->orderProducts as $orderProduct) {
+            $product = Product::find($orderProduct->product_id);
+            $product->qty += $orderProduct->qty;
+            $product->save();
+        }
+
         $order->save();
 
         return response([
@@ -182,6 +191,13 @@ class OrderController extends Controller
 
             $order->order_status = 'cancelled';
             $order->payment_status = 'refunded';
+
+            // Add quantity back to products
+            foreach ($order->orderProducts as $orderProduct) {
+                $product = Product::find($orderProduct->product_id);
+                $product->qty += $orderProduct->qty;
+                $product->save();
+            }
 
             $order->save();
             toastr('Updated order status', 'success', 'Success');

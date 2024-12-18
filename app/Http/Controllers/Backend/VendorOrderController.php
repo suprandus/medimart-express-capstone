@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\DataTables\VendorOrderDataTable;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Luigel\Paymongo\Facades\Paymongo;
 use App\Models\PaymongoSetting;
@@ -58,6 +59,13 @@ class VendorOrderController extends Controller
             $order->order_status = $request->status;
             $order->payment_status = 'cancelled';
 
+            // Add quantity back to products
+            foreach ($order->orderProducts as $orderProduct) {
+                $product = Product::find($orderProduct->product_id);
+                $product->qty += $orderProduct->qty;
+                $product->save();
+            }
+
             $order->save();
             toastr('Updated order status', 'success', 'Success');
         } else if ($paymentMethod === 'paymongo') {
@@ -75,6 +83,13 @@ class VendorOrderController extends Controller
 
             $order->order_status = $request->status;
             $order->payment_status = 'refunded';
+
+            // Add quantity back to products
+            foreach ($order->orderProducts as $orderProduct) {
+                $product = Product::find($orderProduct->product_id);
+                $product->qty += $orderProduct->qty;
+                $product->save();
+            }
 
             $order->save();
             toastr('Updated order status', 'success', 'Success');

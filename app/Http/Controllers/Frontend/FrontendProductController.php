@@ -87,32 +87,44 @@ class FrontendProductController extends Controller
                 return $query->where('price', '>=', $from)->where('price', '<=', $to);
             })
             ->paginate(12);
-        }elseif($request->has('search')){
+        }elseif ($request->has('search')) {
+            // Decode the search string into an array (e.g., comma-separated list)
+            $searchTerms = explode(',', $request->search);
+    
+            // Ensure search terms are sanitized and trimmed
+            $searchTerms = array_map('trim', $searchTerms);
+    
+            // Query products matching any of the search terms
             $products = Product::withAvg('reviews', 'rating')->withCount('reviews')
-            ->with(['variants', 'category', 'productImageGalleries'])
-            ->where(['status' => 1, 'is_approved' => 1])
-            ->where(function ($query) use ($request){
-                $query->where('name', 'like', '%'.$request->search.'%')
-                    ->orWhere('long_description', 'like', '%'.$request->search.'%')
-                    ->orWhereHas('category', function($query) use ($request){
-                        $query->where('name', 'like', '%'.$request->search.'%')
-                            ->orWhere('long_description', 'like', '%'.$request->search.'%');
-                    });
-            })
-            ->paginate(12);
-
-        }else {
+                ->with(['variants', 'category', 'productImageGalleries'])
+                ->where(['status' => 1, 'is_approved' => 1])
+                ->where(function ($query) use ($searchTerms) {
+                    foreach ($searchTerms as $term) {
+                        $query->orWhere('name', 'like', '%' . $term . '%')
+                            ->orWhere('long_description', 'like', '%' . $term . '%')
+                            ->orWhereHas('category', function ($query) use ($term) {
+                                $query->where('name', 'like', '%' . $term . '%')
+                                    ->orWhere('long_description', 'like', '%' . $term . '%');
+                            });
+                    }
+                })
+                ->paginate(12);
+        } else {
+            // Default behavior
             $products = Product::withAvg('reviews', 'rating')->withCount('reviews')
-            ->with(['variants', 'category', 'productImageGalleries'])
-            ->where(['status' => 1, 'is_approved' => 1])->orderBy('id', 'DESC')->paginate(12);
+                ->with(['variants', 'category', 'productImageGalleries'])
+                ->where(['status' => 1, 'is_approved' => 1])
+                ->orderBy('id', 'DESC')
+                ->paginate(12);
         }
-
+    
         $categories = Category::where(['status' => 1])->get();
         $brands = Brand::where(['status' => 1])->get();
-        // banner ad
+    
+        // Banner ad
         $productpage_banner_section = Adverisement::where('key', 'productpage_banner_section')->first();
         $productpage_banner_section = json_decode($productpage_banner_section?->value);
-
+    
         return view('frontend.pages.product', compact('products', 'categories', 'brands', 'productpage_banner_section'));
     }
     /** Show product detail page */

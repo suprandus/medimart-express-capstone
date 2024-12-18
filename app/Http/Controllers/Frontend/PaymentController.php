@@ -21,19 +21,21 @@ use Srmklive\PayPal\Services\PayPal as PayPalClient;
 use Luigel\Paymongo\Facades\Paymongo;
 use Stripe\Charge;
 use Stripe\Stripe;
+use Cart;
 use Razorpay\Api\Api;
 
 class PaymentController extends Controller
 {
     public function index()
     {
+        $cartItems = Cart::content();
         $paymongoSetting = PaymongoSetting::first();
         $codSetting = CodSetting::first();
 
         if (!Session::has('address')) {
             return redirect()->route('user.checkout');
         }
-        return view('frontend.pages.payment', compact('paymongoSetting', 'codSetting'));
+        return view('frontend.pages.payment', compact('cartItems', 'paymongoSetting', 'codSetting'));
     }
 
     public function paymentSuccess()

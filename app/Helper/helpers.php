@@ -5,7 +5,6 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 
 /** Set Sidebar item active */
-
 function setActive(array $route)
 {
     if (is_array($route)) {
@@ -18,7 +17,6 @@ function setActive(array $route)
 }
 
 /** Check if product have discount */
-
 function checkDiscount($product)
 {
     $currentDate = date('Y-m-d');
@@ -31,7 +29,6 @@ function checkDiscount($product)
 }
 
 /** Calculate discount percent */
-
 function calculateDiscountPercent($originalPrice, $discountPrice)
 {
     $discountAmount = $originalPrice - $discountPrice;
@@ -42,7 +39,6 @@ function calculateDiscountPercent($originalPrice, $discountPrice)
 
 
 /** Check the product type */
-
 function productType($type)
 {
     switch ($type) {
@@ -66,8 +62,7 @@ function productType($type)
     }
 }
 
-/** get total cart amount */
-
+/** Get total cart amount */
 function getCartTotal()
 {
     $total = 0;
@@ -77,7 +72,7 @@ function getCartTotal()
     return $total;
 }
 
-/** get payable total amount */
+/** Get payable total amount */
 function getMainCartTotal()
 {
     if (Session::has('coupon')) {
@@ -96,7 +91,7 @@ function getMainCartTotal()
     }
 }
 
-/** get cart discount */
+/** Get cart discount */
 function getCartDiscount()
 {
     if (Session::has('coupon')) {
@@ -113,7 +108,7 @@ function getCartDiscount()
     }
 }
 
-/** get selected shipping fee from session */
+/** Get selected shipping fee from session */
 function getShppingFee()
 {
     if (Session::has('shipping_method')) {
@@ -123,14 +118,13 @@ function getShppingFee()
     }
 }
 
-/** get payable amount */
+/** Get payable amount */
 function getFinalPayableAmount()
 {
     return  getMainCartTotal() + getShppingFee();
 }
 
-/** lemit text */
-
+/** Limit text */
 function limitText($text, $limit = 20)
 {
     return \Str::limit($text, $limit);

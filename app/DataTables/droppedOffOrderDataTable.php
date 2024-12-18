@@ -94,7 +94,9 @@ class droppedOffOrderDataTable extends DataTable
      */
     public function query(Order $model): QueryBuilder
     {
-        return $model->where('order_status', 'dropped_off')->newQuery();
+        return $model->where('order_status', 'dropped_off')
+            ->orderBy('created_at', 'desc')
+            ->newQuery();
     }
 
     /**

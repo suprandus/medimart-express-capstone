@@ -96,7 +96,9 @@ class VendorOrderDataTable extends DataTable
     {
         return $model::whereHas('orderProducts', function ($query) {
             $query->where('vendor_id', Auth::user()->vendor->id);
-        })->newQuery();
+        })
+            ->orderBy('created_at', 'desc')
+            ->newQuery();
     }
 
     /**

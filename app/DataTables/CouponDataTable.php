@@ -69,7 +69,9 @@ class CouponDataTable extends DataTable
      */
     public function query(Coupon $model): QueryBuilder
     {
-        return $model->newQuery();
+        return $model
+            ->orderBy('created_at', 'desc')
+            ->newQuery();
     }
 
     /**

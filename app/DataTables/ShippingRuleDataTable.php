@@ -30,42 +30,42 @@ class ShippingRuleDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->addColumn('action', function($query){
-                $editBtn = "<a href='".route('admin.shipping-rule.edit', $query->id)."' class='btn btn-primary'><i class='far fa-edit'></i></a>";
-                $deleteBtn = "<a href='".route('admin.shipping-rule.destroy', $query->id)."' class='btn btn-danger ml-2 delete-item'><i class='far fa-trash-alt'></i></a>";
+            ->addColumn('action', function ($query) {
+                $editBtn = "<a href='" . route('admin.shipping-rule.edit', $query->id) . "' class='btn btn-primary'><i class='far fa-edit'></i></a>";
+                $deleteBtn = "<a href='" . route('admin.shipping-rule.destroy', $query->id) . "' class='btn btn-danger ml-2 delete-item'><i class='far fa-trash-alt'></i></a>";
 
-                return $editBtn.$deleteBtn;
+                return $editBtn . $deleteBtn;
             })
-            ->addColumn('status', function($query){
-                if($query->status == 1){
+            ->addColumn('status', function ($query) {
+                if ($query->status == 1) {
                     $button = '<label class="custom-switch mt-2">
-                        <input type="checkbox" checked name="custom-switch-checkbox" data-id="'.$query->id.'" class="custom-switch-input change-status" >
+                        <input type="checkbox" checked name="custom-switch-checkbox" data-id="' . $query->id . '" class="custom-switch-input change-status" >
                         <span class="custom-switch-indicator"></span>
                     </label>';
-                }else {
+                } else {
                     $button = '<label class="custom-switch mt-2">
-                        <input type="checkbox" name="custom-switch-checkbox" data-id="'.$query->id.'" class="custom-switch-input change-status">
+                        <input type="checkbox" name="custom-switch-checkbox" data-id="' . $query->id . '" class="custom-switch-input change-status">
                         <span class="custom-switch-indicator"></span>
                     </label>';
                 }
                 return $button;
             })
-            ->addColumn('type', function($query){
-                if($query->type === 'min_cost'){
+            ->addColumn('type', function ($query) {
+                if ($query->type === 'min_cost') {
                     return '<i class="badge badge-primary">Minimum Order Amount</i>';
-                }else {
+                } else {
                     return '<i class="badge badge-success">Flate Amount</i>';
                 }
             })
-            ->addColumn('min_cost', function($query){
-                if($query->type === 'min_cost'){
-                    return $this->currencyIcon.$query->min_cost;
-                }else {
-                    return $this->currencyIcon.'0';
+            ->addColumn('min_cost', function ($query) {
+                if ($query->type === 'min_cost') {
+                    return $this->currencyIcon . $query->min_cost;
+                } else {
+                    return $this->currencyIcon . '0';
                 }
             })
-            ->addColumn('cost', function($query){
-                return $this->currencyIcon.$query->cost;
+            ->addColumn('cost', function ($query) {
+                return $this->currencyIcon . $query->cost;
             })
             ->rawColumns(['status', 'action', 'type'])
             ->setRowId('id');
@@ -76,7 +76,9 @@ class ShippingRuleDataTable extends DataTable
      */
     public function query(ShippingRule $model): QueryBuilder
     {
-        return $model->newQuery();
+        return $model
+            ->orderBy('created_at', 'desc')
+            ->newQuery();
     }
 
     /**
@@ -85,20 +87,20 @@ class ShippingRuleDataTable extends DataTable
     public function html(): HtmlBuilder
     {
         return $this->builder()
-                    ->setTableId('shippingrule-table')
-                    ->columns($this->getColumns())
-                    ->minifiedAjax()
-                    //->dom('Bfrtip')
-                    ->orderBy(1)
-                    ->selectStyleSingle()
-                    ->buttons([
-                        Button::make('excel'),
-                        Button::make('csv'),
-                        Button::make('pdf'),
-                        Button::make('print'),
-                        Button::make('reset'),
-                        Button::make('reload')
-                    ]);
+            ->setTableId('shippingrule-table')
+            ->columns($this->getColumns())
+            ->minifiedAjax()
+            //->dom('Bfrtip')
+            ->orderBy(1)
+            ->selectStyleSingle()
+            ->buttons([
+                Button::make('excel'),
+                Button::make('csv'),
+                Button::make('pdf'),
+                Button::make('print'),
+                Button::make('reset'),
+                Button::make('reload')
+            ]);
     }
 
     /**
@@ -114,10 +116,10 @@ class ShippingRuleDataTable extends DataTable
             Column::make('cost'),
             Column::make('status'),
             Column::computed('action')
-            ->exportable(false)
-            ->printable(false)
-            ->width(200)
-            ->addClass('text-center'),
+                ->exportable(false)
+                ->printable(false)
+                ->width(200)
+                ->addClass('text-center'),
         ];
     }
 

@@ -94,7 +94,9 @@ class UserOrderDataTable extends DataTable
      */
     public function query(Order $model): QueryBuilder
     {
-        return $model::where('user_id', Auth::user()->id)->newQuery();
+        return $model::where('user_id', Auth::user()->id)
+            ->orderBy('created_at', 'desc')
+            ->newQuery();
     }
 
     /**

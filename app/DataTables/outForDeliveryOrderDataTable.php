@@ -94,7 +94,9 @@ class outForDeliveryOrderDataTable extends DataTable
      */
     public function query(Order $model): QueryBuilder
     {
-        return $model->where('order_status', 'out_for_delivery')->newQuery();
+        return $model->where('order_status', 'out_for_delivery')
+            ->orderBy('created_at', 'desc')
+            ->newQuery();
     }
 
     /**

@@ -95,7 +95,9 @@ class deliveredOrderDataTable extends DataTable
      */
     public function query(Order $model): QueryBuilder
     {
-        return $model->where('order_status', 'delivered')->newQuery();
+        return $model->where('order_status', 'delivered')
+            ->orderBy('created_at', 'desc')
+            ->newQuery();
     }
 
     /**

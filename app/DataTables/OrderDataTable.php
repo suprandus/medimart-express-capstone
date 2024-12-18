@@ -93,7 +93,9 @@ class OrderDataTable extends DataTable
      */
     public function query(Order $model): QueryBuilder
     {
-        return $model->newQuery();
+        return $model
+            ->orderBy('created_at', 'desc')
+            ->newQuery();
     }
 
     /**

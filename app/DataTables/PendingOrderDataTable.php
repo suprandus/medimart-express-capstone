@@ -95,7 +95,9 @@ class PendingOrderDataTable extends DataTable
      */
     public function query(Order $model): QueryBuilder
     {
-        return $model->where('order_status', 'pending')->newQuery();
+        return $model->where('order_status', 'pending')
+            ->orderBy('created_at', 'desc')
+            ->newQuery();
     }
 
     /**

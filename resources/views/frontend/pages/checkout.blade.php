@@ -71,6 +71,7 @@
             </div>
             <div class="col-xl-4 col-lg-5">
                 <div class="wsus__order_details" id="sticky_sidebar">
+                    {{-- shipping methods/options--}}
                     <p class="wsus__product">shipping Methods</p>
                     @foreach ($shippingMethods as $method)
                     @if ($method->type === 'min_cost' && getCartTotal() >= $method->min_cost)
@@ -94,6 +95,17 @@
                     @endif
                     @endforeach
 
+                    {{-- current cart items --}}
+                    <div class="wsus__order_details_summery">
+                        @foreach($cartItems as $item)
+                        <hr>
+                        <p>Item: <span>{{ $item->name }}</span></p>
+                        <p>Quantity: <span>{{ $item->qty }}</span></p>
+                        <p>Price: <span>{{ $settings->currency_icon }}{{ $item->price }}</span></p>
+                        @endforeach
+                    </div>
+
+                    {{-- calculation --}}
                     <div class="wsus__order_details_summery">
                         <p>subtotal: <span>{{$settings->currency_icon}}{{getCartTotal()}}</span></p>
                         <p>shipping fee(+): <span id="shipping_fee">{{$settings->currency_icon}}0</span></p>

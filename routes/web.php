@@ -23,6 +23,7 @@ use App\Http\Controllers\Frontend\WishlistController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Backend\VendorListController;
 use App\Http\Controllers\Frontend\NearbyPharmacyController;
+use App\Http\Controllers\OCRController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -38,7 +39,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-
+//OCR Prescription
+Route::post('process-prescription', [OCRController::class, 'processPrescription'])->name('process.prescription');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

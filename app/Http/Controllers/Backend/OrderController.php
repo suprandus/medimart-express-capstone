@@ -15,7 +15,7 @@ use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Luigel\Paymongo\Facades\Paymongo;
-use App\Models\PaymongoSetting;
+use App\Models\PayMongoSetting;
 
 class OrderController extends Controller
 {
@@ -147,7 +147,7 @@ class OrderController extends Controller
     /** PayMongo config */
     function paymongoConfig()
     {
-        $paymongoSetting = PaymongoSetting::first();
+        $paymongoSetting = PayMongoSetting::first();
 
         if ($paymongoSetting) {
             // Update the config in the application environment

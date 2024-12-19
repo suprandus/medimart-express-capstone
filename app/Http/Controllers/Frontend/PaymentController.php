@@ -12,7 +12,7 @@ use App\Models\Product;
 use App\Models\RazorpaySetting;
 use App\Models\StripeSetting;
 use App\Models\Transaction;
-use App\Models\PaymongoSetting;
+use App\Models\PayMongoSetting;
 use App\Models\SalesAdmin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,7 +29,7 @@ class PaymentController extends Controller
     public function index()
     {
         $cartItems = Cart::content();
-        $paymongoSetting = PaymongoSetting::first();
+        $paymongoSetting = PayMongoSetting::first();
         $codSetting = CodSetting::first();
 
         if (!Session::has('address')) {
@@ -122,7 +122,7 @@ class PaymentController extends Controller
     /** PayMongo config */
     function paymongoConfig()
     {
-        $paymongoSetting = PaymongoSetting::first();
+        $paymongoSetting = PayMongoSetting::first();
 
         if ($paymongoSetting) {
             // Update the config in the application environment

@@ -6,7 +6,7 @@ use App\DataTables\UserOrderDataTable;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\Product;
-use App\Models\PaymongoSetting;
+use App\Models\PayMongoSetting;
 use Illuminate\Http\Request;
 use Luigel\Paymongo\Facades\Paymongo;
 
@@ -16,7 +16,7 @@ class UserOrderController extends Controller
     /** PayMongo config */
     function paymongoConfig()
     {
-        $paymongoSetting = PaymongoSetting::first();
+        $paymongoSetting = PayMongoSetting::first();
 
         if ($paymongoSetting) {
             // Update the config in the application environment

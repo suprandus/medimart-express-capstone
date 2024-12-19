@@ -21,7 +21,6 @@
                                 <ul class="dropdown-menu">
                                         <li class="{{ setActive(['admin.sales-reports']) }}">
                                                 <a class="nav-link" href="{{ route('admin.sales-reports') }}">Sales</a>
-                                                {{--error in here--}}
                                         </li>
                                         {{-- <li class="{{ setActive(['admin.products-reports.*']) }}">
                                                 <a class="nav-link"

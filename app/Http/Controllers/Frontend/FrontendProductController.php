@@ -88,13 +88,10 @@ class FrontendProductController extends Controller
             })
             ->paginate(12);
         }elseif ($request->has('search')) {
-            // Decode the search string into an array (e.g., comma-separated list)
             $searchTerms = explode(',', $request->search);
     
-            // Ensure search terms are sanitized and trimmed
             $searchTerms = array_map('trim', $searchTerms);
     
-            // Query products matching any of the search terms
             $products = Product::withAvg('reviews', 'rating')->withCount('reviews')
                 ->with(['variants', 'category', 'productImageGalleries'])
                 ->where(['status' => 1, 'is_approved' => 1])
@@ -110,7 +107,6 @@ class FrontendProductController extends Controller
                 })
                 ->paginate(12);
         } else {
-            // Default behavior
             $products = Product::withAvg('reviews', 'rating')->withCount('reviews')
                 ->with(['variants', 'category', 'productImageGalleries'])
                 ->where(['status' => 1, 'is_approved' => 1])
@@ -121,7 +117,6 @@ class FrontendProductController extends Controller
         $categories = Category::where(['status' => 1])->get();
         $brands = Brand::where(['status' => 1])->get();
     
-        // Banner ad
         $productpage_banner_section = Adverisement::where('key', 'productpage_banner_section')->first();
         $productpage_banner_section = json_decode($productpage_banner_section?->value);
     

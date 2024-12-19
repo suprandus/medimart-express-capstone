@@ -39,7 +39,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-//OCR Prescription
+/** OCR Prescription */
 Route::post('process-prescription', [OCRController::class, 'processPrescription'])->name('process.prescription');
 
 Route::middleware('auth')->group(function () {

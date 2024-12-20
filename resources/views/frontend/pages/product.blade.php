@@ -16,7 +16,7 @@
                         <h4>products</h4>
                         <ul>
                             <li><a href="#">home</a></li>
-                            <li><a href="#">peoduct</a></li>
+                            <li><a href="#">product</a></li>
                         </ul>
                     </div>
                 </div>

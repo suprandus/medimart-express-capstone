@@ -89,12 +89,6 @@ class VendorProductController extends Controller
         $product->seo_description = $request->seo_description;
         $product->save();
 
-        activity()
-            ->performedOn($product)
-            ->causedBy(Auth::user())
-            ->withProperties(['name' => $product->name])
-            ->log('Product created');
-
         toastr('Created Successfully!', 'success');
 
         return redirect()->route('vendor.products.index');
@@ -177,12 +171,6 @@ class VendorProductController extends Controller
         $product->seo_description = $request->seo_description;
         $product->save();
 
-        activity()
-            ->performedOn($product)
-            ->causedBy(Auth::user())
-            ->withProperties(['name' => $product->name])
-            ->log('Product updated');
-
         toastr('Updated Successfully!', 'success');
 
         return redirect()->route('vendor.products.index');
@@ -202,12 +190,6 @@ class VendorProductController extends Controller
     
         $productName = $product->name;
         $product->delete();
-    
-        activity()
-            ->performedOn($product)
-            ->causedBy(Auth::user())
-            ->withProperties(['name' => $productName])
-            ->log('Product deleted');
     
         return response(['status' => 'success', 'message' => 'Deleted Successfully!']);
     }

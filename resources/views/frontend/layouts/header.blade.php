@@ -135,6 +135,16 @@
             ocrResult.textContent = '';
         });
 
+        overlay.addEventListener('click', (event) => {
+            if (event.target === overlay) {
+                overlay.style.display = 'none';
+                imagePreviewContainer.style.display = 'none';
+                imagePreview.src = '';
+                fileInput.value = '';
+                ocrResult.textContent = '';
+            }
+        });
+        
         fileInput.addEventListener('change', (event) => {
             const file = event.target.files[0];
             if (file) {
@@ -163,9 +173,9 @@
                 .then(data => {
                     if (data.success && data.extractedText) {
                         ocrResult.textContent = "Prescription Text: " + data.extractedText;
-                        searchInput.value = data.extractedText.replace(/\n/g, ', '); // Replace newlines with commas for search
-                        overlay.style.display = 'none'; // Close overlay
-                        document.querySelector('form[action="{{ route('products.index') }}"]').submit(); // Trigger search
+                        searchInput.value = data.extractedText.replace(/\n/g, ', ');
+                        overlay.style.display = 'none';
+                        document.querySelector('form[action="{{ route('products.index') }}"]').submit();
                     } else {
                         ocrResult.textContent = "Failed to process image.";
                     }
@@ -178,13 +188,6 @@
     });
 </script>
 <style>
-    .wsus__search {
-        display: flex;
-        align-items: center;
-    }
-    .wsus__search form {
-        flex-grow: 1;
-    }
     .prescription-icon {
         display: flex;
         align-items: center;

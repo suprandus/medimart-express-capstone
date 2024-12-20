@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use thiagoalessio\TesseractOCR\TesseractOCR;
 use App\Models\Product;
+use Spatie\Image\Image;
 class OCRController extends Controller
 {
     public function processPrescription(Request $request)
@@ -15,44 +16,62 @@ class OCRController extends Controller
             ]);
     
             $imagePath = $request->file('image')->store('public/prescriptions');
+            $absolutePath = storage_path('app/' . $imagePath);
     
-            $ocr = new TesseractOCR(storage_path('app/' . $imagePath));
+            $originalCopyPath = str_replace('.png', '_original.png', $absolutePath);
+            copy($absolutePath, $originalCopyPath);
+    
+            Image::load($absolutePath)
+                ->brightness(20)
+                ->contrast(15)
+                ->sharpen(10)
+                ->save($absolutePath);
+    
+            $ocr = new TesseractOCR($absolutePath);
             $ocr->executable('C:\\Program Files\\Tesseract-OCR\\tesseract.exe');
             $extractedText = $ocr->run();
         
-            $words = preg_split('/[\s,]+/', $extractedText);
-            $words = array_map(function ($word) {
-                return preg_replace('/[^a-zA-Z]/', '', $word);
-            }, $words);
-            $words = array_filter($words);
-        
-            $queryWords = [];
+            $rows = preg_split('/\r\n|\r|\n/', $extractedText);
+            $rows = array_filter($rows, fn($row) => trim($row) !== '');
     
-            foreach ($words as $word) {
-                $isMatched = Product::where('name', 'like', '%' . $word . '%')
-                    ->where(['status' => 1, 'is_approved' => 1])
-                    ->exists();
+            $matchedRows = [];
+            foreach ($rows as $row) {
+                $cleanRow = preg_replace('/[^\w\s]/', '', $row);
+                $cleanRow = trim($cleanRow);
+                if (empty($cleanRow)) {
+                    continue;
+                }
     
-                if ($isMatched) {
-                    $queryWords[] = $word;
+                $words = preg_split('/\s+/', $cleanRow);
+                $phrase = '';
+                foreach ($words as $word) {
+                    $excludedWords = ['name', 'age', 'sex', 'date', 'address'];
+                    if (in_array(strtolower($word), $excludedWords) || strlen($word) == 1) {
+                        continue;
+                    }
+    
+                    $phrase = trim($phrase . ' ' . $word);
+    
+                    if (Product::where('name', 'like', '%' . $phrase . '%')->exists()) {
+                        $matchedRows[] = $phrase;
+                        break;
+                    }
                 }
             }
+        
+            $finalQueryString = implode(', ', $matchedRows);
     
-            if (empty($queryWords)) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'No matching product found',
-                ]);
+            if (empty($matchedRows)) {
+                $finalQueryString = 'No matching product found';
             }
     
-            $finalQuery = implode(', ', array_unique($queryWords)); // Remove duplicates and join
-        
+            \Log::info('Final QueryString Text: ' . $finalQueryString);
             return response()->json([
                 'success' => true,
-                'extractedText' => $finalQuery,
-                'queryString' => $finalQuery,
+                'extractedText' => $finalQueryString,
             ]);
         } catch (\Exception $e) {
+            \Log::error('OCR processing error: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'message' => 'An error occurred while processing the image.',

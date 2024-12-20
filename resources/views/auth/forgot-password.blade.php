@@ -39,7 +39,7 @@
                     <div class="wsus__forget_area">
                         <span class="qiestion_icon"><i class="fal fa-question-circle"></i></span>
                         <h4>forget password ?</h4>
-                        <p>enter the email address to register with <span>e-shop</span></p>
+                        <p>enter the email address to register with <span>MediMart Express</span></p>
                         <div class="wsus__login">
                             <form method="POST" action="{{ route('password.email') }}">
                                 @csrf

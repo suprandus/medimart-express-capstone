@@ -5,7 +5,8 @@ namespace App\Http\Controllers\Frontend;
 use App\DataTables\UserOrderDataTable;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
-use App\Models\PaymongoSetting;
+use App\Models\Product;
+use App\Models\PayMongoSetting;
 use Illuminate\Http\Request;
 use Luigel\Paymongo\Facades\Paymongo;
 
@@ -15,7 +16,7 @@ class UserOrderController extends Controller
     /** PayMongo config */
     function paymongoConfig()
     {
-        $paymongoSetting = PaymongoSetting::first();
+        $paymongoSetting = PayMongoSetting::first();
 
         if ($paymongoSetting) {
             // Update the config in the application environment
@@ -59,6 +60,13 @@ class UserOrderController extends Controller
             $order->order_status = $request->status;
             $order->payment_status = 'cancelled';
 
+            // Add quantity back to products
+            foreach ($order->orderProducts as $orderProduct) {
+                $product = Product::find($orderProduct->product_id);
+                $product->qty += $orderProduct->qty;
+                $product->save();
+            }
+
             $order->save();
             toastr('Updated order status', 'success', 'Success');
         } else if ($paymentMethod === 'paymongo') {
@@ -76,6 +84,13 @@ class UserOrderController extends Controller
 
             $order->order_status = $request->status;
             $order->payment_status = 'refunded';
+
+            // Add quantity back to products
+            foreach ($order->orderProducts as $orderProduct) {
+                $product = Product::find($orderProduct->product_id);
+                $product->qty += $orderProduct->qty;
+                $product->save();
+            }
 
             $order->save();
             toastr('Updated order status', 'success', 'Success');

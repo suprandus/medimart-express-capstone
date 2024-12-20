@@ -12,7 +12,7 @@ use App\Models\Product;
 use App\Models\RazorpaySetting;
 use App\Models\StripeSetting;
 use App\Models\Transaction;
-use App\Models\PaymongoSetting;
+use App\Models\PayMongoSetting;
 use App\Models\SalesAdmin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -21,19 +21,21 @@ use Srmklive\PayPal\Services\PayPal as PayPalClient;
 use Luigel\Paymongo\Facades\Paymongo;
 use Stripe\Charge;
 use Stripe\Stripe;
+use Cart;
 use Razorpay\Api\Api;
 
 class PaymentController extends Controller
 {
     public function index()
     {
-        $paymongoSetting = PaymongoSetting::first();
+        $cartItems = Cart::content();
+        $paymongoSetting = PayMongoSetting::first();
         $codSetting = CodSetting::first();
 
         if (!Session::has('address')) {
             return redirect()->route('user.checkout');
         }
-        return view('frontend.pages.payment', compact('paymongoSetting', 'codSetting'));
+        return view('frontend.pages.payment', compact('cartItems', 'paymongoSetting', 'codSetting'));
     }
 
     public function paymentSuccess()
@@ -120,7 +122,7 @@ class PaymentController extends Controller
     /** PayMongo config */
     function paymongoConfig()
     {
-        $paymongoSetting = PaymongoSetting::first();
+        $paymongoSetting = PayMongoSetting::first();
 
         if ($paymongoSetting) {
             // Update the config in the application environment
@@ -168,6 +170,7 @@ class PaymentController extends Controller
         return redirect()->away($checkout->checkout_url);
     }
 
+    /** PayMongo success page */
     public function paymongoSuccess()
     {
         $this->paymongoConfig();
@@ -186,6 +189,7 @@ class PaymentController extends Controller
         }
     }
 
+    /** PayMongo cancel page */
     public function paymongoCancel()
     {
         toastr('Someting went wrong try again later!', 'error', 'Error');
@@ -366,8 +370,8 @@ class PaymentController extends Controller
         $total = getFinalPayableAmount();
         $payableAmount = round($total, 2);
 
-
         $this->storeOrder('COD', 'pending', \Str::random(10), $payableAmount, $setting->currency_name);
+        
         // clear session
         $this->clearSession();
 

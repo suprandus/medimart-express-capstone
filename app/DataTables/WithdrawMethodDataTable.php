@@ -22,14 +22,14 @@ class WithdrawMethodDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->addColumn('action', function($query){
-                $editBtn = "<a href='".route('admin.withdraw-method.edit', $query->id)."' class='btn btn-primary'><i class='far fa-edit'></i></a>";
-                $deleteBtn = "<a href='".route('admin.withdraw-method.destroy', $query->id)."' class='btn btn-danger ml-2 delete-item'><i class='far fa-trash-alt'></i></a>";
+            ->addColumn('action', function ($query) {
+                $editBtn = "<a href='" . route('admin.withdraw-method.edit', $query->id) . "' class='btn btn-primary'><i class='far fa-edit'></i></a>";
+                $deleteBtn = "<a href='" . route('admin.withdraw-method.destroy', $query->id) . "' class='btn btn-danger ml-2 delete-item'><i class='far fa-trash-alt'></i></a>";
 
-                return $editBtn.$deleteBtn;
+                return $editBtn . $deleteBtn;
             })
-            ->addColumn('withdraw_charge', function($query){
-                return $query->withdraw_charge.'%';
+            ->addColumn('withdraw_charge', function ($query) {
+                return $query->withdraw_charge . '%';
             })
 
             ->setRowId('id');
@@ -40,7 +40,9 @@ class WithdrawMethodDataTable extends DataTable
      */
     public function query(WithdrawMethod $model): QueryBuilder
     {
-        return $model->newQuery();
+        return $model
+            ->orderBy('created_at', 'desc')
+            ->newQuery();
     }
 
     /**
@@ -49,20 +51,20 @@ class WithdrawMethodDataTable extends DataTable
     public function html(): HtmlBuilder
     {
         return $this->builder()
-                    ->setTableId('withdrawmethod-table')
-                    ->columns($this->getColumns())
-                    ->minifiedAjax()
-                    //->dom('Bfrtip')
-                    ->orderBy(1)
-                    ->selectStyleSingle()
-                    ->buttons([
-                        Button::make('excel'),
-                        Button::make('csv'),
-                        Button::make('pdf'),
-                        Button::make('print'),
-                        Button::make('reset'),
-                        Button::make('reload')
-                    ]);
+            ->setTableId('withdrawmethod-table')
+            ->columns($this->getColumns())
+            ->minifiedAjax()
+            //->dom('Bfrtip')
+            ->orderBy(1)
+            ->selectStyleSingle()
+            ->buttons([
+                Button::make('excel'),
+                Button::make('csv'),
+                Button::make('pdf'),
+                Button::make('print'),
+                Button::make('reset'),
+                Button::make('reload')
+            ]);
     }
 
     /**
@@ -77,10 +79,10 @@ class WithdrawMethodDataTable extends DataTable
             Column::make('maximum_amount'),
             Column::make('withdraw_charge'),
             Column::computed('action')
-            ->exportable(false)
-            ->printable(false)
-            ->width(100)
-            ->addClass('text-center'),
+                ->exportable(false)
+                ->printable(false)
+                ->width(100)
+                ->addClass('text-center'),
         ];
     }
 

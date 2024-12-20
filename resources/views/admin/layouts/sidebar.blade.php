@@ -13,22 +13,11 @@
                                                 class="fas fa-prescription-bottle-alt"></i><span>Dashboard</span></a>
 
                         </li>
-                        <li class="dropdown {{ setActive(['admin.sales-reports', 'admin.products-reports'])}} ">
-                                <a href="#" class="nav-link has-dropdown" data-toggle="dropdown">
-                                        <i class="fas fa-chart-line"></i>
-                                        <span>Reports</span>
-                                </a>
-                                <ul class="dropdown-menu">
-                                        <li class="{{ setActive(['admin.sales-reports']) }}">
-                                                <a class="nav-link" href="{{ route('admin.sales-reports') }}">Sales</a>
-                                        </li>
-                                        {{-- <li class="{{ setActive(['admin.products-reports.*']) }}">
-                                                <a class="nav-link"
-                                                        href="{{ route('admin.products-reports') }}">Products</a>
-                                        </li> --}}
-                                </ul>
-                        </li>
 
+                        <li class="{{ setActive(['admin.sales-reports']) }}"><a class="nav-link"
+                                        href="{{ route('admin.sales-reports') }}"><i class="fas fa-chart-line"></i>
+                                        <span> Sales</span></a>
+                        </li>
 
                         <li
                                 class="dropdown {{ setActive(['admin.category.*', 'admin.sub-category.*', 'admin.child-category.*']) }}">

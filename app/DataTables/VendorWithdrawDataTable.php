@@ -23,28 +23,28 @@ class VendorWithdrawDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            ->addColumn('action', function($query){
-                $showBtn = "<a href='".route('vendor.withdraw-request.show', $query->id)."' class='btn btn-primary'><i class='far fa-eye'></i></a>";
+            ->addColumn('action', function ($query) {
+                $showBtn = "<a href='" . route('vendor.withdraw-request.show', $query->id) . "' class='btn btn-primary'><i class='far fa-eye'></i></a>";
 
                 return $showBtn;
             })
-            ->addColumn('status', function($query){
-                if($query->status == 'pending'){
+            ->addColumn('status', function ($query) {
+                if ($query->status == 'pending') {
                     return "<span class='badge bg-warning'>pending</span>";
-                }elseif($query->status == 'paid'){
+                } elseif ($query->status == 'paid') {
                     return "<span class='badge bg-success'>Paid</span>";
-                }else {
+                } else {
                     return "<span class='badge bg-danger'>Declined</span>";
                 }
             })
-            ->addColumn('total_amount', function($query){
-                return getCurrencyIcon().$query->total_amount;
+            ->addColumn('total_amount', function ($query) {
+                return getCurrencyIcon() . number_format($query->total_amount, 2);
             })
-            ->addColumn('withdraw_amount', function($query){
-                return getCurrencyIcon().$query->withdraw_amount;
+            ->addColumn('withdraw_amount', function ($query) {
+                return getCurrencyIcon() . number_format($query->withdraw_amount, 2);
             })
-            ->addColumn('withdraw_charge', function($query){
-                return getCurrencyIcon().$query->withdraw_charge;
+            ->addColumn('withdraw_charge', function ($query) {
+                return getCurrencyIcon() . number_format($query->withdraw_charge, 2);
             })
             ->rawColumns(['status', 'action'])
             ->setRowId('id');
@@ -64,20 +64,20 @@ class VendorWithdrawDataTable extends DataTable
     public function html(): HtmlBuilder
     {
         return $this->builder()
-                    ->setTableId('vendorwithdraw-table')
-                    ->columns($this->getColumns())
-                    ->minifiedAjax()
-                    //->dom('Bfrtip')
-                    ->orderBy(1)
-                    ->selectStyleSingle()
-                    ->buttons([
-                        Button::make('excel'),
-                        Button::make('csv'),
-                        Button::make('pdf'),
-                        Button::make('print'),
-                        Button::make('reset'),
-                        Button::make('reload')
-                    ]);
+            ->setTableId('vendorwithdraw-table')
+            ->columns($this->getColumns())
+            ->minifiedAjax()
+            //->dom('Bfrtip')
+            ->orderBy(1)
+            ->selectStyleSingle()
+            ->buttons([
+                Button::make('excel'),
+                Button::make('csv'),
+                Button::make('pdf'),
+                Button::make('print'),
+                Button::make('reset'),
+                Button::make('reload')
+            ]);
     }
 
     /**
@@ -94,10 +94,10 @@ class VendorWithdrawDataTable extends DataTable
             Column::make('status'),
 
             Column::computed('action')
-            ->exportable(false)
-            ->printable(false)
-            ->width(60)
-            ->addClass('text-center'),
+                ->exportable(false)
+                ->printable(false)
+                ->width(60)
+                ->addClass('text-center'),
         ];
     }
 

@@ -25,7 +25,7 @@ class ProductDataTable extends DataTable
         return (new EloquentDataTable($query))
             ->addColumn('action', function($query){
                 $editBtn = "<a href='".route('admin.products.edit', $query->id)."' class='btn btn-primary'><i class='far fa-edit'></i></a>";
-                
+
                 $deleteBtn = "<a href='".route('admin.products.destroy', $query->id)."' class='btn btn-danger ml-2 delete-item'><i class='far fa-trash-alt'></i></a>";
 
                 $moreBtn = '<div class="dropdown dropleft d-inline">
@@ -77,6 +77,10 @@ class ProductDataTable extends DataTable
                     </label>';
                 }
                 return $button;
+            })
+
+            ->addColumn('price', function($query) {
+                return number_format($query->price, 2);
             })
             ->rawColumns(['image', 'type', 'status', 'action'])
             ->setRowId('id');

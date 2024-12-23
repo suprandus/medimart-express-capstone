@@ -71,49 +71,49 @@
             </div>
             <div class="col-xl-4 col-lg-5">
                 <div class="wsus__order_details" id="sticky_sidebar">
-                    {{-- shipping methods/options--}}
-                    <p class="wsus__product">shipping Methods</p>
-                    @foreach ($shippingMethods as $method)
-                    @if ($method->type === 'min_cost' && getCartTotal() >= $method->min_cost)
-                    <div class="form-check">
-                        <input class="form-check-input shipping_method" type="radio" name="exampleRadios"
-                            id="exampleRadios1" value="{{$method->id}}" data-id="{{$method->cost}}">
-                        <label class="form-check-label" for="exampleRadios1">
-                            {{$method->name}}
-                            <span>cost: ({{$settings->currency_icon}}{{$method->cost}})</span>
-                        </label>
-                    </div>
-                    @elseif ($method->type === 'flat_cost')
-                    <div class="form-check">
-                        <input class="form-check-input shipping_method" type="radio" name="exampleRadios"
-                            id="exampleRadios1" value="{{$method->id}}" data-id="{{$method->cost}}">
-                        <label class="form-check-label" for="exampleRadios1">
-                            {{$method->name}}
-                            <span>cost: ({{$settings->currency_icon}}{{$method->cost}})</span>
-                        </label>
-                    </div>
-                    @endif
-                    @endforeach
-
-                    {{-- current cart items --}}
-                    <div class="wsus__order_details_summery">
-                        @foreach($cartItems as $item)
-                        <hr>
-                        <p>Item: <span>{{ $item->name }}</span></p>
-                        <p>Quantity: <span>{{ $item->qty }}</span></p>
-                        <p>Price: <span>{{ $settings->currency_icon }}{{ $item->price }}</span></p>
+                    {{-- Shipping Methods/Options --}}
+                        <p class="wsus__product">Shipping Methods</p>
+                        @foreach ($shippingMethods as $method)
+                        @if ($method->type === 'min_cost' && getCartTotal() >= $method->min_cost)
+                        <div class="form-check">
+                            <input class="form-check-input shipping_method" type="radio" name="shippingMethod"
+                                id="shipping_{{$method->id}}" value="{{$method->id}}" data-id="{{$method->cost}}">
+                            <label class="form-check-label" for="shipping_{{$method->id}}">
+                                {{$method->name}}
+                                <span>Cost: ({{$settings->currency_icon}}{{number_format($method->cost, 2)}})</span>
+                            </label>
+                        </div>
+                        @elseif ($method->type === 'flat_cost')
+                        <div class="form-check">
+                            <input class="form-check-input shipping_method" type="radio" name="shippingMethod"
+                                id="shipping_{{$method->id}}" value="{{$method->id}}" data-id="{{$method->cost}}">
+                            <label class="form-check-label" for="shipping_{{$method->id}}">
+                                {{$method->name}}
+                                <span>Cost: ({{$settings->currency_icon}}{{number_format($method->cost, 2)}})</span>
+                            </label>
+                        </div>
+                        @endif
                         @endforeach
-                    </div>
 
-                    {{-- calculation --}}
-                    <div class="wsus__order_details_summery">
-                        <p>subtotal: <span>{{$settings->currency_icon}}{{getCartTotal()}}</span></p>
-                        <p>shipping fee(+): <span id="shipping_fee">{{$settings->currency_icon}}0</span></p>
-                        <p>coupon(-): <span>{{$settings->currency_icon}}{{getCartDiscount()}}</span></p>
-                        <p><b>total:</b> <span><b id="total_amount"
-                                    data-id="{{getMainCartTotal()}}">{{$settings->currency_icon}}{{getMainCartTotal()}}</b></span>
-                        </p>
-                    </div>
+                        {{-- current cart items --}}
+                        <div class="wsus__order_details_summery">
+                            @foreach($cartItems as $item)
+                            <hr>
+                            <p>Item: <span>{{ $item->name }}</span></p>
+                            <p>Quantity: <span>{{ $item->qty }}</span></p>
+                            <p>Price: <span>{{ $settings->currency_icon }}{{ number_format($item->price, 2) }}</span></p>
+                            @endforeach
+                        </div>
+
+                        {{-- calculation --}}
+                        <div class="wsus__order_details_summery">
+                            <p>subtotal: <span>{{$settings->currency_icon}}{{ number_format(getCartTotal(), 2) }}</span></p>
+                            <p>shipping fee(+): <span id="shipping_fee">{{$settings->currency_icon}}{{ number_format(0, 2) }}</span></p>
+                            <p>coupon(-): <span>{{$settings->currency_icon}}{{ number_format(getCartDiscount(), 2) }}</span></p>
+                            <p><b>total:</b> <span><b id="total_amount" data-id="{{ getMainCartTotal(),2 }}">
+                                {{$settings->currency_icon}}{{ number_format(getMainCartTotal(), 2) }}</b></span></p>
+                        </div>
+
                     <div class="terms_area">
                         <div class="form-check">
                             <input class="form-check-input agree_term" type="checkbox" value="" id="flexCheckChecked3"
@@ -222,65 +222,99 @@
 
 @push('scripts')
 <script>
-    $(document).ready(function(){
+    $(document).ready(function () {
         $.ajaxSetup({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
 
+        // Reset shipping method and address on page load
         $('input[type="radio"]').prop('checked', false);
         $('#shipping_method_id').val("");
         $('#shipping_address_id').val("");
+        $('#shipping_fee').data('fee', 0); // Initialize shipping fee to 0
 
-        $('.shipping_method').on('click', function(){
-            let shippingFee = $(this).data('id');
-            let currentTotalAmount = $('#total_amount').data('id')
-            let totalAmount = currentTotalAmount + shippingFee;
+        // Handle shipping method selection and deselection
+        $('.shipping_method').on('click', function () {
+            const $this = $(this);
+            const shippingFee = parseFloat($this.data('id')); // Selected shipping fee
+            const currentTotalAmount = parseFloat($('#total_amount').data('id')); // Original total
+            const previousShippingFee = parseFloat($('#shipping_fee').data('fee') || 0); // Previous shipping fee
 
-            $('#shipping_method_id').val($(this).val());
-            $('#shipping_fee').text("{{$settings->currency_icon}}"+shippingFee);
+            // Check if the radio button was already selected
+            if ($this.prop('checked') && $this.data('deselected')) {
+                // Deselect the shipping method
+                $this.prop('checked', false).data('deselected', false);
+                $('#shipping_method_id').val(""); // Reset hidden input
+                $('#shipping_fee').text("{{$settings->currency_icon}}0.00").data('fee', 0);
+                const updatedTotalAmount = currentTotalAmount - previousShippingFee;
+                $('#total_amount').text("{{$settings->currency_icon}}" + updatedTotalAmount.toFixed(2));
+                $('#total_amount').data('id', updatedTotalAmount);
+            } else {
+                // Select the shipping method
+                $('.shipping_method').data('deselected', false); // Reset other buttons
+                $this.data('deselected', true); // Mark this as deselected
+                const updatedTotalAmount = currentTotalAmount - previousShippingFee + shippingFee;
 
-            $('#total_amount').text("{{$settings->currency_icon}}"+totalAmount)
-        })
+                // Update hidden input for shipping method
+                $('#shipping_method_id').val($this.val());
 
-        $('.shipping_address').on('click', function(){
+                // Update shipping fee in DOM
+                $('#shipping_fee').text("{{$settings->currency_icon}}" + shippingFee.toFixed(2));
+                $('#shipping_fee').data('fee', shippingFee); // Store current fee
+
+                // Update total amount in DOM
+                $('#total_amount').text("{{$settings->currency_icon}}" + updatedTotalAmount.toFixed(2));
+                $('#total_amount').data('id', updatedTotalAmount);
+            }
+        });
+
+        // Handle shipping address selection
+        $('.shipping_address').on('click', function () {
             $('#shipping_address_id').val($(this).data('id'));
-        })
+        });
 
-        // submit checkout form
-        $('#submitCheckoutForm').on('click', function(e){
+        // Submit checkout form
+        $('#submitCheckoutForm').on('click', function (e) {
             e.preventDefault();
-            if($('#shipping_method_id').val() == ""){
-                toastr.error('Shipping method is requred');
-            }else if ($('#shipping_address_id').val() == ""){
-                toastr.error('Shipping address is requred');
-            }else if (!$('.agree_term').prop('checked')){
-                toastr.error('You have to agree website terms and conditions');
-            }else {
-                $.ajax({
-                    url: "{{route('user.checkout.form-submit')}}",
-                    method: 'POST',
-                    data: $('#checkOutForm').serialize(),
-                    beforeSend: function(){
-                        $('#submitCheckoutForm').html('<i class="fas fa-spinner fa-spin fa-1x"></i>')
-                    },
-                    success: function(data){
-                        if(data.status === 'success'){
-                            $('#submitCheckoutForm').text('Place Order')
-                            // redirect user to next page
-                            window.location.href = data.redirect_url;
-                        }
-                    },
-                    error: function(data){
-                        console.log(data);
-                    }
-                })
+
+            // Validate form inputs
+            if ($('#shipping_method_id').val() === "") {
+                toastr.error('Shipping method is required');
+                return;
+            }
+            if ($('#shipping_address_id').val() === "") {
+                toastr.error('Shipping address is required');
+                return;
+            }
+            if (!$('.agree_term').prop('checked')) {
+                toastr.error('You have to agree to the website terms and conditions');
+                return;
             }
 
-
-
-        })
-    })
+            // Submit form via AJAX
+            $.ajax({
+                url: "{{route('user.checkout.form-submit')}}",
+                method: 'POST',
+                data: $('#checkOutForm').serialize(),
+                beforeSend: function () {
+                    $('#submitCheckoutForm').html('<i class="fas fa-spinner fa-spin fa-1x"></i>');
+                },
+                success: function (data) {
+                    if (data.status === 'success') {
+                        $('#submitCheckoutForm').text('Place Order');
+                        // Redirect user to the next page
+                        window.location.href = data.redirect_url;
+                    }
+                },
+                error: function (data) {
+                    console.error(data);
+                }
+            });
+        });
+    });
 </script>
+
+
 @endpush

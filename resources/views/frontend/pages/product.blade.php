@@ -190,7 +190,7 @@
                                                 @if(checkDiscount($product))
                                                     <p class="wsus__price">{{$settings->currency_icon}}{{$product->offer_price}} <del>{{$settings->currency_icon}}{{$product->price}}</del></p>
                                                 @else
-                                                    <p class="wsus__price">{{$settings->currency_icon}}{{$product->price}}</p>
+                                                <p class="wsus__price">{{$settings->currency_icon}}{{number_format($product->price, 2)}}</p>
                                                 @endif
                                                 <form class="shopping-cart-form">
                                                     <input type="hidden" name="product_id" value="{{$product->id}}">
@@ -258,7 +258,7 @@
                                                 <a class="wsus__pro_name" href="{{route('product-detail', $product->slug)}}">{{$product->name}}</a>
 
                                                 @if(checkDiscount($product))
-                                                <p class="wsus__price">{{$settings->currency_icon}}{{$product->offer_price}} <del>{{$settings->currency_icon}}{{$product->price}}</del></p>
+                                                <p class="wsus__price">{{$settings->currency_icon}}{{number_format($product->offer_price, 2)}} <del>{{$settings->currency_icon}}{{number_format($product->price, 2)}}</del></p>
                                                 @else
                                                     <p class="wsus__price">{{$settings->currency_icon}}{{$product->price}}</p>
                                                 @endif
@@ -273,7 +273,7 @@
                                                             <select class="d-none" name="variants_items[]">
                                                                 @foreach ($variant->productVariantItems as $variantItem)
                                                                     @if ($variantItem->status != 0)
-                                                                        <option value="{{$variantItem->id}}" {{$variantItem->is_default == 1 ? 'selected' : ''}}>{{$variantItem->name}} (${{$variantItem->price}})</option>
+                                                                    <option value="{{$variantItem->id}}" {{$variantItem->is_default == 1 ? 'selected' : ''}}>{{$variantItem->name}} (${{number_format($variantItem->price, 2)}})</option>
                                                                     @endif
                                                                 @endforeach
                                                             </select>

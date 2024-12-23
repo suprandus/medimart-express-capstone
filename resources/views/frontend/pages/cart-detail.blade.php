@@ -68,53 +68,50 @@
                                     </th>
                                 </tr>
                                 @foreach ($cartItems as $item)
-                                <tr class="d-flex">
-                                    <td class="wsus__pro_img"><img src="{{asset($item->options->image)}}" alt="product"
-                                            class="img-fluid w-100">
-                                    </td>
+                                    <tr class="d-flex">
+                                        <td class="wsus__pro_img"><img src="{{asset($item->options->image)}}" alt="product" class="img-fluid w-100"></td>
 
-                                    <td class="wsus__pro_name">
-                                        <p>{!! $item->name !!}</p>
-                                        @foreach ($item->options->variants as $key => $variant)
-                                        <span>{{$key}}: {{$variant['name']}}
-                                            ({{$settings->currency_icon.$variant['price']}})</span>
-                                        @endforeach
+                                        <td class="wsus__pro_name">
+                                            <p>{!! $item->name !!}</p>
+                                            @foreach ($item->options->variants as $key => $variant)
+                                            <span>{{$key}}: {{$variant['name']}}
+                                                ({{$settings->currency_icon}}{{number_format($variant['price'], 2)}})</span>
+                                            @endforeach
+                                        </td>
 
-                                    </td>
+                                        <td class="wsus__pro_tk">
+                                            <h6>{{$settings->currency_icon}}{{number_format($item->price, 2)}}</h6>
+                                        </td>
 
-                                    <td class="wsus__pro_tk">
-                                        <h6>{{$settings->currency_icon.$item->price}}</h6>
-                                    </td>
+                                        <td class="wsus__pro_tk">
+                                            <h6 id="{{$item->rowId}}">
+                                                {{$settings->currency_icon}}{{number_format(($item->price + $item->options->variants_total) * $item->qty, 2)}}
+                                            </h6>
+                                        </td>
 
-                                    <td class="wsus__pro_tk">
-                                        <h6 id="{{$item->rowId}}">{{$settings->currency_icon.($item->price +
-                                            $item->options->variants_total) * $item->qty}}</h6>
-                                    </td>
+                                        <td class="wsus__pro_select">
+                                            <div class="product_qty_wrapper">
+                                                <button class="btn btn-danger product-decrement">-</button>
+                                                <input class="product-qty" data-rowid="{{$item->rowId}}" type="text" min="1" max="100"
+                                                    value="{{$item->qty}}" readonly />
+                                                <button class="btn btn-success product-increment">+</button>
+                                            </div>
+                                        </td>
 
-                                    <td class="wsus__pro_select">
-                                        <div class="product_qty_wrapper">
-                                            <button class="btn btn-danger product-decrement">-</button>
-                                            <input class="product-qty" data-rowid="{{$item->rowId}}" type="text" min="1"
-                                                max="100" value="{{$item->qty}}" readonly />
-                                            <button class="btn btn-success product-increment">+</button>
-                                        </div>
-                                    </td>
+                                        <td class="wsus__pro_icon">
+                                            <a href="{{route('cart.remove-product', $item->rowId)}}"><i class="far fa-times"></i></a>
+                                        </td>
+                                    </tr>
+                                    @endforeach
 
-                                    <td class="wsus__pro_icon">
-                                        <a href="{{route('cart.remove-product', $item->rowId)}}"><i
-                                                class="far fa-times"></i></a>
-                                    </td>
-                                </tr>
-                                @endforeach
+                                    @if (count($cartItems) === 0)
+                                    <tr class="d-flex">
+                                        <td class="wsus__pro_icon" rowspan="2" style="width:100%">
+                                            Cart is empty!
+                                        </td>
+                                    </tr>
+                                    @endif
 
-                                @if (count($cartItems) === 0)
-                                <tr class="d-flex">
-                                    <td class="wsus__pro_icon" rowspan="2" style="width:100%">
-                                        Cart is empty!
-                                    </td>
-                                </tr>
-
-                                @endif
 
                             </tbody>
                         </table>
@@ -124,10 +121,12 @@
             <div class="col-xl-3">
                 <div class="wsus__cart_list_footer_button" id="sticky_sidebar">
                     <h6>total cart</h6>
-                    <p>subtotal: <span id="sub_total">{{$settings->currency_icon}}{{getCartTotal()}}</span></p>
-                    <p>coupon(-): <span id="discount">{{$settings->currency_icon}}{{getCartDiscount()}}</span></p>
-                    <p class="total"><span>total:</span> <span
-                            id="cart_total">{{$settings->currency_icon}}{{getMainCartTotal()}}</span></p>
+                    <p>subtotal: <span id="sub_total">{{$settings->currency_icon}}{{number_format(getCartTotal(), 2)}}</span></p>
+                    <p>coupon(-): <span id="discount">{{$settings->currency_icon}}{{number_format(getCartDiscount(), 2)}}</span></p>
+                    <p class="total">
+                        <span>total:</span>
+                        <span id="cart_total">{{$settings->currency_icon}}{{number_format(getMainCartTotal(), 2)}}</span>
+                    </p>
 
                     <form id="coupon_form">
                         <input type="text" placeholder="Coupon Code" name="coupon_code"
@@ -182,7 +181,7 @@
             }
         });
 
-        // incriment product quantity
+        // Increment product quantity
         $('.product-increment').on('click', function(){
             let input = $(this).siblings('.product-qty');
             let quantity = parseInt(input.val()) + 1;
@@ -198,25 +197,25 @@
                 },
                 success: function(data){
                     if(data.status === 'success'){
-                        let productId = '#'+rowId;
-                        let totalAmount = "{{$settings->currency_icon}}"+data.product_total
-                        $(productId).text(totalAmount)
+                        let productId = '#' + rowId;
+                        let totalAmount = "{{$settings->currency_icon}}" + parseFloat(data.product_total).toFixed(2);
+                        $(productId).text(totalAmount);
 
-                        renderCartSubTotal()
-                        calculateCouponDescount()
+                        renderCartSubTotal();
+                        calculateCouponDiscount();
 
-                        toastr.success(data.message)
-                    }else if (data.status === 'error'){
-                        toastr.error(data.message)
+                        toastr.success(data.message);
+                    } else if (data.status === 'error'){
+                        toastr.error(data.message);
                     }
                 },
                 error: function(data){
-
+                    console.log(data);
                 }
-            })
-        })
+            });
+        });
 
-        // decrement product quantity
+        // Decrement product quantity
         $('.product-decrement').on('click', function(){
             let input = $(this).siblings('.product-qty');
             let quantity = parseInt(input.val()) - 1;
@@ -237,70 +236,68 @@
                 },
                 success: function(data){
                     if(data.status === 'success'){
-                        let productId = '#'+rowId;
-                        let totalAmount = "{{$settings->currency_icon}}"+data.product_total
-                        $(productId).text(totalAmount)
+                        let productId = '#' + rowId;
+                        let totalAmount = "{{$settings->currency_icon}}" + parseFloat(data.product_total).toFixed(2);
+                        $(productId).text(totalAmount);
 
-                        renderCartSubTotal()
-                        calculateCouponDescount()
+                        renderCartSubTotal();
+                        calculateCouponDiscount();
 
-                        toastr.success(data.message)
-                    }else if (data.status === 'error'){
-                        toastr.error(data.message)
+                        toastr.success(data.message);
+                    } else if (data.status === 'error'){
+                        toastr.error(data.message);
                     }
                 },
                 error: function(data){
-
+                    console.log(data);
                 }
-            })
+            });
+        });
 
-        })
-
-        // clear cart
+        // Clear cart
         $('.clear_cart').on('click', function(e){
             e.preventDefault();
             Swal.fire({
-                    title: 'Are you sure?',
-                    text: "This action will clear your cart!",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, clear it!'
-                    }).then((result) => {
-                    if (result.isConfirmed) {
-
-                        $.ajax({
-                            type: 'get',
-                            url: "{{route('clear.cart')}}",
-                            success: function(data){
-                                if(data.status === 'success'){
-                                    window.location.reload();
-                                }
-                            },
-                            error: function(xhr, status, error){
-                                console.log(error);
+                title: 'Are you sure?',
+                text: "This action will clear your cart!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, clear it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        type: 'get',
+                        url: "{{route('clear.cart')}}",
+                        success: function(data){
+                            if(data.status === 'success'){
+                                window.location.reload();
                             }
-                        })
-                    }
-                })
-        })
+                        },
+                        error: function(xhr, status, error){
+                            console.log(error);
+                        }
+                    });
+                }
+            });
+        });
 
-        // get subtotal of cart and put it on dom
+        // Get subtotal of cart and put it on DOM
         function renderCartSubTotal(){
             $.ajax({
                 method: 'GET',
                 url: "{{ route('cart.sidebar-product-total') }}",
                 success: function(data) {
-                    $('#sub_total').text("{{$settings->currency_icon}}"+data);
+                    $('#sub_total').text("{{$settings->currency_icon}}" + parseFloat(data).toFixed(2));
                 },
                 error: function(data) {
                     console.log(data);
                 }
-            })
+            });
         }
 
-        // apply coupon on cart
+        // Apply coupon on cart
         $('#coupon_form').on('submit', function(e){
             e.preventDefault();
             let formData = $(this).serialize();
@@ -309,36 +306,36 @@
                 url: "{{ route('apply-coupon') }}",
                 data: formData,
                 success: function(data) {
-                   if(data.status === 'error'){
-                    toastr.error(data.message)
-                   }else if (data.status === 'success'){
-                    calculateCouponDescount()
-                    toastr.success(data.message)
-                   }
-                },
-                error: function(data) {
-                    console.log(data);
-                }
-            })
-
-        })
-
-        // calculate discount amount
-        function calculateCouponDescount(){
-            $.ajax({
-                method: 'GET',
-                url: "{{ route('coupon-calculation') }}",
-                success: function(data) {
-                    if(data.status === 'success'){
-                        $('#discount').text('{{$settings->currency_icon}}'+data.discount);
-                        $('#cart_total').text('{{$settings->currency_icon}}'+data.cart_total);
+                    if(data.status === 'error'){
+                        toastr.error(data.message);
+                    } else if (data.status === 'success'){
+                        calculateCouponDiscount();
+                        toastr.success(data.message);
                     }
                 },
                 error: function(data) {
                     console.log(data);
                 }
-            })
+            });
+        });
+
+        // Calculate discount amount
+        function calculateCouponDiscount(){
+            $.ajax({
+                method: 'GET',
+                url: "{{ route('coupon-calculation') }}",
+                success: function(data) {
+                    if(data.status === 'success'){
+                        $('#discount').text('{{$settings->currency_icon}}' + parseFloat(data.discount).toFixed(2));
+                        $('#cart_total').text('{{$settings->currency_icon}}' + parseFloat(data.cart_total).toFixed(2));
+                    }
+                },
+                error: function(data) {
+                    console.log(data);
+                }
+            });
         }
-    })
+    });
 </script>
+
 @endpush

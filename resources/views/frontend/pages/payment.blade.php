@@ -107,19 +107,20 @@
                     </div>
                 </div>
                 <div class="col-xl-4 col-lg-4">
-                    <div class="wsus__pay_booking_summary" id="sticky_sidebar2">
-                        <h5>Order Summary</h5>
-                        @foreach($cartItems as $item)
-                        <hr>
-                        <p>item: <span>{{ $item->name }}</span></p>
-                        <p>quantity: <span>{{ $item->qty }}</span></p>
-                        <p>price: <span>{{ $settings->currency_icon }}{{ $item->price }}</span></p>
-                        @endforeach
-                        <hr>
-                        <p>subtotal : <span>{{$settings->currency_icon}}{{getCartTotal()}}</span></p>
-                        <p>shipping fee(+) : <span>{{$settings->currency_icon}}{{getShppingFee()}}</span></p>
-                        <p>coupon(-) : <span>{{$settings->currency_icon}}{{getCartDiscount()}}</span></p>
-                        <h6>total <span>{{$settings->currency_icon}}{{getFinalPayableAmount()}}</span></h6>
+                        <div class="wsus__pay_booking_summary" id="sticky_sidebar2">
+                            <h5>Order Summary</h5>
+                            @foreach($cartItems as $item)
+                            <hr>
+                            <p>item: <span>{{ $item->name }}</span></p>
+                            <p>quantity: <span>{{ $item->qty }}</span></p>
+                            <p>price: <span>{{ $settings->currency_icon }}{{ number_format($item->price, 2) }}</span></p>
+                            @endforeach
+                            <hr>
+                            <p>subtotal : <span>{{$settings->currency_icon}}{{ number_format(getCartTotal(), 2) }}</span></p>
+                            <p>shipping fee(+) : <span>{{$settings->currency_icon}}{{ number_format(getShppingFee(), 2) }}</span></p>
+                            <p>coupon(-) : <span>{{$settings->currency_icon}}{{ number_format(getCartDiscount(), 2) }}</span></p>
+                            <h6>total <span>{{$settings->currency_icon}}{{ number_format(getFinalPayableAmount(), 2) }}</span></h6>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -68,9 +68,13 @@
                                         <span>({{$item->reviews_count}} review)</span>
                                     </p>
                                     @if (checkDiscount($item))
-                                        <p class="wsus__tk">{{$settings->currency_icon}}{{$item->offer_price}} <del>{{$settings->currency_icon}}{{$item->price}}</del></p>
+                                        <p class="wsus__tk">
+                                            <strong>{{$settings->currency_icon}}{{number_format($item->offer_price, 2)}}</strong> <del>{{$settings->currency_icon}}{{number_format($item->price, 2)}}</del>
+                                        </p>
                                     @else
-                                        <p class="wsus__tk">{{$settings->currency_icon}}{{$item->price}}</p>
+                                        <p class="wsus__tk">
+                                            <strong>{{$settings->currency_icon}}{{number_format($item->price, 2)}}</strong>
+                                        </p>
                                     @endif
                                 </div>
                             </a>

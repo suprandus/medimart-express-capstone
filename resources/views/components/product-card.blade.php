@@ -18,31 +18,28 @@
             <li><a href="#" data-bs-toggle="modal" data-bs-target="#exampleModal" class="show_product_modal"
                     data-id="{{ $product->id }}"><i class="far fa-eye"></i></a></li>
             <li><a href="" class="add_to_wishlist" data-id="{{$product->id}}"><i class="far fa-heart"></i></a></li>
-            {{-- <li><a href="#"><i class="far fa-random"></i></a> --}}
         </ul>
         <div class="wsus__product_details">
             <a class="wsus__category" href="#">{{$product->category->name}} </a>
 
             <p class="wsus__pro_rating">
-
-
-                @for ($i = 1; $i <= 5; $i++) @if ($i <=$product->reviews_avg_rating)
-                    <i class="fas fa-star"></i>
+                @for ($i = 1; $i <= 5; $i++)
+                    @if ($i <= $product->reviews_avg_rating)
+                        <i class="fas fa-star"></i>
                     @else
-                    <i class="far fa-star"></i>
+                        <i class="far fa-star"></i>
                     @endif
-                    @endfor
-
-                    <span>({{$product->reviews_count}} review)</span>
+                @endfor
+                <span>({{$product->reviews_count}} review)</span>
             </p>
-            <a class="wsus__pro_name" href="{{route('product-detail', $product->slug)}}">{{limitText($product->name,
-                52)}}</a>
+            <a class="wsus__pro_name" href="{{route('product-detail', $product->slug)}}">{{limitText($product->name, 52)}}</a>
             @if(checkDiscount($product))
-            <p class="wsus__price">{{$settings->currency_icon}}{{$product->offer_price}}
-                <del>{{$settings->currency_icon}}{{$product->price}}</del>
+            <p class="wsus__price">
+                {{$settings->currency_icon}}{{number_format($product->offer_price, 2)}}
+                <del>{{$settings->currency_icon}}{{number_format($product->price, 2)}}</del>
             </p>
             @else
-            <p class="wsus__price">{{$settings->currency_icon}}{{$product->price}}</p>
+            <p class="wsus__price">{{$settings->currency_icon}}{{number_format($product->price, 2)}}</p>
             @endif
             <form class="shopping-cart-form">
                 <input type="hidden" name="product_id" value="{{$product->id}}">
@@ -51,8 +48,9 @@
                 <select class="d-none" name="variants_items[]">
                     @foreach ($variant->productVariantItems as $variantItem)
                     @if ($variantItem->status != 0)
-                    <option value="{{$variantItem->id}}" {{$variantItem->is_default == 1 ? 'selected' :
-                        ''}}>{{$variantItem->name}} (${{$variantItem->price}})</option>
+                    <option value="{{$variantItem->id}}" {{$variantItem->is_default == 1 ? 'selected' : ''}}>
+                        {{$variantItem->name}} (${{number_format($variantItem->price, 2)}})
+                    </option>
                     @endif
                     @endforeach
                 </select>

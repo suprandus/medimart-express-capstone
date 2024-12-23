@@ -83,12 +83,13 @@
                                     </td>
 
                                     <td class="wsus__pro_tk">
-                                        <h6>{{$settings->currency_icon.$item->price}}</h6>
+                                        <h6>{{$settings->currency_icon.number_format($item->price, 2)}}</h6>
                                     </td>
 
                                     <td class="wsus__pro_tk">
-                                        <h6 id="{{$item->rowId}}">{{$settings->currency_icon.($item->price +
-                                            $item->options->variants_total) * $item->qty}}</h6>
+                                        <h6 id="{{$item->rowId}}">{{$settings->currency_icon .
+                                            number_format(($item->price +
+                                            $item->options->variants_total) * $item->qty, 2)}}</h6>
                                     </td>
 
                                     <td class="wsus__pro_select">
@@ -124,10 +125,13 @@
             <div class="col-xl-3">
                 <div class="wsus__cart_list_footer_button" id="sticky_sidebar">
                     <h6>total cart</h6>
-                    <p>subtotal: <span id="sub_total">{{$settings->currency_icon}}{{getCartTotal()}}</span></p>
-                    <p>coupon(-): <span id="discount">{{$settings->currency_icon}}{{getCartDiscount()}}</span></p>
+                    <p>subtotal: <span id="sub_total">{{$settings->currency_icon}}{{number_format(getCartTotal(),
+                            2)}}</span></p>
+                    <p>coupon(-): <span id="discount">{{$settings->currency_icon}}{{number_format(getCartDiscount(),
+                            2)}}</span></p>
                     <p class="total"><span>total:</span> <span
-                            id="cart_total">{{$settings->currency_icon}}{{getMainCartTotal()}}</span></p>
+                            id="cart_total">{{$settings->currency_icon}}{{number_format(getMainCartTotal(), 2)}}</span>
+                    </p>
 
                     <form id="coupon_form">
                         <input type="text" placeholder="Coupon Code" name="coupon_code"

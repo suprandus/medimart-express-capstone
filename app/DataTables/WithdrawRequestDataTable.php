@@ -37,13 +37,13 @@ class WithdrawRequestDataTable extends DataTable
                 }
             })
             ->addColumn('total_amount', function ($query) {
-                return getCurrencyIcon() . $query->total_amount;
+                return getCurrencyIcon() . number_format($query->total_amount,  2);
             })
             ->addColumn('withdraw_amount', function ($query) {
-                return getCurrencyIcon() . $query->withdraw_amount;
+                return getCurrencyIcon() . number_format($query->withdraw_amount,  2);
             })
             ->addColumn('withdraw_charge', function ($query) {
-                return getCurrencyIcon() . $query->withdraw_charge;
+                return getCurrencyIcon() . number_format( $query->withdraw_charge,  2);
             })
             ->addColumn('vendor', function ($query) {
                 return $query->vendor->shop_name;
@@ -67,7 +67,7 @@ class WithdrawRequestDataTable extends DataTable
     {
         return $model
             ->orderBy('created_at', 'desc')
-            ->newQuery();   
+            ->newQuery();
     }
 
     /**

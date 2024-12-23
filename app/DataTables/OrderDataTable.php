@@ -32,7 +32,7 @@ class OrderDataTable extends DataTable
                 return $query->user->name;
             })
             ->addColumn('amount', function ($query) {
-                return $query->currency_icon . $query->amount;
+                return $query->currency_icon . number_format($query->amount, 2);
             })
             ->addColumn('date', function ($query) {
                 return date('d-M-Y', strtotime($query->created_at));

@@ -75,8 +75,10 @@ class WithdrawMethodDataTable extends DataTable
         return [
             // Column::make('id'),
             Column::make('name'),
-            Column::make('minimum_amount'),
-            Column::make('maximum_amount'),
+            Column::make('minimum_amount')
+                ->render('function() { return parseFloat(this.minimum_amount).toFixed(2); }'),
+            Column::make('maximum_amount')
+                ->render('function() { return parseFloat(this.maximum_amount).toFixed(2); }'),
             Column::make('withdraw_charge'),
             Column::computed('action')
                 ->exportable(false)

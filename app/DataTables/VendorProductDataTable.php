@@ -47,6 +47,9 @@ class VendorProductDataTable extends DataTable
             ->addColumn('image', function ($query) {
                 return "<img width='70px' src='" . asset($query->thumb_image) . "' ></img>";
             })
+            ->addColumn('price', function ($query) {
+                return number_format($query->price, 2);
+            })
             ->addColumn('type', function ($query) {
                 switch ($query->product_type) {
                     case 'new_arrival':
@@ -91,7 +94,7 @@ class VendorProductDataTable extends DataTable
             })
             // Add conditional row class for low stock products
             ->setRowClass(function ($query) {
-                return $query->qty < 10 
+                return $query->qty < 10
                     ? 'bg-light-danger'  // Custom class for light red background
                     : '';
             })
@@ -104,7 +107,9 @@ class VendorProductDataTable extends DataTable
      */
     public function query(Product $model): QueryBuilder
     {
-        return $model->where('vendor_id', Auth::user()->vendor->id)->newQuery();
+        return $model->where('vendor_id', Auth::user()->vendor->id)
+            ->orderBy('created_at', 'desc')
+            ->newQuery();
     }
 
     /**

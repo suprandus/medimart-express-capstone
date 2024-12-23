@@ -9,7 +9,7 @@
             </div>
             <div class="col-xl-2 col-7 col-md-8 col-lg-2">
                 <div class="wsus_logo_area">
-                   <a class="wsus__header_logo" href="{{url('/')}}">
+                    <a class="wsus__header_logo" href="{{url('/')}}">
                         <img src="{{asset($logoSetting->logo)}}" alt="logo" class="img-fluid w-100">
                     </a>
                 </div>
@@ -17,7 +17,8 @@
             <div class="col-xl-5 col-md-6 col-lg-4 d-none d-lg-block">
                 <div class="wsus__search d-flex align-items-center">
                     <form action="{{route('products.index')}}" class="flex-grow-1">
-                        <input type="text" placeholder="e.g., Paracetamol, Ibuprofen" name="search" value="{{request()->search}}">
+                        <input type="text" placeholder="e.g., Paracetamol, Ibuprofen" name="search"
+                            value="{{request()->search}}">
                         <button type="submit"><i class="far fa-search"></i></button>
                     </form>
                     <div class="ms-3">
@@ -27,7 +28,7 @@
                         </span>
                     </div>
                 </div>
-            </div>            
+            </div>
             <div class="col-xl-5 col-3 col-md-3 col-lg-6">
                 <div class="wsus__call_icon_area">
                     <div class="wsus__call_area">
@@ -71,10 +72,11 @@
                     <a class="wsus__cart_title"
                         href="{{route('product-detail', $sidebarProduct->options->slug)}}">{{$sidebarProduct->name}}</a>
                     <p>
-                        {{$settings->currency_icon}}{{$sidebarProduct->price}}
+                        {{$settings->currency_icon}}{{number_format($sidebarProduct->price, 2)}}
                     </p>
                     <small>Variants total:
-                        {{$settings->currency_icon}}{{$sidebarProduct->options->variants_total}}</small>
+                        {{$settings->currency_icon}}{{number_format($sidebarProduct->options->variants_total,
+                        2)}}</small>
                     <br>
                     <small>Qty: {{$sidebarProduct->qty}}</small>
                 </div>
@@ -85,7 +87,8 @@
             @endif
         </ul>
         <div class="mini_cart_actions {{Cart::content()->count() === 0 ? 'd-none': ''}}">
-            <h5>sub total <span id="mini_cart_subtotal">{{$settings->currency_icon}}{{getCartTotal()}}</span></h5>
+            <h5>sub total <span id="mini_cart_subtotal">{{$settings->currency_icon}}{{number_format(getCartTotal(),
+                    2)}}</span></h5>
             <div class="wsus__minicart_btn_area">
                 <a class="common_btn" href="{{route('cart-details')}}">view cart</a>
                 <a class="common_btn" href="{{route('user.checkout')}}">checkout</a>
@@ -195,10 +198,12 @@
         font-size: 1.2rem;
         cursor: pointer;
     }
+
     .prescription-icon i {
         color: white;
         font-size: 30px;
     }
+
     .overlay {
         position: fixed;
         top: 0;
@@ -230,6 +235,7 @@
         display: inline-block;
         width: 100%;
     }
+
     #image-preview {
         max-height: 300px;
         border: 1px solid #ccc;

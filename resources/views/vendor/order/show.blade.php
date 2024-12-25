@@ -52,7 +52,7 @@ $address = json_decode($order->order_address);
                                     <strong>Payment Information:</strong><br>
                                     <b>Method:</b> {{$order->payment_method}}<br>
                                     <b>Transaction Id:</b> {{@$order->transaction->transaction_id}}<br>
-                                    <b>Status:</b> {{$order->payment_status === 1 ? 'Completed' : 'Pending'}}
+                                    <b>Status:</b> {{$order->payment_status}}
                                 </address>
                             </div>
                             <div class="col-md-6 text-md-right">

@@ -53,7 +53,7 @@ $coupon = json_decode($order->coupon);
                   <strong>Payment Information:</strong><br>
                   <b>Method:</b> {{$order->payment_method}}<br>
                   <b>Transaction Id: </b>{{@$order->transaction->transaction_id}} <br>
-                  <b>Status: </b> {{$order->payment_status === 1 ? 'Complete' : 'Pending'}}
+                  <b>Status: </b> {{$order->payment_status}}
                 </address>
               </div>
               <div class="col-md-6 text-md-right">
@@ -118,7 +118,7 @@ $coupon = json_decode($order->coupon);
 
                   {{-- Payment Status --}}
                   <div class="form-group">
-                    <label for="">Payment status</label>
+                    <label for="">Payment Status</label>
                     @if ($paymentMethod === 'COD')
                     @if ($order->payment_status === 'pending')
                     <select name="" id="payment_status" class="form-control" data-id="{{$order->id}}">

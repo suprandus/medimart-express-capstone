@@ -42,11 +42,13 @@
                             data-bs-target="#exampleModal">add
                             new address</a>
                     </div>
-
-                    <div class="row">
-                        @foreach ($addresses as $address)
-                        <div class="col-xl-6">
-                            <div class="wsus__checkout_single_address">
+                            <div class="wsus__order_details_summery">
+                                <p>subtotal: <span>{{$settings->currency_icon}}{{$cartTotal}}</span></p>
+                                <p>shipping fee(+): <span id="shipping_fee">{{$settings->currency_icon}}0</span></p>
+                                <p>coupon(-): <span>{{$settings->currency_icon}}{{getCartDiscount()}}</span></p>
+                                <p><b>total:</b> <span><b id="total_amount" data-id="{{getMainCartTotal()}}">{{$settings->currency_icon}}{{getMainCartTotal()}}</b></span></p>
+                            </div>
+                            <div class="terms_area">
                                 <div class="form-check">
                                     <input class="form-check-input shipping_address" data-id="{{$address->id}}"
                                         type="radio" name="flexRadioDefault" id="flexRadioDefault1">

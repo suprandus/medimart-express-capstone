@@ -7,13 +7,23 @@
       <a href="">ME</a>
     </div>
     <ul class="sidebar-menu">
-      <li class="menu-header">Dashboard</li>
+      <li class="{{setActive(['vendor.dashboard'])}}">
+        <a class="nav-link" href="{{ route('vendor.dashboard') }}"><i class="fas fa-prescription-bottle-alt"></i><span>
+            Dashboard</span>
+        </a>
+      </li>
       <li class=""><a class="nav-link" href="{{ route('home') }}"><i class="fas fa-home"></i>
           <span> Home</span></a>
       </li>
-      <li class="{{setActive(['vendor.dashboard'])}}">
-        <a class="nav-link" href="{{ route('vendor.dashboard') }}"><i class="fas fa-prescription-bottle-alt"></i><span>
-            Dashboard</span></a>
+      <li class="{{setActive(['user.notifications'])}}">
+      <a class="nav-link" href="{{route('user.notifications') }}">
+            <i class="fas fa-bell"></i>
+            @php
+                $notifCount = \App\Models\NotificationsPharmacy::where('vendor_id', Auth::id())->where('status', 'unread')->count();
+            @endphp
+            <span class="mb-1">Notifications</span>
+            <small class="text-danger font-weight-bold" style="display: inline-block"> {{$notifCount}}</small>
+        </a>
       </li>
       <li class="{{setActive(['vendor.pharmacy-sales-reports'])}}"><a class="nav-link"
           href="{{ route('vendor.pharmacy-sales-reports') }}"><i class="fas fa-chart-line"></i>

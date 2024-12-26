@@ -13,13 +13,13 @@ use App\Models\PayMongoSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use Cart;
+use App\Models\UserCart;
 
 class CheckOutController extends Controller
 {
     public function index()
     {
-        $cartItems = Cart::content();
+        $cartItems = UserCart::content();
         $paymongoSetting = PayMongoSetting::first();
         $paypalSetting = PaypalSetting::first();
         $stripeSetting = StripeSetting::first();
@@ -28,7 +28,11 @@ class CheckOutController extends Controller
 
         $addresses = UserAddress::where('user_id', Auth::user()->id)->get();
         $shippingMethods = ShippingRule::where('status', 1)->get();
-        return view('frontend.pages.checkout', compact('cartItems', 'addresses', 'shippingMethods', 'paymongoSetting', 'paypalSetting', 'stripeSetting', 'razorpaySetting', 'codSetting'));
+        $cartItems = UserCart::where('user_id', Auth::user()->id)
+            ->where('checked', 'yes')
+            ->get();
+        $cartTotal = $cartItems->sum('cart_subtotal');
+        return view('frontend.pages.checkout', compact('cartItems', 'cartTotal', 'addresses', 'shippingMethods', 'paymongoSetting', 'paypalSetting', 'stripeSetting', 'razorpaySetting', 'codSetting'));
     }
 
     public function createAddress(Request $request)

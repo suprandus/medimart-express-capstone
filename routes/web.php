@@ -23,6 +23,7 @@ use App\Http\Controllers\Frontend\WishlistController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Backend\VendorListController;
 use App\Http\Controllers\Frontend\NearbyPharmacyController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OCRController;
 use Illuminate\Support\Facades\Route;
 
@@ -36,6 +37,9 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+use Illuminate\Auth\Events\Login;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Log;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
@@ -52,123 +56,117 @@ require __DIR__ . '/auth.php';
 
 Route::get('flash-sale', [FlashSaleController::class, 'index'])->name('flash-sale');
 
-/** Product route */
+//Product route
 Route::get('products', [FrontendProductController::class, 'productsIndex'])->name('products.index');
 Route::get('product-detail/{slug}', [FrontendProductController::class, 'showProduct'])->name('product-detail');
 Route::get('change-product-list-view', [FrontendProductController::class, 'chageListView'])->name('change-product-list-view');
 
-
-/** Cart routes */
+//Notification
+Route::get('notifications', [NotificationController::class, 'index'])->name('user.notifications');
+Route::get('notifications/{id}', [NotificationController::class, 'viewNotification'])->name('user.view-notification');
+    
+//Cart routes
 Route::post('add-to-cart', [CartController::class, 'addToCart'])->name('add-to-cart');
 Route::get('cart-details', [CartController::class, 'cartDetails'])->name('cart-details');
-Route::post('cart/update-quantity', [CartController::class, 'updateProductQty'])->name('cart.update-quantity');
 Route::get('clear-cart', [CartController::class, 'clearCart'])->name('clear.cart');
-Route::get('cart/remove-product/{rowId}', [CartController::class, 'removeProduct'])->name('cart.remove-product');
+Route::get('cart/remove-product/{product_id}', [CartController::class, 'removeProduct'])->name('cart.remove-product');
 Route::get('cart-count', [CartController::class, 'getCartCount'])->name('cart-count');
 Route::get('cart-products', [CartController::class, 'getCartProducts'])->name('cart-products');
 Route::post('cart/remove-sidebar-product', [CartController::class, 'removeSidebarProduct'])->name('cart.remove-sidebar-product');
 Route::get('cart/sidebar-product-total', [CartController::class, 'cartTotal'])->name('cart.sidebar-product-total');
+Route::get('/cart/mini', [CartController::class, 'miniCart'])->name('cart.mini');
+Route::post('/cart/update-checked-status', [CartController::class, 'updateCheckedStatus'])->name('cart.update-checked-status');
+Route::post('cart/update-quantity', [CartController::class, 'updateProductQty'])->name('cart.update-quantity');
 
 Route::get('apply-coupon', [CartController::class, 'applyCoupon'])->name('apply-coupon');
 Route::get('coupon-calculation', [CartController::class, 'couponCalculation'])->name('coupon-calculation');
 
-/** Newsletter routes */
-Route::post('newsletter-request', [NewsletterController::class, 'newsLetterRequset'])->name('newsletter-request');
-Route::get('newsletter-verify/{token}', [NewsletterController::class, 'newsLetterEmailVarify'])->name('newsletter-verify');
-
-/** vendor page routes */
+//vendor page routes
 Route::get('pharmacy', [HomeController::class, 'vendorPage'])->name('vendor.index');
 Route::get('pharmacy-product/{id}', [HomeController::class, 'vendorProductsPage'])->name('vendor.products');
 
-/** about page route */
+//about page route
 Route::get('about', [PageController::class, 'about'])->name('about');
-/** terms and conditions page route */
+//terms and conditions page route */
 Route::get('terms-and-conditions', [PageController::class, 'termsAndCondition'])->name('terms-and-conditions');
-/** contact route */
+//contact route
 Route::get('contact', [PageController::class, 'contact'])->name('contact');
 Route::post('contact', [PageController::class, 'handleContactForm'])->name('handle-contact-form');
 
-/** Product track route */
+//Product track route
 Route::get('product-traking', [ProductTrackController::class, 'index'])->name('product-traking.index');
 
-/** Nearby Pharmacies routes */
+//Nearby Pharmacies routes
 Route::get('nearby-pharmacies', [NearbyPharmacyController::class, 'index'])->name('nearby-pharmacies');
+Route::post('nearest-pharmacies', [VendorListController::class, 'nearestVendors'])->name('nearest-vendors');
 
-/** blog routes */
-Route::get('blog-details/{slug}', [BlogController::class, 'blogDetails'])->name('blog-details');
-Route::get('blog', [BlogController::class, 'blog'])->name('blog');
 
-/** Product routes */
+//Product routes
 Route::get('show-product-modal/{id}', [HomeController::class, 'ShowProductModal'])->name('show-product-modal');
 
 /** add product in wishlist */
 Route::get('wishlist/add-product', [WishlistController::class, 'addToWishlist'])->name('wishlist.store');
 
 
-/**nearest pharmacy**/
-Route::post('nearest-pharmacies', [VendorListController::class, 'nearestVendors'])->name('nearest-vendors');
+//Removed routes
+// blog routes 
+Route::get('blog-details/{slug}', [BlogController::class, 'blogDetails'])->name('blog-details');
+Route::get('blog', [BlogController::class, 'blog'])->name('blog');
+// Newsletter routes
+Route::post('newsletter-request', [NewsletterController::class, 'newsLetterRequset'])->name('newsletter-request');
+Route::get('newsletter-verify/{token}', [NewsletterController::class, 'newsLetterEmailVarify'])->name('newsletter-verify');
 
-
-/**Route groups**/
+//Route groups
 Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'user', 'as' => 'user.'], function () {
     Route::get('dashboard', [UserDashboardController::class, 'index'])->name('dashboard');
     Route::get('profile', [UserProfileController::class, 'index'])->name('profile'); // user.profile
     Route::put('profile', [UserProfileController::class, 'updateProfile'])->name('profile.update'); // user.profile.update
     Route::post('profile', [UserProfileController::class, 'updatePassword'])->name('profile.update.password');
 
-    /** Message Route */
+    //Message Route
     Route::get('messages', [UserMessageController::class, 'index'])->name('messages.index');
     Route::post('send-message', [UserMessageController::class, 'sendMessage'])->name('send-message');
     Route::get('get-messages', [UserMessageController::class, 'getMessages'])->name('get-messages');
 
-    /** User Address Route */
+    //User Address Route
     Route::resource('address', UserAddressController::class);
-    /** Order Routes */
+    //Order Routes
     Route::get('orders', [UserOrderController::class, 'index'])->name('orders.index');
     Route::get('orders/show/{id}', [UserOrderController::class, 'show'])->name('orders.show');
     Route::post('orders/status/{id}', [UserOrderController::class, 'orderStatus'])->name('orders.status');
 
-    /** Wishlist routes */
+    //Wishlist routes
     Route::get('wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
     Route::get('wishlist/remove-product/{id}', [WishlistController::class, 'destory'])->name('wishlist.destory');
 
     Route::get('reviews', [ReviewController::class, 'index'])->name('review.index');
 
-    /** Vendor request route */
+    //Vendor request route
     Route::get('pharmacy-request', [UserVendorReqeustController::class, 'index'])->name('vendor-request.index');
     Route::post('pharmacy-request', [UserVendorReqeustController::class, 'create'])->name('vendor-request.create');
 
-    /** product review routes */
+    //product review routes
     Route::post('review', [ReviewController::class, 'create'])->name('review.create');
 
-    /** blog comment routes */
+    //blog comment routes
     Route::post('blog-comment', [BlogController::class, 'comment'])->name('blog-comment');
 
-    /** Checkout routes */
+    //Checkout routes
+
+    Route::get('checkout', [CheckOutController::class, 'index'])->name('user.checkout');
     Route::get('checkout', [CheckOutController::class, 'index'])->name('checkout');
     Route::post('checkout/address-create', [CheckOutController::class, 'createAddress'])->name('checkout.address.create');
     Route::post('checkout/form-submit', [CheckOutController::class, 'checkOutFormSubmit'])->name('checkout.form-submit');
-
-    /** Payment Routes */
+    
+    //Payment Routes
     Route::get('payment', [PaymentController::class, 'index'])->name('payment');
     Route::get('payment-success', [PaymentController::class, 'paymentSuccess'])->name('payment.success');
 
-    /** PayMongo routes */
+    //PayMongo routes
     Route::get('paymongo/payment', [PaymentController::class, 'payWithPayMongo'])->name('paymongo.payment');
     Route::get('paymongo/success', [PaymentController::class, 'paymongoSuccess'])->name('paymongo.success');
     Route::get('paymongo/cancel', [PaymentController::class, 'paymongoCancel'])->name('paymongo.cancel');
-
-    /** Paypal routes */
-    Route::get('paypal/payment', [PaymentController::class, 'payWithPaypal'])->name('paypal.payment');
-    Route::get('paypal/success', [PaymentController::class, 'paypalSuccess'])->name('paypal.success');
-    Route::get('paypal/cancel', [PaymentController::class, 'paypalCancel'])->name('paypal.cancel');
-
-    /** Stripe routes */
-    Route::post('stripe/payment', [PaymentController::class, 'payWithStripe'])->name('stripe.payment');
-
-    /** Razorpay routes */
-    Route::post('razorpay/payment', [PaymentController::class, 'payWithRazorPay'])->name('razorpay.payment');
-
-    /** COD routes */
+    
+    //COD routes
     Route::get('cod/payment', [PaymentController::class, 'payWithCod'])->name('cod.payment');
 });

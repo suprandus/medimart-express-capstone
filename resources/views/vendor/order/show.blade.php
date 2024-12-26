@@ -93,10 +93,13 @@ $address = json_decode($order->order_address);
                                     <td>{{$product->product_name}}</td>
                                     @endif
                                     <td>
-                                        @foreach ($variants as $key => $variant)
-                                        <b>{{$key}}:</b> {{$variant->name}}
-                                        ({{$settings->currency_icon}}{{$variant->price}})
-                                        @endforeach
+                                        @if (is_array($variants) || is_object($variants))
+                                          @foreach ($variants as $key => $variant)
+                                          <b>{{$key}}:</b> {{$variant->name}} ({{$settings->currency_icon}}{{$variant->price}})
+                                          @endforeach
+                                        @else
+                                          <span>No variants available</span>
+                                        @endif
                                     </td>
                                     <td>{{$product->vendor->shop_name}}</td>
 

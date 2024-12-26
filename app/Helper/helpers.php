@@ -3,6 +3,11 @@
 use App\Models\GeneralSetting;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use App\Models\Cart;
+use App\Models\UserCart;
+use Gloudemans\Shoppingcart\Facades\Cart as PackageCart;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 /** Set Sidebar item active */
 function setActive(array $route)
@@ -65,11 +70,24 @@ function productType($type)
 /** Get total cart amount */
 function getCartTotal()
 {
-    $total = 0;
-    foreach (\Cart::content() as $product) {
-        $total += ($product->price + $product->options->variants_total) * $product->qty;
+    try{
+        if (Auth::check()) {
+            $cartItems = UserCart::where('user_id', Auth::id())
+                ->where('checked', 'yes')
+                ->get();
+            return $cartItems->sum('cart_subtotal');
+        }
+        else{
+            $total = 0;
+            foreach (PackageCart::content() as $product) {
+                $total += ($product->price + $product->options->variants_total) * $product->qty;
+            }
+            return $total;
+        }
     }
-    return $total;
+    catch(Exception $e){
+        Log::info($e->getMessage());
+    }
 }
 
 /** Get payable total amount */
@@ -127,7 +145,7 @@ function getFinalPayableAmount()
 /** Limit text */
 function limitText($text, $limit = 20)
 {
-    return \Str::limit($text, $limit);
+    return Str::limit($text, $limit);
 }
 
 function getCurrencyIcon()
@@ -141,10 +159,10 @@ function getCurrencyIcon()
 function createLineItems()
 {
     $lineItems = [];
-    $totalQuantity = \Cart::count();
+    $totalQuantity = PackageCart::count();
     $shippingFee = getShppingFee();
 
-    foreach (\Cart::content() as $product) {
+    foreach (PackageCart::content() as $product) {
         $shippingPerItem = $totalQuantity > 0 ? ($shippingFee / $totalQuantity) : 0;
 
         $lineItems[] = [

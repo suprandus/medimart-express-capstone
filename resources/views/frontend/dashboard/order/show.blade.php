@@ -88,22 +88,26 @@ $coupon = json_decode($order->coupon);
                 <tr>
                   <td>{{++$loop->index}}</td>
                   @if (isset($product->product->slug))
-                  <td><a target="_blank"
-                      href="{{route('product-detail', $product->product->slug)}}">{{$product->product_name}}</a></td>
+                  <td><a target="_blank" href="{{route('product-detail', $product->product->slug)}}">{{$product->product_name}}</a></td>
                   @else
                   <td>{{$product->product_name}}</td>
                   @endif
                   <td>
-                    @foreach ($variants as $key => $variant)
-                    <b>{{$key}}:</b> {{$variant->name}} ({{$settings->currency_icon}}{{$variant->price}})
-                    @endforeach
+                    @php
+                    $variants = json_decode($product->variants);
+                    @endphp
+                    @if (is_array($variants) || is_object($variants))
+                      @foreach ($variants as $key => $variant)
+                      <b>{{$key}}:</b> {{$variant->name}} ({{$settings->currency_icon}}{{$variant->price}})
+                      @endforeach
+                    @else
+                      <span>No variants available</span>
+                    @endif
                   </td>
                   <td>{{$product->vendor->shop_name}}</td>
-
                   <td class="text-center">{{$settings->currency_icon}}{{$product->unit_price}} </td>
                   <td class="text-center">{{$product->qty}}</td>
-                  <td class="text-right">{{$settings->currency_icon}}{{($product->unit_price * $product->qty) +
-                    $product->variant_total}}</td>
+                  <td class="text-right">{{$settings->currency_icon}}{{($product->unit_price * $product->qty) + $product->variant_total}}</td>
                 </tr>
                 @endforeach
 

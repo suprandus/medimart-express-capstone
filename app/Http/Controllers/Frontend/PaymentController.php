@@ -23,6 +23,13 @@ use Stripe\Charge;
 use Stripe\Stripe;
 use Cart;
 use Razorpay\Api\Api;
+use Gloudemans\Shoppingcart\Facades\Cart as PackageCart;
+use App\Models\UserCart;
+use App\Models\Cart as ModelCart;
+use App\Models\NotificationsUser;
+use App\Models\NotificationsPharmacy;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class PaymentController extends Controller
 {
@@ -47,14 +54,19 @@ class PaymentController extends Controller
     {
         $setting = GeneralSetting::first();
 
+        $cartItems = UserCart::where('user_id', Auth::user()->id)
+            ->where('checked', 'yes')
+            ->get();
+        $totalOrderQuantity = $cartItems->sum('cart_product_count');
+
         $order = new Order();
         $order->invocie_id = rand(1, 999999);
-        $order->user_id = Auth::user()->id;
+        $order->user_id = Auth::id();
         $order->sub_total = getCartTotal();
         $order->amount =  getFinalPayableAmount();
         $order->currency_name = $setting->currency_name;
         $order->currency_icon = $setting->currency_icon;
-        $order->product_qty = \Cart::content()->count();
+        $order->product_qty = $totalOrderQuantity;
         $order->payment_method = $paymentMethod;
         $order->payment_status = $paymentStatus;
         $order->order_address = json_encode(Session::get('address'));
@@ -64,42 +76,49 @@ class PaymentController extends Controller
         $order->save();
 
         // store order products
-        foreach (\Cart::content() as $item) {
-            $product = Product::find($item->id);
+        foreach ($cartItems as $item) {
+            Log::info(json_encode($item));
+
+            $product = Product::find($item->product_id);
             $orderProduct = new OrderProduct();
             $orderProduct->order_id = $order->id;
-            $orderProduct->product_id = $product->id;
+            $orderProduct->product_id = $item->product_id;
             $orderProduct->vendor_id = $product->vendor_id;
             $orderProduct->product_name = $product->name;
-            $orderProduct->variants = json_encode($item->options->variants);
-            $orderProduct->variant_total = $item->options->variants_total;
-            $orderProduct->unit_price = $item->price;
-            $orderProduct->qty = $item->qty;
+            $orderProduct->variants = json_encode($item->brand_id);
+            $orderProduct->variant_total = $item->count();
+            $orderProduct->unit_price = $item->product_price;
+            $orderProduct->qty = $item->cart_product_count;
             $orderProduct->save();
 
-            // update product quantity
+            Log::info("Product '$product->id' Product Stock Before Purchase: ". $product->qty);
             $updatedQty = ($product->qty - $item->qty);
             $product->qty = $updatedQty;
             $product->save();
+            Log::info("Product '$product->id' Stock After Purchase: ". $product->qty);
 
-            //save to sales_admin table
+
             $salesAdmin = new SalesAdmin();
             $salesAdmin->vendor_id = $product->vendor_id;
             $salesAdmin->product_id = $product->id;
             $salesAdmin->product_name = $product->name;
-            $salesAdmin->product_brand_id = $product->brand_id; // Assuming the product model has a brand_id
-            $salesAdmin->product_category_id = $product->category_id; // Assuming the product model has a category_id
-            $salesAdmin->product_sub_category_id = $product->sub_category_id; // Assuming the product model has a sub_category_id
-            $salesAdmin->product_child_category_id = $product->child_category_id; // Assuming the product model has a child_category_id
+            $salesAdmin->product_brand_id = $product->brand_id;
+            $salesAdmin->product_category_id = $product->category_id;
+            $salesAdmin->product_sub_category_id = $product->sub_category_id;
+            $salesAdmin->product_child_category_id = $product->child_category_id;
             $salesAdmin->product_price = $item->price;
             $salesAdmin->product_order_quantity = $item->qty;
             $salesAdmin->order_cost = getFinalPayableAmount();
             $salesAdmin->sales = ($item->price * $item->qty) * 0.1; // 10% commission revenue of medimart
             $salesAdmin->created_at = now();
             $salesAdmin->save();
+
+            // clear cart
+            $cartItem = ModelCart::where('product_id', $item->product_id)
+                ->first();
+            $cartItem->delete();
         }
 
-        // store transaction details
         $transaction = new Transaction();
         $transaction->order_id = $order->id;
         $transaction->transaction_id = $transactionId;
@@ -108,18 +127,40 @@ class PaymentController extends Controller
         $transaction->amount_real_currency = $paidAmount;
         $transaction->amount_real_currency_name = $paidCurrencyName;
         $transaction->save();
+
+        $vendor_id =  OrderProduct::select('vendor_id')
+            ->where('order_id', $order->id)
+            ->first();
+
+        //USER NOTIFICATION
+        $notificationUser = new NotificationsUser();
+        $notificationUser->user_id = Auth::id();
+        $notificationUser->user_role = Auth::user()->role;
+        $notificationUser->order_id = $order->id;
+        $notificationUser->text = 'Your order has been placed successfully!';
+        $notificationUser->created_at = now();
+        $notificationUser->updated_at = now();
+        $notificationUser->save();
+
+        //VENDOR NOTIFICATION
+        $notificationPharmacy = new NotificationsPharmacy();
+        $notificationPharmacy->vendor_id = $vendor_id->vendor_id;
+        $notificationPharmacy->user_role = 'vendor';
+        $notificationPharmacy->order_id = $order->id;
+        $notificationPharmacy->text = 'A customer has placed a new order!';
+        $notificationPharmacy->created_at = now();
+        $notificationPharmacy->updated_at = now();
+        $notificationPharmacy->save();
     }
 
     public function clearSession()
     {
-        \Cart::destroy();
+        PackageCart::destroy();
         Session::forget('address');
         Session::forget('shipping_method');
         Session::forget('coupon');
         Session::forget('checkoutId');
     }
-
-    /** PayMongo config */
     function paymongoConfig()
     {
         $paymongoSetting = PayMongoSetting::first();
@@ -138,8 +179,6 @@ class PaymentController extends Controller
             'livemode' => config('paymongo.livemode', false),
         ];
     }
-
-    /** PayMongo redirect */
     public function payWithPayMongo()
     {
         $this->paymongoConfig();
@@ -169,8 +208,6 @@ class PaymentController extends Controller
 
         return redirect()->away($checkout->checkout_url);
     }
-
-    /** PayMongo success page */
     public function paymongoSuccess()
     {
         $this->paymongoConfig();
@@ -183,181 +220,14 @@ class PaymentController extends Controller
 
             $this->clearSession();
 
-            // dd(session()->all());
-
             return redirect()->route('user.payment.success');
         }
     }
-
-    /** PayMongo cancel page */
     public function paymongoCancel()
     {
         toastr('Someting went wrong try again later!', 'error', 'Error');
         return redirect()->route('user.payment');
     }
-
-    /** Paypal config */
-    public function paypalConfig()
-    {
-
-        $paypalSetting = PaypalSetting::first();
-        $config = [
-            'mode'    => $paypalSetting->mode === 1 ? 'live' : 'sandbox',
-            'sandbox' => [
-                'client_id'         => $paypalSetting->client_id,
-                'client_secret'     => $paypalSetting->secret_key,
-                'app_id'            => 'APP-80W284485P519543T',
-            ],
-            'live' => [
-                'client_id'         => $paypalSetting->client_id,
-                'client_secret'     => $paypalSetting->secret_key,
-                'app_id'            => '',
-            ],
-
-            'payment_action' => 'Sale',
-            'currency'       => $paypalSetting->currency_name,
-            'notify_url'     => '',
-            'locale'         => 'en_US',
-            'validate_ssl'   =>  true,
-        ];
-        return $config;
-    }
-
-    /** Paypal redirect */
-    public function payWithPaypal()
-    {
-        $config = $this->paypalConfig();
-        $paypalSetting = PaypalSetting::first();
-
-        $provider = new PayPalClient($config);
-        $provider->getAccessToken();
-
-
-        // calculate payable amount depending on currency rate
-        $total = getFinalPayableAmount();
-        $payableAmount = round($total * $paypalSetting->currency_rate, 2);
-
-
-        $response = $provider->createOrder([
-            "intent" => "CAPTURE",
-            "application_context" => [
-                "return_url" => route('user.paypal.success'),
-                "cancel_url" => route('user.paypal.cancel'),
-            ],
-            "purchase_units" => [
-                [
-                    "amount" => [
-                        "currency_code" => $config['currency'],
-                        "value" => $payableAmount
-                    ]
-                ]
-            ]
-        ]);
-
-        if (isset($response['id']) && $response['id'] != null) {
-            foreach ($response['links'] as $link) {
-                if ($link['rel'] === 'approve') {
-                    return redirect()->away($link['href']);
-                }
-            }
-        } else {
-            return redirect()->route('user.paypal.cancel');
-        }
-    }
-
-    public function paypalSuccess(Request $request)
-    {
-        $config = $this->paypalConfig();
-        $provider = new PayPalClient($config);
-        $provider->getAccessToken();
-
-        $response = $provider->capturePaymentOrder($request->token);
-
-        if (isset($response['status']) && $response['status'] == 'COMPLETED') {
-
-            // calculate payable amount depending on currency rate
-            $paypalSetting = PaypalSetting::first();
-            $total = getFinalPayableAmount();
-            $paidAmount = round($total * $paypalSetting->currency_rate, 2);
-
-            $this->storeOrder('paypal', 1, $response['id'], $paidAmount, $paypalSetting->currency_name);
-
-            // clear session
-            $this->clearSession();
-
-            return redirect()->route('user.payment.success');
-        }
-
-        return redirect()->route('user.paypal.cancel');
-    }
-
-    public function paypalCancel()
-    {
-        toastr('Someting went wrong try again later!', 'error', 'Error');
-        return redirect()->route('user.payment');
-    }
-
-    /** Stripe Payment */
-    public function payWithStripe(Request $request)
-    {
-
-        // calculate payable amount depending on currency rate
-        $stripeSetting = StripeSetting::first();
-        $total = getFinalPayableAmount();
-        $payableAmount = round($total * $stripeSetting->currency_rate, 2);
-
-        Stripe::setApiKey($stripeSetting->secret_key);
-        $response = Charge::create([
-            "amount" => $payableAmount * 100,
-            "currency" => $stripeSetting->currency_name,
-            "source" => $request->stripe_token,
-            "description" => "product purchase!"
-        ]);
-
-        if ($response->status === 'succeeded') {
-            $this->storeOrder('stripe', 1, $response->id, $payableAmount, $stripeSetting->currency_name);
-            // clear session
-            $this->clearSession();
-
-            return redirect()->route('user.payment.success');
-        } else {
-            toastr('Someting went wrong try again later!', 'error', 'Error');
-            return redirect()->route('user.payment');
-        }
-    }
-
-    /** Razorpay payment */
-    public function payWithRazorPay(Request $request)
-    {
-        $razorPaySetting = RazorpaySetting::first();
-        $api = new Api($razorPaySetting->razorpay_key, $razorPaySetting->razorpay_secret_key);
-
-        // amount calculation
-        $total = getFinalPayableAmount();
-        $payableAmount = round($total * $razorPaySetting->currency_rate, 2);
-        $payableAmountInPaisa = $payableAmount * 100;
-
-        if ($request->has('razorpay_payment_id') && $request->filled('razorpay_payment_id')) {
-            try {
-                $response = $api->payment->fetch($request->razorpay_payment_id)
-                    ->capture(['amount' => $payableAmountInPaisa]);
-            } catch (\Exception $e) {
-                toastr($e->getMessage(), 'error', 'Error');
-                return redirect()->back();
-            }
-
-
-            if ($response['status'] == 'captured') {
-                $this->storeOrder('razorpay', 1, $response['id'], $payableAmount, $razorPaySetting->currency_name);
-                // clear session
-                $this->clearSession();
-
-                return redirect()->route('user.payment.success');
-            }
-        }
-    }
-
-    /** pay with cod */
     public function payWithCod(Request $request)
     {
         $codPaySetting = CodSetting::first();
@@ -366,13 +236,11 @@ class PaymentController extends Controller
             return redirect()->back();
         }
 
-        // amount calculation
         $total = getFinalPayableAmount();
         $payableAmount = round($total, 2);
 
-        $this->storeOrder('COD', 'pending', \Str::random(10), $payableAmount, $setting->currency_name);
-        
-        // clear session
+
+        $this->storeOrder('COD', 'pending', Str::random(10), $payableAmount, $setting->currency_name);
         $this->clearSession();
 
         return redirect()->route('user.payment.success');

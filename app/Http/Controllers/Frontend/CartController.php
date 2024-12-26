@@ -8,20 +8,165 @@ use App\Models\Coupon;
 use App\Models\Product;
 use App\Models\ProductVariantItem;
 use Illuminate\Http\Request;
-use Cart;
+use Gloudemans\Shoppingcart\Facades\Cart as PackageCart;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
+use App\Models\UserCart;
+use App\Models\Cart as ModelCart;
+use Illuminate\Support\Facades\Log;
 
 class CartController extends Controller
 {
+    public function addToCart(Request $request)
+    {
+        try{
+            if (Auth::check()){
+                if(Auth::user()->role === 'vendor' || Auth::user()->role === 'admin') {
+                    return response(['status' => 'error', 'message' => 'You are not allowed to add items to the cart.']);
+                }
+            }
+    
+            $product = Product::findOrFail($request->product_id);
+    
+            if ($product->qty === 0) {
+                return response(['status' => 'error', 'message' => 'Product stock out']);
+            } elseif ($product->qty < $request->qty) {
+                return response(['status' => 'error', 'message' => 'Quantity not available in our stock']);
+            }
+    
+            $variants = [];
+            $variantTotalAmount = 0;
+    
+            if ($request->has('variants_items')) {
+                foreach ($request->variants_items as $item_id) {
+                    $variantItem = ProductVariantItem::find($item_id);
+                    $variants[$variantItem->productVariant->name]['name'] = $variantItem->name;
+                    $variants[$variantItem->productVariant->name]['price'] = $variantItem->price;
+                    $variantTotalAmount += $variantItem->price;
+                }
+            }
+    
+            $productPrice = 0;
+    
+            if (checkDiscount($product)) {
+                $productPrice = $product->offer_price;
+            } else {
+                $productPrice = $product->price;
+            }
+            if(Auth::check()){
+                $productId = $request->input('product_id');
+        
+                $cartItem = ModelCart::where('user_id', Auth::id())
+                                ->where('product_id', $productId)
+                                ->first();
+                                
+                if ($cartItem) {
+                    $cartItem->quantity += 1;
+                    $cartItem->subtotal = $cartItem->quantity * $cartItem->product_price;
+                    $cartItem->checked = 'yes';
+                    $cartItem->created_at = now();
+                    $cartItem->updated_at = now();
+                    $cartItem->save();
+                    return response(['status' => 'success', 'message' => 'Product Quantity updated!']);
 
+                } else{
+                    ModelCart::create([
+                        'user_id' => Auth::id(),
+                        'product_id' => $product->id,
+                        'product_name' => $product->name,
+                        'product_price' => $productPrice,
+                        'quantity' => $request->qty,
+                        'subtotal' => $productPrice * $request->qty,
+                        'product_image' => $product->thumb_image,
+                        'prescription_approved' => 'yes',
+                        'checked' => 'yes',
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                    return response(['status' => 'success', 'message' => 'Added to cart successfully!']);
+                }
+            }
+            else{
+                $cartData = [];
+                $cartData['id'] = $product->id;
+                $cartData['name'] = $product->name;
+                $cartData['qty'] = $request->qty;
+                $cartData['price'] = $productPrice;
+                $cartData['weight'] = 10;
+                $cartData['options']['variants'] = $variants;
+                $cartData['options']['variants_total'] = $variantTotalAmount;
+                $cartData['options']['image'] = $product->thumb_image;
+                $cartData['options']['slug'] = $product->slug;
+        
+                PackageCart::add($cartData);
+                Log::info('Cart Data: ' . json_encode($cartData));
+                return response(['status' => 'success', 'message' => 'Added to cart successfully!']);
+            }
+        }
+        catch(\Exception $e){
+            Log::error($e);
+            return response(['status' => 'error', 'message' => $e->getMessage()]);
+        }
+    }
+    
+    public function updateProductQty(Request $request)
+    {
+        $productId = $request->product_id;
+        $quantity = $request->quantity;
+
+        if (Auth::check()) {
+            $cartItem = ModelCart::where('user_id', Auth::id())->where('product_id', $productId)->first();
+            if ($cartItem) {
+                $cartItem->quantity = $quantity;
+                $cartItem->subtotal = $cartItem->product_price * $quantity;
+                $cartItem->save();
+            }
+        } else {
+            PackageCart::update($productId, $quantity);
+        }
+
+        $productTotal = $this->getProductTotal($productId);
+
+        return response(['status' => 'success', 'message' => 'Product Quantity Updated!', 'product_total' => $productTotal]);
+    }
+
+    public function updateCheckedStatus(Request $request)
+    {
+        $productId = $request->product_id;
+        $checked = $request->checked;
+
+        if (Auth::check()) {
+            $cartItem = UserCart::where('user_id', Auth::id())->where('product_id', $productId)->first();
+            if ($cartItem) {
+                $cartItem->checked = $checked;
+                $cartItem->save();
+                return response(['status' => 'success', 'message' => 'Product checked status updated!']);
+            }
+        }
+
+        return response(['status' => 'error', 'message' => 'Product not found!'], 404);
+    }
     /** Show cart page  */
     public function cartDetails()
     {
-        $cartItems = Cart::content();
+        if (Auth::check()) {
+            $userId = Auth::id();
+            $cartItems = UserCart::where('user_id', $userId)
+            ->orderBy('created_at', 'desc')
+            ->get();
+            foreach ($cartItems as $item) {
+                if(!$item->updated_at->isToday()){
+                    $item->checked = 'no';
+                    $item->save();
+                }
+            }
+        } else {
+            $cartItems = PackageCart::content();
+        }
 
-        if (count($cartItems) === 0) {
+        if ($cartItems->isEmpty()) {
             Session::forget('coupon');
-            toastr('Please add some products in your cart for view the cart page', 'warning', 'Cart is empty!');
+            toastr('Please add some products in your cart to view the cart page', 'warning', 'Cart is empty!');
             return redirect()->route('home');
         }
 
@@ -31,84 +176,15 @@ class CartController extends Controller
         return view('frontend.pages.cart-detail', compact('cartItems', 'cartpage_banner_section'));
     }
 
-    /** Add item to cart */
-    public function addToCart(Request $request)
+    public function getProductTotal($productId)
     {
-        if (auth()->check() && (auth()->user()->role === 'vendor' || auth()->user()->role === 'admin')) {
-            return response(['status' => 'error', 'message' => 'You are not allowed to add items to the cart.']);
-        }
-
-        $product = Product::findOrFail($request->product_id);
-
-        // check product quantity
-        if ($product->qty === 0) {
-            return response(['status' => 'error', 'message' => 'Product stock out']);
-        } elseif ($product->qty < $request->qty) {
-            return response(['status' => 'error', 'message' => 'Quantity not available in our stock']);
-        }
-
-        $variants = [];
-        $variantTotalAmount = 0;
-
-        if ($request->has('variants_items')) {
-            foreach ($request->variants_items as $item_id) {
-                $variantItem = ProductVariantItem::find($item_id);
-                $variants[$variantItem->productVariant->name]['name'] = $variantItem->name;
-                $variants[$variantItem->productVariant->name]['price'] = $variantItem->price;
-                $variantTotalAmount += $variantItem->price;
-            }
-        }
-
-
-        /** check discount */
-        $productPrice = 0;
-
-        if (checkDiscount($product)) {
-            $productPrice = $product->offer_price;
+        if (Auth::check()) {
+            $cartItem = UserCart::where('user_id', Auth::id())->where('product_id', $productId)->first();
+            $total = $cartItem->product_price * $cartItem->quantity;
         } else {
-            $productPrice = $product->price;
+            $cartItem = PackageCart::get($productId);
+            $total = ($cartItem->price + $cartItem->options->variants_total) * $cartItem->qty;
         }
-
-        $cartData = [];
-        $cartData['id'] = $product->id;
-        $cartData['name'] = $product->name;
-        $cartData['qty'] = $request->qty;
-        $cartData['price'] = $productPrice;
-        $cartData['weight'] = 10;
-        $cartData['options']['variants'] = $variants;
-        $cartData['options']['variants_total'] = $variantTotalAmount;
-        $cartData['options']['image'] = $product->thumb_image;
-        $cartData['options']['slug'] = $product->slug;
-
-        Cart::add($cartData);
-
-        return response(['status' => 'success', 'message' => 'Added to cart successfully!']);
-    }
-
-    /** Update product quantity */
-    public function updateProductQty(Request $request)
-    {
-        $productId = Cart::get($request->rowId)->id;
-        $product = Product::findOrFail($productId);
-
-        // check product quantity
-        if ($product->qty === 0) {
-            return response(['status' => 'error', 'message' => 'Product stock out']);
-        } elseif ($product->qty < $request->qty) {
-            return response(['status' => 'error', 'message' => 'Quantity not available in our stock']);
-        }
-
-        Cart::update($request->rowId, $request->quantity);
-        $productTotal = $this->getProductTotal($request->rowId);
-
-        return response(['status' => 'success', 'message' => 'Product Quantity Updated!', 'product_total' => $productTotal]);
-    }
-
-    /** get product total */
-    public function getProductTotal($rowId)
-    {
-        $product = Cart::get($rowId);
-        $total = ($product->price + $product->options->variants_total) * $product->qty;
         return $total;
     }
 
@@ -116,7 +192,7 @@ class CartController extends Controller
     public function cartTotal()
     {
         $total = 0;
-        foreach (Cart::content() as $product) {
+        foreach (PackageCart::content() as $product) {
             $total += $this->getProductTotal($product->rowId);
         }
 
@@ -126,35 +202,44 @@ class CartController extends Controller
     /** clear all cart products */
     public function clearCart()
     {
-        Cart::destroy();
+        PackageCart::destroy();
 
         return response(['status' => 'success', 'message' => 'Cart cleared successfully']);
     }
 
-    /** Remove product form cart */
+    /** Remove product form cart */    
     public function removeProduct($rowId)
     {
-        Cart::remove($rowId);
-        toastr('Product removed succesfully!', 'success', 'Success');
+        if (Auth::check()) {
+            // Remove product from the database cart
+            ModelCart::where('user_id', Auth::id())
+            ->where('product_id', $rowId)
+            ->delete();
+        } else {
+            // Remove product from the session-based cart
+            PackageCart::remove($rowId);
+        }
+
+        toastr('Product removed successfully!', 'success', 'Success');
         return redirect()->back();
     }
 
     /** Get cart count */
     public function getCartCount()
     {
-        return Cart::content()->count();
+        return PackageCart::content()->count();
     }
 
     /** Get all cart products */
     public function getCartProducts()
     {
-        return Cart::content();
+        return PackageCart::content();
     }
 
     /** Romve product form sidebar cart */
     public function removeSidebarProduct(Request $request)
     {
-        Cart::remove($request->rowId);
+        PackageCart::remove($request->rowId);
 
         return response(['status' => 'success', 'message' => 'Product removed successfully!']);
     }

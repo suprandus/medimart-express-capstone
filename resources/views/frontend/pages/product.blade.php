@@ -16,7 +16,7 @@
                         <h4>products</h4>
                         <ul>
                             <li><a href="#">home</a></li>
-                            <li><a href="#">peoduct</a></li>
+                            <li><a href="#">product</a></li>
                         </ul>
                     </div>
                 </div>
@@ -212,8 +212,6 @@
                                         </div>
                                     </div>
                                     @endforeach
-
-
                                 </div>
                             </div>
 
@@ -227,11 +225,9 @@
                                             @if(checkDiscount($product))
                                             <span class="wsus__minus">-{{calculateDiscountPercent($product->price, $product->offer_price)}}%</span>
                                             @endif
-
+                            
                                             <a class="wsus__pro_link" href="{{route('product-detail', $product->slug)}}">
-                                                <img src="{{asset($product->thumb_image)}}" alt="product"
-                                                    class="img-fluid w-100 img_1" />
-
+                                                <img src="{{asset($product->thumb_image)}}" alt="product" class="img-fluid w-100 img_1" />
                                                 <img src="
                                                 @if(isset($product->productImageGalleries[0]->image))
                                                     {{asset($product->productImageGalleries[0]->image)}}
@@ -243,8 +239,6 @@
                                             <div class="wsus__product_details">
                                                 <a class="wsus__category" href="#">{{@$product->category->name}} </a>
                                                 <p class="wsus__pro_rating">
-
-
                                                     @for ($i = 1; $i <= 5; $i++)
                                                         @if ($i <= $product->reviews_avg_rating)
                                                         <i class="fas fa-star"></i>
@@ -252,40 +246,28 @@
                                                         <i class="far fa-star"></i>
                                                         @endif
                                                     @endfor
-
                                                     <span>({{$product->reviews_count}} review)</span>
                                                 </p>
                                                 <a class="wsus__pro_name" href="{{route('product-detail', $product->slug)}}">{{$product->name}}</a>
-
+                            
                                                 @if(checkDiscount($product))
                                                 <p class="wsus__price">{{$settings->currency_icon}}{{$product->offer_price}} <del>{{$settings->currency_icon}}{{$product->price}}</del></p>
                                                 @else
                                                     <p class="wsus__price">{{$settings->currency_icon}}{{$product->price}}</p>
                                                 @endif
-
+                            
                                                 <p class="list_description">{{$product->short_description}}</p>
                                                 <ul class="wsus__single_pro_icon">
-
                                                     <form class="shopping-cart-form">
                                                         <input type="hidden" name="product_id" value="{{$product->id}}">
-                                                        @foreach ($product->variants as $variant)
-                                                        @if ($variant->status != 0)
-                                                            <select class="d-none" name="variants_items[]">
-                                                                @foreach ($variant->productVariantItems as $variantItem)
-                                                                    @if ($variantItem->status != 0)
-                                                                        <option value="{{$variantItem->id}}" {{$variantItem->is_default == 1 ? 'selected' : ''}}>{{$variantItem->name}} (${{$variantItem->price}})</option>
-                                                                    @endif
-                                                                @endforeach
-                                                            </select>
-                                                        @endif
-                                                        @endforeach
+                                                        <input type="hidden" name="product_name" value="{{$product->name}}">
+                                                        <input type="hidden" name="product_price" value="{{$product->price}}">
+                                                        <input type="hidden" name="product_image" value="{{$product->thumb_image}}">
                                                         <input class="" name="qty" type="hidden" min="1" max="100" value="1" />
-                                                        <button class="add_cart_two mr-2" type="submit">add to cart</button>
+                                                        <button class="add_cart_two mr-2" type="button" onclick="addToCart(this)">add to cart</button>
                                                     </form>
                                                     <li><a href="#"><i class="far fa-heart"></i></a></li>
-                                                    {{-- <li><a href="#"><i class="far fa-random"></i></a> --}}
                                                 </ul>
-
                                             </div>
                                         </div>
                                     </div>
@@ -355,5 +337,40 @@
             einheit: '{{$settings->currency_icon}}'
         });
     });
+    function addToCart(button) {
+        var form = $(button).closest('form');
+        var formData = form.serialize();
+
+        $.ajax({
+            url: '{{ route("add-to-cart") }}',
+            method: 'POST',
+            data: formData,
+            success: function(response) {
+                if (response.status === 'success') {
+                    toastr.success(response.message);
+                    if (!response.html) {
+                        // If user is logged in, no HTML is returned
+                        return;
+                    }
+                    updateMiniCart(response.html, response.subtotal, response.count);
+                } else {
+                    toastr.error(response.message);
+                }
+            },
+            error: function(response) {
+                toastr.error('An error occurred. Please try again.');
+            }
+        });
+    }
+
+    function updateMiniCart(html, subtotal, count) {
+        $('.mini_cart_wrapper').html(html);
+        $('#mini_cart_subtotal').text(subtotal);
+        if (count === 0) {
+            $('.mini_cart_actions').addClass('d-none');
+        } else {
+            $('.mini_cart_actions').removeClass('d-none');
+        }
+    }
     </script>
 @endpush

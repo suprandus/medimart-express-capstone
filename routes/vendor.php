@@ -15,8 +15,7 @@ use App\Http\Controllers\Backend\VendorListController;
 use App\Http\Controllers\SalesController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Frontend\CouponController;
-
-
+use App\Http\Controllers\NotificationController;
 /** Vendor Routes */
 Route::get('/dashboard', [VendorController::class, 'dashboard'])->name('dashboard');
 Route::get('profile', [VendorProfileController::class, 'index'])->name('profile');
@@ -29,6 +28,9 @@ Route::get('reports/sales', [SalesController::class, 'showPharmacySales'])->name
 /** Excel Export Routes */
 Route::get('reports/sales-pharmacy-pdf/{period}', [SalesController::class, 'pharmacyExportLineGraphToPDF'])->name('sales.export-line-graph-pdf');
 Route::get('reports/sales/export/{period}', [SalesController::class, 'pharmacyExportLineGraphToExcel'])->name('sales.export-line-graph-excel');
+
+//NOTIFICATION ROUTES
+Route::get('notifications/{id}', [NotificationController::class, 'viewNotification'])->name('pharmacy.view-notification');
 
 /** Message Route */
 Route::get('messages', [VendorMessageController::class, 'index'])->name('messages.index');

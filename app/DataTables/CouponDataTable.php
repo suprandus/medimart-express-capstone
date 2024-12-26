@@ -4,6 +4,7 @@ namespace App\DataTables;
 
 use App\Models\Coupon;
 use App\Models\GeneralSetting;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\EloquentDataTable;
@@ -23,45 +24,51 @@ class CouponDataTable extends DataTable
      */
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
-        $query->where('created_by', Auth::id());
+        try{
+            if(Auth::check()){
+                $query->where('created_by', Auth::id());
 
-        return (new EloquentDataTable($query))
-            ->addColumn('action', function ($query) {
-                if (Auth::user()->role == 'admin') {
-                    $editBtn = "<a href='" . route('admin.coupons.edit', $query->id) . "' class='btn btn-primary'><i class='far fa-edit'></i></a>";
-                    $deleteBtn = "<a href='" . route('admin.coupons.destroy', $query->id) . "' class='btn btn-danger ml-2 delete-item'><i class='far fa-trash-alt'></i></a>";
+                return (new EloquentDataTable($query))
+                    ->addColumn('action', function ($query) {
+                        if (Auth::user()->role == 'admin') {
+                            $editBtn = "<a href='" . route('admin.coupons.edit', $query->id) . "' class='btn btn-primary'><i class='far fa-edit'></i></a>";
+                            $deleteBtn = "<a href='" . route('admin.coupons.destroy', $query->id) . "' class='btn btn-danger ml-2 delete-item'><i class='far fa-trash-alt'></i></a>";
 
-                    return $editBtn . $deleteBtn;
-                } else {
-                    $editBtn = "<a href='" . route('vendor.coupons.edit', $query->id) . "' class='btn btn-primary'><i class='far fa-edit'></i></a>";
-                    $deleteBtn = "<a href='" . route('vendor.coupons.destroy', $query->id) . "' class='btn btn-danger ml-2 delete-item'><i class='far fa-trash-alt'></i></a>";
+                            return $editBtn . $deleteBtn;
+                        } else {
+                            $editBtn = "<a href='" . route('vendor.coupons.edit', $query->id) . "' class='btn btn-primary'><i class='far fa-edit'></i></a>";
+                            $deleteBtn = "<a href='" . route('vendor.coupons.destroy', $query->id) . "' class='btn btn-danger ml-2 delete-item'><i class='far fa-trash-alt'></i></a>";
 
-                    return $editBtn . $deleteBtn;
-                }
-            })
-            ->addColumn('discount', function ($query) {
-                if ($query->discount_type == 'percent') {
-                    return $query->discount . '%';
-                } else {
-                    return GeneralSetting::first()->currency_icon . $query->discount;
-                }
-            })
-            ->addColumn('status', function ($query) {
-                if ($query->status == 1) {
-                    $button = '<label class="custom-switch mt-2">
-                        <input type="checkbox" checked name="custom-switch-checkbox" data-id="' . $query->id . '" class="custom-switch-input change-status" >
-                        <span class="custom-switch-indicator"></span>
-                    </label>';
-                } else {
-                    $button = '<label class="custom-switch mt-2">
-                        <input type="checkbox" name="custom-switch-checkbox" data-id="' . $query->id . '" class="custom-switch-input change-status">
-                        <span class="custom-switch-indicator"></span>
-                    </label>';
-                }
-                return $button;
-            })
-            ->rawColumns(['action', 'status'])
-            ->setRowId('id');
+                            return $editBtn . $deleteBtn;
+                        }
+                    })
+                    ->addColumn('discount', function ($query) {
+                        if ($query->discount_type == 'percent') {
+                            return $query->discount . '%';
+                        } else {
+                            return GeneralSetting::first()->currency_icon . $query->discount;
+                        }
+                    })
+                    ->addColumn('status', function ($query) {
+                        if ($query->status == 1) {
+                            $button = '<label class="custom-switch mt-2">
+                                <input type="checkbox" checked name="custom-switch-checkbox" data-id="' . $query->id . '" class="custom-switch-input change-status" >
+                                <span class="custom-switch-indicator"></span>
+                            </label>';
+                        } else {
+                            $button = '<label class="custom-switch mt-2">
+                                <input type="checkbox" name="custom-switch-checkbox" data-id="' . $query->id . '" class="custom-switch-input change-status">
+                                <span class="custom-switch-indicator"></span>
+                            </label>';
+                        }
+                        return $button;
+                    })
+                    ->rawColumns(['action', 'status'])
+                    ->setRowId('id');
+            }
+        }catch(\Exception $e){
+            Log::info($e->getMessage());
+        }
     }
 
     /**

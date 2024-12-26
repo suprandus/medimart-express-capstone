@@ -35,7 +35,7 @@ class PaymentController extends Controller
 {
     public function index()
     {
-        $cartItems = Cart::content();
+        $cartItems = UserCart::content();
         $paymongoSetting = PayMongoSetting::first();
         $codSetting = CodSetting::first();
 

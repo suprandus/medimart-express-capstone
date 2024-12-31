@@ -62,7 +62,7 @@ class SalesController extends Controller
         $totalYearSalesMedimart = $yearSalesMedimart->sum();
 
         $overallDataPharmacy = SalesByPharmacy::selectRaw('vendor_id, name, DATE(created_at) as date, SUM(sales) as total_sales')
-            ->groupBy('vendor_id')
+            ->groupBy('vendor_id', 'date')
             ->orderBy('date')
             ->get();
         $overallLabelsPharmacy = $overallDataPharmacy->pluck('date')->map(fn($date) => Carbon::parse($date)->format('Y-m-d'));

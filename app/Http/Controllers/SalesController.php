@@ -27,7 +27,7 @@ class SalesController extends Controller
 
         $todayDataMedimart = SalesAdmin::whereDate('created_at', Carbon::today())
             ->selectRaw('DATE_FORMAT(created_at, "%h:%i %p") as time, SUM(sales) as total_sales')
-            ->groupBy('time')
+            ->groupBy('time', 'created_at')
             ->orderBy('created_at')
             ->get();
         $todayLabelsMedimart = $todayDataMedimart->pluck('time');

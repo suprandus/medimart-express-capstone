@@ -115,7 +115,7 @@
         </div> --}}
 
         <div class="col-lg-3 col-md-6 col-sm-6 col-12">
-            <a href="" class="card-link">
+            <a href="{{ route('admin.delivered-orders') }}" class="card-link">
                 <div class="card card-statistic-1">
                     <div class="card-icon bg-danger">
                         <i class="fas fa-chart-line"></i>
@@ -133,7 +133,7 @@
         </div>
 
         <div class="col-lg-3 col-md-6 col-sm-6 col-12">
-            <a href="" class="card-link">
+            <a href="{{ route('admin.delivered-orders') }}" class="card-link">
                 <div class="card card-statistic-1">
                     <div class="card-icon bg-danger">
                         <i class="fas fa-chart-bar"></i>

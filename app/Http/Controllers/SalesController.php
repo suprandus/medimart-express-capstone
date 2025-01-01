@@ -27,7 +27,7 @@ class SalesController extends Controller
 
         $todayDataMedimart = SalesAdmin::whereDate('created_at', Carbon::today())
             ->selectRaw('DATE_FORMAT(created_at, "%h:%i %p") as time, SUM(sales) as total_sales')
-            ->groupBy('time', 'created_at')
+            ->groupBy('time')
             ->orderBy('created_at')
             ->get();
         $todayLabelsMedimart = $todayDataMedimart->pluck('time');
@@ -62,7 +62,7 @@ class SalesController extends Controller
         $totalYearSalesMedimart = $yearSalesMedimart->sum();
 
         $overallDataPharmacy = SalesByPharmacy::selectRaw('vendor_id, name, DATE(created_at) as date, SUM(sales) as total_sales')
-            ->groupBy('vendor_id', 'date')
+            ->groupBy('vendor_id')
             ->orderBy('date')
             ->get();
         $overallLabelsPharmacy = $overallDataPharmacy->pluck('date')->map(fn($date) => Carbon::parse($date)->format('Y-m-d'));
@@ -71,7 +71,7 @@ class SalesController extends Controller
 
         $todayDataPharmacy = SalesByPharmacy::whereDate('created_at', Carbon::today())
             ->selectRaw('vendor_id, name, DATE_FORMAT(created_at, "%h:%i %p") as time, SUM(sales) as total_sales')
-            ->groupBy('vendor_id', 'created_at')
+            ->groupBy('vendor_id')
             ->orderBy('created_at')
             ->get();
         $todayLabelsPharmacy = $todayDataPharmacy->pluck('time');
@@ -80,7 +80,7 @@ class SalesController extends Controller
 
         $weeklyDataPharmacy = SalesByPharmacy::whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])
             ->selectRaw('vendor_id, name, DATE(created_at) as date, SUM(sales) as total_sales')
-            ->groupBy('vendor_id', 'date')
+            ->groupBy('vendor_id')
             ->orderBy('date')
             ->get();
         $weekLabelsPharmacy = $weeklyDataPharmacy->pluck('date')->map(fn($date) => Carbon::parse($date)->format('l (m/d)'));
@@ -89,7 +89,7 @@ class SalesController extends Controller
 
         $monthDataPharmacy = SalesByPharmacy::whereMonth('created_at', Carbon::now()->month)
             ->selectRaw('vendor_id, name, WEEK(created_at, 1) - WEEK(DATE_FORMAT(created_at, "%Y-%m-01"), 1) + 1 as week_of_month, SUM(sales) as total_sales')
-            ->groupBy('vendor_id', 'week_of_month')
+            ->groupBy('vendor_id')
             ->orderBy('week_of_month')
             ->get();
         $monthLabelsPharmacy = $monthDataPharmacy->pluck('week_of_month')->map(fn($week) => "Week " . $week);
@@ -98,7 +98,7 @@ class SalesController extends Controller
 
         $yearDataPharmacy = SalesByPharmacy::whereYear('created_at', Carbon::now()->year)
             ->selectRaw('vendor_id, name, MONTH(created_at) as month, SUM(sales) as total_sales')
-            ->groupBy('vendor_id', 'month')
+            ->groupBy('vendor_id')
             ->orderBy('month')
             ->get();
         $yearLabelsPharmacy = $yearDataPharmacy->pluck('month')->map(fn($month) => Carbon::createFromDate(null, $month)->format('F'));
@@ -166,7 +166,7 @@ class SalesController extends Controller
         $todayData = SalesByPharmacy::whereDate('created_at', Carbon::today())
             ->where('vendor_id', $vendorId)
             ->selectRaw('DATE_FORMAT(created_at, "%h:%i %p") as time, SUM(sales) as total_sales')
-            ->groupBy('time', 'created_at')
+            ->groupBy('time')
             ->orderBy('created_at')
             ->get();
         $todayLabels = $todayData->pluck('time');

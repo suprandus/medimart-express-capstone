@@ -115,7 +115,7 @@
         </div> --}}
 
         <div class="col-lg-3 col-md-6 col-sm-6 col-12">
-            <a href="" class="card-link">
+            <a href="{{ route('admin.delivered-orders') }}" class="card-link">
                 <div class="card card-statistic-1">
                     <div class="card-icon bg-danger">
                         <i class="fas fa-chart-line"></i>
@@ -133,7 +133,7 @@
         </div>
 
         <div class="col-lg-3 col-md-6 col-sm-6 col-12">
-            <a href="" class="card-link">
+            <a href="{{ route('admin.delivered-orders') }}" class="card-link">
                 <div class="card card-statistic-1">
                     <div class="card-icon bg-danger">
                         <i class="fas fa-chart-bar"></i>
@@ -216,6 +216,25 @@
                         </div>
                         <div class="card-body">
                             {{ $totalBrands }}
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Track Orders Card -->
+        <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+            <a href="{{route('product-traking.index')}}" class="card-link">
+                <div class="card card-statistic-1">
+                    <div class="card-icon bg-danger">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="card-wrap">
+                        <div class="card-header">
+                            <h4>Track Orders</h4>
+                        </div>
+                        <div class="card-body">
+                            <i class="fas fa-arrow-right"></i>
                         </div>
                     </div>
                 </div>

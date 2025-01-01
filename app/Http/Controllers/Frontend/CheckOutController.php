@@ -19,7 +19,7 @@ class CheckOutController extends Controller
 {
     public function index()
     {
-        $cartItems = UserCart::content();
+        $cartItems = UserCart::all();
         $paymongoSetting = PayMongoSetting::first();
         $paypalSetting = PaypalSetting::first();
         $stripeSetting = StripeSetting::first();
@@ -32,7 +32,7 @@ class CheckOutController extends Controller
             ->where('checked', 'yes')
             ->get();
         $cartTotal = $cartItems->sum('cart_subtotal');
-        return view('frontend.pages.checkout', compact('cartItems', 'cartTotal', 'addresses', 'shippingMethods', 'paymongoSetting', 'paypalSetting', 'stripeSetting', 'razorpaySetting', 'codSetting'));
+        return view('frontend.pages.checkout', compact('cartItems', 'cartTotal', 'addresses', 'shippingMethods', 'paymongoSetting', 'codSetting'));
     }
 
     public function createAddress(Request $request)

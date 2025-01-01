@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class NotificationsUser extends Model
 {
+    use HasFactory;
     protected $table = 'notifications_user';
     protected $primaryKey = 'order_id';
     public $timestamps = true;

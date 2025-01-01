@@ -72,17 +72,15 @@ function getCartTotal()
 {
     try{
         if (Auth::check()) {
-            $cartItems = UserCart::where('user_id', Auth::id())
-                ->where('checked', 'yes')
-                ->get();
-            return $cartItems->sum('cart_subtotal');
+            $cartItems = UserCart::where('user_id', Auth::id())->get();
+            return number_format($cartItems->sum('cart_subtotal'), 2);
         }
         else{
             $total = 0;
             foreach (PackageCart::content() as $product) {
                 $total += ($product->price + $product->options->variants_total) * $product->qty;
             }
-            return $total;
+            return number_format($total, 2);
         }
     }
     catch(Exception $e){
@@ -98,14 +96,14 @@ function getMainCartTotal()
         $subTotal = getCartTotal();
         if ($coupon['discount_type'] === 'amount') {
             $total = $subTotal - $coupon['discount'];
-            return $total;
+            return number_format($total, 2);
         } elseif ($coupon['discount_type'] === 'percent') {
             $discount = ($subTotal * $coupon['discount'] / 100);
             $total = $subTotal - $discount;
-            return $total;
+            return number_format($total, 2);
         }
     } else {
-        return getCartTotal();
+        return number_format(getCartTotal(), 2);
     }
 }
 
@@ -116,13 +114,13 @@ function getCartDiscount()
         $coupon = Session::get('coupon');
         $subTotal = getCartTotal();
         if ($coupon['discount_type'] === 'amount') {
-            return $coupon['discount'];
+            return number_format($coupon['discount'], 2);
         } elseif ($coupon['discount_type'] === 'percent') {
             $discount = ($subTotal * $coupon['discount'] / 100);
-            return $discount;
+            return number_format($discount, 2);
         }
     } else {
-        return 0;
+        return number_format(0, 2);
     }
 }
 
@@ -130,16 +128,16 @@ function getCartDiscount()
 function getShppingFee()
 {
     if (Session::has('shipping_method')) {
-        return Session::get('shipping_method')['cost'];
+        return number_format(Session::get('shipping_method')['cost'], 2);
     } else {
-        return 0;
+        return number_format(0, 2);
     }
 }
 
 /** Get payable amount */
 function getFinalPayableAmount()
 {
-    return  getMainCartTotal() + getShppingFee();
+    return  number_format(getMainCartTotal() + getShppingFee(), 2);
 }
 
 /** Limit text */

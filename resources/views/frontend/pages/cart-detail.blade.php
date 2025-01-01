@@ -70,18 +70,27 @@
                                         @endif
                                     </td>
                                     <td class="wsus__pro_tk">
-                                        <h6>{{$settings->currency_icon.($item->product_price)}}</h6>
+                                        <h6>{{$settings->currency_icon.number_format(($item->product_price), 2)}}</h6>
                                     </td>
                                     <td class="wsus__pro_tk">
                                         <h6 id="total-{{$item->product_id ?? $item->id}}">
-                                            {{$settings->currency_icon.($item->product_price * $item->cart_product_count)}}
+                                            {{$settings->currency_icon.number_format(($item->product_price * $item->cart_product_count), 2)}}
                                         </h6>
                                     </td>
                                     <td class="wsus__pro_select">
                                         <div class="product_qty_wrapper">
-                                            <button class="btn btn-danger product-decrement" data-stock="{{$item->product_stock}}" data-price="{{$item->product_price}}">-</button>
-                                            <input class="product-qty" data-productid="{{$item->product_id ?? $item->id}}" type="text" min="1" max="{{$item->product_stock}}" value="{{$item->cart_product_count}}" readonly />
-                                            <button class="btn btn-success product-increment" data-stock="{{$item->product_stock}}" data-price="{{$item->product_price}}">+</button>
+                                            <button class="btn btn-danger product-decrement"
+                                                data-stock="{{$item->product_stock}}"
+                                                data-price="{{$item->product_price}}">-
+                                            </button>
+                                            <input class="product-qty" style="text-align:center;"
+                                                data-productid="{{$item->product_id ?? $item->id}}"
+                                                type="text" min="1" max="{{$item->product_stock}}"
+                                                value="{{$item->cart_product_count}}" readonly />
+                                            <button class="btn btn-success product-increment"
+                                                data-stock="{{$item->product_stock}}"
+                                                data-price="{{$item->product_price}}">+
+                                            </button>
                                         </div>
                                     </td>
                                     <td class="wsus__pro_icon">

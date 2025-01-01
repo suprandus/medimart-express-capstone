@@ -42,13 +42,10 @@
                             data-bs-target="#exampleModal">add
                             new address</a>
                     </div>
-                            <div class="wsus__order_details_summery">
-                                <p>subtotal: <span>{{$settings->currency_icon}}{{$cartTotal}}</span></p>
-                                <p>shipping fee(+): <span id="shipping_fee">{{$settings->currency_icon}}0</span></p>
-                                <p>coupon(-): <span>{{$settings->currency_icon}}{{getCartDiscount()}}</span></p>
-                                <p><b>total:</b> <span><b id="total_amount" data-id="{{getMainCartTotal()}}">{{$settings->currency_icon}}{{getMainCartTotal()}}</b></span></p>
-                            </div>
-                            <div class="terms_area">
+                    <div class="row">
+                        @foreach ($addresses as $address)
+                        <div class="col-xl-6">
+                            <div class="wsus__checkout_single_address">
                                 <div class="form-check">
                                     <input class="form-check-input shipping_address" data-id="{{$address->id}}"
                                         type="radio" name="flexRadioDefault" id="flexRadioDefault1">
@@ -78,42 +75,59 @@
                     @foreach ($shippingMethods as $method)
                     @if ($method->type === 'min_cost' && getCartTotal() >= $method->min_cost)
                     <div class="form-check">
-                        <input class="form-check-input shipping_method" type="radio" name="exampleRadios"
-                            id="exampleRadios1" value="{{$method->id}}" data-id="{{$method->cost}}">
-                        <label class="form-check-label" for="exampleRadios1">
-                            {{$method->name}}
-                            <span>cost: ({{$settings->currency_icon}}{{$method->cost}})</span>
+                        <input class="form-check-input shipping_method"
+                            type="radio"
+                            name="exampleRadios"
+                            id="exampleRadios1"
+                            value="{{$method->id}}"
+                            data-id="{{$method->cost}}">
+                        <label class="form-check-label" for="exampleRadios1">{{$method->name}}
+                            <span>cost: ({{$settings->currency_icon}}{{number_format($method->cost, 2)}})</span>
                         </label>
                     </div>
                     @elseif ($method->type === 'flat_cost')
                     <div class="form-check">
-                        <input class="form-check-input shipping_method" type="radio" name="exampleRadios"
-                            id="exampleRadios1" value="{{$method->id}}" data-id="{{$method->cost}}">
-                        <label class="form-check-label" for="exampleRadios1">
-                            {{$method->name}}
-                            <span>cost: ({{$settings->currency_icon}}{{$method->cost}})</span>
+                        <input class="form-check-input shipping_method"
+                            type="radio"
+                            name="exampleRadios"
+                            id="exampleRadios1"
+                            value="{{$method->id}}"
+                            data-id="{{$method->cost}}">
+                        <label class="form-check-label" for="exampleRadios1">{{$method->name}}
+                            <span>cost: ({{$settings->currency_icon}}{{number_format($method->cost, 2)}})</span>
                         </label>
                     </div>
                     @endif
                     @endforeach
 
                     {{-- current cart items --}}
-                    <div class="wsus__order_details_summery">
+                    <div class="wsus__order_details_summery" style="max-height: 280px; {{$cartItems->count() > 2? 'overflow-y: auto;' : ''}}">
                         @foreach($cartItems as $item)
-                        <hr>
-                        <p>Item: <span>{{ $item->name }}</span></p>
-                        <p>Quantity: <span>{{ $item->qty }}</span></p>
-                        <p>Price: <span>{{ $settings->currency_icon }}{{ $item->price }}</span></p>
+                            <div style="display: flex; align-items: center; border-bottom: 1px solid #ddd; padding: 5px 5px 5px 5px;">
+                                <div style="flex-shrink: 0;">
+                                    <img src="{{ asset($item->image_product) }}" alt="product image" style="width: 100px; border: 1px solid gray; border-radius: 5px;">
+                                </div>
+                                <div style="margin-left: 20px; flex-grow: 1;">
+                                    <p style="margin: 0; font-weight: 550;">{{ $item->product_name }}</p>
+                                    <div style="display: flex; justify-content: space-between; width: 100%;">
+                                        <small>Quantity: <span>{{ $item->cart_product_count }}</span></small>
+                                        <small><span>{{ $settings->currency_icon }}{{ number_format($item->cart_subtotal, 2) }}</span></small>
+                                    </div>
+                                </div>
+                            </div>
                         @endforeach
                     </div>
-
+                    
                     {{-- calculation --}}
                     <div class="wsus__order_details_summery">
-                        <p>subtotal: <span>{{$settings->currency_icon}}{{getCartTotal()}}</span></p>
-                        <p>shipping fee(+): <span id="shipping_fee">{{$settings->currency_icon}}0</span></p>
-                        <p>coupon(-): <span>{{$settings->currency_icon}}{{getCartDiscount()}}</span></p>
-                        <p><b>total:</b> <span><b id="total_amount"
-                                    data-id="{{getMainCartTotal()}}">{{$settings->currency_icon}}{{getMainCartTotal()}}</b></span>
+                        <p>subtotal: <span>{{$settings->currency_icon}}{{number_format(getCartTotal(), 2)}}</span></p>
+                        <p>shipping fee(+): <span id="shipping_fee">{{$settings->currency_icon}}{{number_format(0,2)}}</span></p>
+                        <p>coupon(-): <span>{{$settings->currency_icon}}{{number_format(getCartDiscount(), 2)}}</span></p>
+                        <p>
+                            <b>total:</b>
+                            <span><b id="total_amount" data-id="{{getMainCartTotal()}}">
+                                {{$settings->currency_icon}}{{number_format(getMainCartTotal(), 2)}}</b>
+                            </span>
                         </p>
                     </div>
                     <div class="terms_area">
@@ -285,4 +299,13 @@
         })
     })
 </script>
+
+<style>
+    .wsus__order_details_summery {
+        max-height: 200px; /* Adjust this value as needed */
+    }
+    .wsus__order_details_summery > div {
+        height: 100; /* Adjust this value as needed */
+    }
+</style>
 @endpush

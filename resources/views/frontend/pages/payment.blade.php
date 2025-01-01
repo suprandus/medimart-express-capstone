@@ -79,16 +79,26 @@
                         </div>
                     </div>
                 </div>
+                
                 <div class="col-xl-4 col-lg-4">
                     <div class="wsus__pay_booking_summary" id="sticky_sidebar2">
                         <h5>Order Summary</h5>
                         @foreach($cartItems as $item)
-                        <hr>
-                        <p>item: <span>{{ $item->name }}</span></p>
-                        <p>quantity: <span>{{ $item->qty }}</span></p>
-                        <p>price: <span>{{ $settings->currency_icon }}{{ $item->price }}</span></p>
+                        <div style="max-height: 280px; {{$cartItems->count() > 2? 'overflow-y: auto;' : ''}}">
+                            <div style="display: flex; align-items: center; border-bottom: 1px solid #ddd; padding: 5px 5px 5px 5px;">
+                                <div style="flex-shrink: 0;">
+                                    <img src="{{ asset($item->image_product) }}" alt="product image" style="width: 100px; border: 1px solid gray; border-radius: 5px;">
+                                </div>
+                                <div style="margin-left: 20px; flex-grow: 1;">
+                                    <p style="margin: 0; font-weight: 550;">{{ $item->product_name }}</p>
+                                    <div style="display: flex; justify-content: space-between; width: 100%;">
+                                        <small>Quantity: <span>{{ $item->cart_product_count }}</span></small>
+                                        <small><span>{{ $settings->currency_icon }}{{ number_format($item->cart_subtotal, 2) }}</span></small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         @endforeach
-                        <hr>
                         <p>subtotal : <span>{{$settings->currency_icon}}{{getCartTotal()}}</span></p>
                         <p>shipping fee(+) : <span>{{$settings->currency_icon}}{{getShppingFee()}}</span></p>
                         <p>coupon(-) : <span>{{$settings->currency_icon}}{{getCartDiscount()}}</span></p>

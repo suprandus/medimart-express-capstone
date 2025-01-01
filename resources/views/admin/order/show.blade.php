@@ -83,7 +83,7 @@ $coupon = json_decode($order->coupon);
                 </tr>
                 @foreach ($order->orderProducts as $product)
                 @php
-                $variants = json_decode($product->variants);
+                  $variants = json_decode($product->variants, true);
                 @endphp
                 <tr>
                   <td>{{++$loop->index}}</td>
@@ -95,8 +95,7 @@ $coupon = json_decode($order->coupon);
                   @endif
                   <td>
                     @foreach ($variants as $key => $variant)
-                    <b>{{$key}}:</b> {{$variant->name}} ( {{$settings->currency_icon}}{{$variant->price}} )
-
+                      <b>{{$key}}:</b> {{$variant->name}} ( {{$settings->currency_icon}}{{$variant->price}} )
                     @endforeach
                   </td>
                   <td>{{$product->vendor->shop_name}}</td>

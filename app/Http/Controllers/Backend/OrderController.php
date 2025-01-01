@@ -67,7 +67,7 @@ class OrderController extends Controller
      */
     public function show(string $id)
     {
-        $order = Order::with('transaction')->findOrFail($id);
+        $order = Order::select()->with(['transaction'])->findOrFail($id);
         $paymentMethod = $order->transaction->payment_method;
 
         return view('admin.order.show', compact('order', 'paymentMethod'));

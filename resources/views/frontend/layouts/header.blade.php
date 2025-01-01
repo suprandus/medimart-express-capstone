@@ -40,16 +40,50 @@
                         </div>
                     </div>
                     <ul class="wsus__icon_area">
-                        <li><a href="{{route('user.wishlist.index')}}"><i class="fal fa-heart"></i><span
-                                    id="wishlist_count">
-                                    @if (auth()->check())
-                                    {{\App\Models\Wishlist::where('user_id', auth()->user()->id)->count()}}
-                                    @else
-                                    0
+                        <li>
+                            <a href="javascript:void(0);" id="notification-icon">
+                                <i class="bi bi-bell"></i>
+                                @if(auth()->check())
+                                    @if(auth()->user()->role == 'user')
+                                        @if($notificationsUserCount != 0)
+                                            <span></span>
+                                        @endif
+                                    @elseif(auth()->user()->role == 'vendor')
+                                        @if($notificationsVendorCount != 0)
+                                            <span></span>
+                                        @endif
                                     @endif
-                                </span></a></li>
-                        <li><a class="wsus__cart_icon" href="#"><i class="fal fa-shopping-bag"></i><span
-                                    id="cart-count">{{Cart::content()->count()}}</span></a></li>
+                                @endif
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{route('user.wishlist.index')}}">
+                                <i class="bi bi-heart"></i>
+                                @if (auth()->check())
+                                    @php
+                                        $wishlistCount = \App\Models\Wishlist::where('user_id', auth()->user()->id)->count();
+                                    @endphp
+                                    @if($wishlistCount != 0)
+                                        <span>{{$wishlistCount}}</span>
+                                    @endif
+                                @else
+                                @endif
+                            </a>
+                        </li>
+                        <li>
+                            <a class="wsus__cart_icon" href="#">
+                                <i class="bi bi-cart"></i>
+                                @if (auth()->check())
+                                    @if($cartItemsCount != 0)
+                                        <span>{{$cartItemsCount}}</span>
+                                    @endif
+                                @else
+                                    @if(PackageCart::content()->count() != 0)
+                                        <span>{{PackageCart::content()->count()}}</span>
+                                    @endif
+                                @endif
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
@@ -71,7 +105,7 @@
                         <a class="wsus__cart_title"
                             href="{{route('product-detail', $sidebarProduct->product_id)}}">{{$sidebarProduct->product_name}}</a>
                         <p>
-                            {{$settings->currency_icon}}{{$sidebarProduct->product_price}}
+                            {{$settings->currency_icon}}{{number_format($sidebarProduct->product_price, 2)}}
                         </p>
                         <small>Qty: {{$sidebarProduct->quantity}}</small>
                     </div>
@@ -93,7 +127,7 @@
                         <a class="wsus__cart_title"
                             href="{{route('product-detail', $sidebarProduct->options->slug)}}">{{$sidebarProduct->name}}</a>
                         <p>
-                            {{$settings->currency_icon}}{{$sidebarProduct->price}}
+                            {{$settings->currency_icon}}{{number_format($sidebarProduct->price, 2)}}
                         </p>
                         <small>Variants total:
                             {{$settings->currency_icon}}{{$sidebarProduct->options->variants_total}}</small>
@@ -112,20 +146,22 @@
                 <h5>sub total <span id="mini_cart_subtotal">{{$settings->currency_icon}}{{getCartTotal()}}</span></h5>
                 <div class="wsus__minicart_btn_area">
                     <a class="common_btn" href="{{route('cart-details')}}">view cart</a>
-                    <a class="common_btn" href="{{route('user.checkout')}}">checkout</a>
+                    {{-- <a class="common_btn" href="{{route('user.checkout')}}">checkout</a> --}}
                 </div>
             </div>
         @else
             <div class="mini_cart_actions {{PackageCart::content()->count() === 0 ? 'd-none': ''}}">
-                <h5>sub total <span id="mini_cart_subtotal">{{$settings->currency_icon}}{{getCartTotal()}}</span></h5>
+                <h5>sub total <span id="mini_cart_subtotal">{{$settings->currency_icon}}{{number_format(getCartTotal(), 2)}}</span></h5>
                 <div class="wsus__minicart_btn_area">
                     <a class="common_btn" href="{{route('login')}}">view cart</a>
-                    <a class="common_btn" href="{{route('user.checkout')}}">checkout</a>
+                    {{-- <a class="common_btn" href="{{route('user.checkout')}}">checkout</a> --}}
                 </div>
             </div>
         @endif
     </div>
 </header>
+
+{{-- Prescription Upload Overlay --}}
 <div id="prescription-upload-overlay" class="overlay">
     <div class="overlay-content">
         <h3>Upload Prescription</h3>
@@ -143,6 +179,74 @@
     </div>
 </div>
 
+<div id="notification-preview" class="notification-preview">
+    <div class="list-group">
+        @if(auth()->check())
+            @if($notificationsUserItems == null || $notificationsPharmacyItems == null)
+                <div class="list-group-item list-group-item-action" 
+                    style="background-color: #cce5ff; 
+                            border: 1px solid #004085;
+                            border-radius: 5px;
+                            margin: 5px 10px 5px 5px;">
+                    <div class="d-flex w-100 justify-content-between">
+                        <p class="mb-1"><strong>You don't have any Notifications</strong></p>
+                    </div>
+                </div>
+            @else
+                @if(auth()->user()->role == 'user')
+                    @foreach ($notificationsUserItems as $notification)
+                        <div class="list-group-item list-group-item-action" 
+                            style="background-color: {{ $notification->status == 'unread' ? '#a7f783' : '#cce5ff' }}; 
+                                    border: 1px solid {{ $notification->status == 'unread' ? '#7fcf5b' : '#004085' }};
+                                    border-radius: 5px;
+                                    margin: 5px 10px 5px 5px;">
+                            <div class="d-flex w-100 justify-content-between">
+                                <p class="mb-1"><strong>{{ $notification->type == null ? 'Notification' : $notification->type }}</strong></p>
+                                <small>{{ $notification->created_at->diffForHumans() }}</small>
+                            </div>
+                            <p class="mb-1">{{ $notification->text }}
+                                <a href="{{ route('user.orders.show', $notification->order_id) }}" 
+                                    class="order-link" data-id="{{ $notification->notification_id }}">Order ID: {{$notification->order_id}}
+                                </a>
+                            </p>
+                            <small>{{ ucfirst($notification->status) }}</small>    
+                        </div>
+                    @endforeach
+                @elseif(auth()->user()->role == 'vendor')
+                    @foreach ($notificationsPharmacyItems as $notification)
+                        <div class="list-group-item list-group-item-action" 
+                            style="background-color: {{ $notification->status == 'unread' ? '#a7f783' : '#cce5ff' }}; 
+                                    border: 1px solid {{ $notification->status == 'unread' ? '#7fcf5b' : '#004085' }};
+                                    border-radius: 5px;
+                                    margin: 5px 10px 5px 5px;">
+                            <div class="d-flex w-100 justify-content-between">
+                                <p class="mb-1"><strong>{{ $notification->type == null ? 'Notification' : $notification->type }}</strong></p>
+                                <small>{{ $notification->created_at->diffForHumans() }}</small>
+                            </div>
+                            <p class="mb-1">{{ $notification->text }}
+                                <a href="{{ route('user.orders.show', $notification->order_id) }}" 
+                                    class="order-link" data-id="{{ $notification->notification_id }}">Order ID: {{$notification->order_id}}
+                                </a>
+                            </p>
+                            <small>{{ ucfirst($notification->status) }}</small>    
+                        </div>
+                    @endforeach
+                @endif
+            @endif
+        @else
+            <div class="list-group-item list-group-item-action" 
+            style="background-color: #cce5ff; 
+                    border: 1px solid #004085;
+                    border-radius: 5px;
+                    margin: 5px 2.5px 5px 2.5px;">
+            <div class="d-flex w-100 justify-content-between">
+                <p class="mb-1"><strong>You don't have any Notifications</strong></p>
+            </div>
+        @endif
+    </div>
+    </div>
+</div>
+
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         const overlay = document.getElementById('prescription-upload-overlay');
@@ -154,6 +258,43 @@
         const submitButton = document.getElementById('submit-prescription');
         const searchInput = document.querySelector('input[name="search"]');
         const ocrResult = document.getElementById('ocr-result');
+        const notificationIcon = document.getElementById('notification-icon');
+        const notificationPreview = document.getElementById('notification-preview');
+
+        document.querySelectorAll('.order-link').forEach(function (link) {
+            link.addEventListener('click', function (event) {
+                event.preventDefault();
+                const notificationId = this.dataset.id;
+                const orderLink = this.href;
+                fetch('{{ route('user.view-notification', '') }}/' + notificationId, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        window.location.href = orderLink;
+                    } else {
+                        console.error(data.message);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        });
+        
+        notificationIcon.addEventListener('click', function (event) {
+            event.preventDefault();
+            notificationPreview.classList.toggle('show');
+        });
+
+        document.addEventListener('click', function (event) {
+            if (!notificationIcon.contains(event.target) && !notificationPreview.contains(event.target)) {
+                notificationPreview.classList.remove('show');
+            }
+        });
 
         prescriptionIcon.addEventListener('click', () => {
             overlay.style.display = 'flex';
@@ -221,6 +362,43 @@
     });
 </script>
 <style>
+    .notification-preview {
+        display: none;
+        position: absolute;
+        top: 50px; /* Adjust as needed */
+        right: 0;
+        background-color: rgb(223, 244, 255);
+        border: 2px solid rgb(77, 157, 218);
+        border-radius: 5px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        max-height: 400px;
+        max-width: 350px; /* Adjust as needed */
+        overflow-y: auto;
+        overflow-x: hidden; /* Prevent horizontal scroll */
+        z-index: 1000;
+        padding: 5px 5px 5px 5px;
+    }
+
+    .notification-preview::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .notification-preview::-webkit-scrollbar-thumb {
+        background-color: blue;
+        border-radius: 10px;
+    }
+
+    .notification-preview .list-group-item {
+        padding: 10px;
+    }
+
+    .notification-preview.show {
+        display: block;
+    }
+
+    .notification-preview .list-group-item {
+        padding: 10px;
+    }
     .prescription-icon {
         display: flex;
         align-items: center;

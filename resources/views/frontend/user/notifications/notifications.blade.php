@@ -6,7 +6,8 @@
         @foreach ($notifications as $notification)
             <div class="list-group-item list-group-item-action" 
                  style="background-color: {{ $notification->status == 'unread' ? '#a7f783' : '#cce5ff' }}; 
-                        border: 1px solid {{ $notification->status == 'unread' ? '#7fcf5b' : '#004085' }};">
+                        border: 1px solid {{ $notification->status == 'unread' ? '#7fcf5b' : '#004085' }};
+                        margin: 5px 10px 10px 5px;">
                 <div class="d-flex w-100 justify-content-between">
                     <h5 class="mb-1">{{ $notification->type }}</h5>
                     <small>{{ $notification->created_at->diffForHumans() }}</small>

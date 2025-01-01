@@ -19,7 +19,11 @@ use Illuminate\Http\Request;
 use App\Models\ChatbotSetting;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Response;
-
+use Illuminate\Support\Facades\Auth;
+use App\Models\UserCart;
+use App\Models\NotificationsUser;
+use App\Models\NotificationsPharmacy;
+use App\Models\Wishlist;
 class HomeController extends Controller
 {
     public function index()
@@ -56,11 +60,33 @@ class HomeController extends Controller
 
         $recentBlogs = Blog::with(['category', 'user'])->where('status', 1)->orderBy('id', 'DESC')->take(8)->get();
 
-        // dd($chatbotSettings);
-        
+        //User Cart Items
+        $cartItems = new UserCart();
+        $cartItemsCount = $cartItems->where('user_id', Auth::id())->count();
+        //Wishlist Items
+        $wishlistItems = new Wishlist();
+        //$wishlistItemsCount = $wishlistItems->where('user_id', Auth::id())->count();
+        //User Notifications
+        $notificationsUser = new NotificationsUser();
+        $notificationsUserItems = $notificationsUser->where('user_id', Auth::id())
+            ->orderBy('notification_id', 'DESC')
+            ->get();
+        $notificationsUserCount = $notificationsUser->where('status', 'unread')->count();
+        //Pharmacy Notifications
+        $notificationsPharmacy = new NotificationsPharmacy();
+        $notificationsPharmacyItems = $notificationsPharmacy->where('vendor_id', Auth::id())
+            ->orderBy('notification_id', 'DESC')
+            ->get();
+        $notificationsPharmacyCount = $notificationsPharmacy->where('status', 'unread')->count();
         return view(
             'frontend.home.home',
             compact(
+                'cartItemsCount',
+                'notificationsUserItems',
+                'notificationsUserCount',
+                'notificationsPharmacyItems',
+                'notificationsPharmacyCount',
+
                 'sliders',
                 'flashSaleDate',
                 'flashSaleItems',

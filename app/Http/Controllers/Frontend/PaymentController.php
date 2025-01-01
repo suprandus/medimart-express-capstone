@@ -17,12 +17,7 @@ use App\Models\SalesAdmin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use Srmklive\PayPal\Services\PayPal as PayPalClient;
 use Luigel\Paymongo\Facades\Paymongo;
-use Stripe\Charge;
-use Stripe\Stripe;
-use Cart;
-use Razorpay\Api\Api;
 use Gloudemans\Shoppingcart\Facades\Cart as PackageCart;
 use App\Models\UserCart;
 use App\Models\Cart as ModelCart;
@@ -35,7 +30,9 @@ class PaymentController extends Controller
 {
     public function index()
     {
-        $cartItems = UserCart::content();
+        $cartItems = UserCart::where('user_id',Auth::user()->id)
+            ->where('checked', 'yes')
+            ->get();
         $paymongoSetting = PayMongoSetting::first();
         $codSetting = CodSetting::first();
 
@@ -128,9 +125,7 @@ class PaymentController extends Controller
         $transaction->amount_real_currency_name = $paidCurrencyName;
         $transaction->save();
 
-        $vendor_id =  OrderProduct::select('vendor_id')
-            ->where('order_id', $order->id)
-            ->first();
+        $vendor_id =  OrderProduct::select('vendor_id')->where('order_id', $order->id)->first();
 
         //USER NOTIFICATION
         $notificationUser = new NotificationsUser();

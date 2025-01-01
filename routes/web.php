@@ -23,9 +23,9 @@ use App\Http\Controllers\Frontend\WishlistController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Backend\VendorListController;
 use App\Http\Controllers\Frontend\NearbyPharmacyController;
-use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\OCRController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\NotificationController;
 
 /*
 |--------------------------------------------------------------------------

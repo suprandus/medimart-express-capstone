@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class NotificationsPharmacy extends Model
 {
+    use HasFactory;
     protected $table = 'notifications_pharmacy';
     protected $primaryKey = 'notification_id';
     public $timestamps = true;

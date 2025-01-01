@@ -1,5 +1,8 @@
 @php
 $address = json_decode($order->order_address);
+$shipping = json_decode($order->shpping_method);
+$coupon = json_decode($order->coupon);
+
 @endphp
 
 @extends('vendor.layouts.master')

@@ -43,7 +43,7 @@ jobs:
 
       - name: Set Permissions
         run: |
-          sudo chown -R ${{ secrets.VPS_USER }}:${{ secrets.VPS_USER }} /var/www/html/medimart-express-capstone/storage
+          sudo chown -R suprandus:suprandus /var/www/html/medimart-express-capstone/storage
           sudo chmod -R 775 /var/www/html/medimart-express-capstone/storage
 
       - name: Run Remote/Artisan Commands

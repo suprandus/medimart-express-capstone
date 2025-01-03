@@ -38,15 +38,3 @@ jobs:
           echo "${{ secrets.DEPLOY_KEY }}" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
-
-      - name: Run Remote Commands
-        uses: appleboy/ssh-action@v0.1.6
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.DEPLOY_KEY }}
-          script: |
-            cd /var/www/html/medimart-express-capstone
-            php artisan config:cache
-            php artisan route:cache
-            php artisan view:cache

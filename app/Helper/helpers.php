@@ -128,7 +128,8 @@ function getCartDiscount()
 function getShppingFee()
 {
     if (Session::has('shipping_method')) {
-        return number_format(Session::get('shipping_method')['cost'], 2);
+        $shippingCost = Session::get('shipping_method')['cost'];
+        return number_format($shippingCost, 2);
     } else {
         return number_format(0, 2);
     }

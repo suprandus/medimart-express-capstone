@@ -125,8 +125,9 @@ class PaymentController extends Controller
         $transaction->amount_real_currency_name = $paidCurrencyName;
         $transaction->save();
 
-        $vendor_id =  OrderProduct::select('vendor_id')->where('order_id', $order->id)->first();
-
+        $vendor = OrderProduct::select('vendor_id')->where('order_id', $order->id)->first();
+        $vendor_id = $vendor ? $vendor->vendor_id : null;
+        
         //USER NOTIFICATION
         $notificationUser = new NotificationsUser();
         $notificationUser->user_id = Auth::id();
@@ -139,7 +140,7 @@ class PaymentController extends Controller
 
         //VENDOR NOTIFICATION
         $notificationPharmacy = new NotificationsPharmacy();
-        $notificationPharmacy->vendor_id = $vendor_id->vendor_id;
+        $notificationPharmacy->vendor_id = $vendor_id ? $vendor_id : 1;
         $notificationPharmacy->user_role = 'vendor';
         $notificationPharmacy->order_id = $order->id;
         $notificationPharmacy->text = 'A customer has placed a new order!';

@@ -17,7 +17,7 @@
             <div class="col-xl-5 col-md-6 col-lg-4 d-none d-lg-block">
                 <div class="wsus__search d-flex align-items-center">
                     <form action="{{route('products.index')}}" class="flex-grow-1">
-                        <input type="text" placeholder="e.g., Paracetamol, Ibuprofen" name="search"
+                        <input type="text" placeholder="e.g., Mask, Caltrate Plus" name="search"
                             value="{{request()->search}}">
                         <button type="submit"><i class="far fa-search"></i></button>
                     </form>

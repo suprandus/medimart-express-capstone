@@ -46,11 +46,11 @@
                                 @if(auth()->check())
                                     @if(auth()->user()->role == 'user')
                                         @if($notificationsUserCount != 0)
-                                            <span></span>
+                                            <span>{{$notificationsUserCount}}</span>
                                         @endif
                                     @elseif(auth()->user()->role == 'vendor')
                                         @if($notificationsVendorCount != 0)
-                                            <span></span>
+                                            <span>{{$notificationsUserCount}}</span>
                                         @endif
                                     @endif
                                 @endif
@@ -266,6 +266,7 @@
                 event.preventDefault();
                 const notificationId = this.dataset.id;
                 const orderLink = this.href;
+
                 fetch('{{ route('user.view-notification', '') }}/' + notificationId, {
                     method: 'GET',
                     headers: {
@@ -273,15 +274,20 @@
                         'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     }
                 })
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     if (data.status === 'success') {
                         window.location.href = orderLink;
                     } else {
-                        console.error(data.message);
+                        console.error('Error:', data.message);
                     }
                 })
-                .catch(error => console.error('Error:', error));
+                .catch(error => console.error('Fetch Error:', error));
             });
         });
         

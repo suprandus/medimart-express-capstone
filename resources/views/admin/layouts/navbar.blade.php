@@ -4,13 +4,21 @@ use App\Models\Product;
 use App\Models\Order;
 use Carbon\Carbon;
 
-$totalPendingOrder = Order::where('order_status', 'pending')->get();
+$totalPendingOrder = Order::where('order_status', 'pending')
+->orderBy('created_at', 'desc')
+->get();
 
-$cancelledOrders = Order::where('order_status', 'cancelled')->get();
+$cancelledOrders = Order::where('order_status', 'cancelled')
+->orderBy('created_at', 'desc')
+->get();
 
-$completedOrders = Order::where('order_status', 'delivered')->where('payment_status', 'completed')->get();
+$completedOrders = Order::where('order_status', 'delivered')
+->where('payment_status', 'completed')
+->orderBy('created_at', 'desc')
+->get();
 
-$lowStockProducts = Product::where('qty', '<=', 10)->get();
+$lowStockProducts = Product::where('qty', '<=', 10) ->orderBy('created_at', 'desc')
+  ->get();
 
   // Merge all collections and sort by created_at descending
   $notifications = collect()
@@ -28,20 +36,12 @@ $lowStockProducts = Product::where('qty', '<=', 10)->get();
     </form>
     <ul class="navbar-nav navbar-right">
 
-      <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown"
-          class="nav-link notification-toggle nav-link-lg beep">
+      <li class="dropdown dropdown-list-toggle">
+        <a href="#" data-toggle="dropdown" class="nav-link notification-toggle nav-link-lg beep">
           <i class="far fa-bell"></i>
-          @if($notifications->count() > 0)
-          <span class="badge badge-danger navbar-badge">
-            {{ $notifications->count() }}
-          </span>
-          @endif
         </a>
         <div class="dropdown-menu dropdown-list dropdown-menu-right">
           <div class="dropdown-header">Notifications
-            <div class="float-right">
-              <a href="#">Mark All As Read</a>
-            </div>
           </div>
           <div class="dropdown-list-content dropdown-list-icons">
             @foreach($notifications as $notification)
@@ -55,7 +55,7 @@ $lowStockProducts = Product::where('qty', '<=', 10)->get();
                 <i class="fas fa-box"></i>
               </div>
               <div class="dropdown-item-desc">
-                {{ $product->product_name }} has been ordered!
+                {{ $product->product_name }} has been ordered.
                 <div class="time text-primary">{{ $notification->created_at->diffForHumans() }}</div>
               </div>
             </a>
@@ -68,8 +68,8 @@ $lowStockProducts = Product::where('qty', '<=', 10)->get();
                 <i class="fas fa-times"></i>
               </div>
               <div class="dropdown-item-desc">
-                Order #{{ $notification->invocie_id }} has been cancelled!
-                <div class="time text-danger">{{ $notification->updated_at->diffForHumans() }}</div>
+                Order #{{ $notification->invocie_id }} has been cancelled.
+                <div class="time text-danger">{{ $notification->created_at->diffForHumans() }}</div>
               </div>
             </a>
 
@@ -80,8 +80,8 @@ $lowStockProducts = Product::where('qty', '<=', 10)->get();
                 <i class="fas fa-check"></i>
               </div>
               <div class="dropdown-item-desc">
-                Order #{{ $notification->invocie_id }} has been completed!
-                <div class="time text-success">{{ $notification->updated_at->diffForHumans() }}</div>
+                Order #{{ $notification->invocie_id }} has been completed.
+                <div class="time text-success">{{ $notification->created_at->diffForHumans() }}</div>
               </div>
             </a>
             @endif
@@ -93,15 +93,15 @@ $lowStockProducts = Product::where('qty', '<=', 10)->get();
                 <i class="fas fa-exclamation-triangle"></i>
               </div>
               <div class="dropdown-item-desc">
-                {{ $notification->name }} is low on stock!
-                <div class="time text-warning">{{ $notification->updated_at->diffForHumans() }}</div>
+                {{ $notification->name }} is low on stock.
+                <div class="time text-warning">{{ $notification->created_at->diffForHumans() }}</div>
               </div>
             </a>
             @endif
             @endforeach
           </div>
           <div class="dropdown-footer text-center">
-            <a href="#">View All <i class="fas fa-chevron-right"></i></a>
+            <a href="{{ route('admin.notification.index') }}">View All <i class="fas fa-chevron-right"></i></a>
           </div>
         </div>
       </li>

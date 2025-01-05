@@ -20,13 +20,6 @@ $completedOrders = Order::where('order_status', 'delivered')
 ->orderBy('created_at', 'desc')
 ->get();
 
-// Merge all collections and maintain descending order
-$notifications = collect()
-->merge($totalPendingOrder)
-->merge($cancelledOrders)
-->merge($completedOrders)
-->sortByDesc('created_at');
-
 // Merge all collections and sort by created_at descending
 $notifications = collect()
 ->merge($totalPendingOrder)

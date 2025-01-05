@@ -4,12 +4,28 @@ use App\Models\Product;
 use App\Models\Order;
 use Carbon\Carbon;
 
-$totalPendingOrder = Order::where('order_status', 'pending')->where('user_id', Auth::id())->get();
+$totalPendingOrder = Order::where('order_status', 'pending')
+->where('user_id', Auth::id())
+->orderBy('created_at', 'desc')
+->get();
 
-$cancelledOrders = Order::where('order_status', 'cancelled')->where('user_id', Auth::id())->get();
+$cancelledOrders = Order::where('order_status', 'cancelled')
+->where('user_id', Auth::id())
+->orderBy('created_at', 'desc')
+->get();
 
-$completedOrders = Order::where('order_status', 'delivered')->where('payment_status', 'completed')->where('user_id',
-Auth::id())->get();
+$completedOrders = Order::where('order_status', 'delivered')
+->where('payment_status', 'completed')
+->where('user_id', Auth::id())
+->orderBy('created_at', 'desc')
+->get();
+
+// Merge all collections and maintain descending order
+$notifications = collect()
+->merge($totalPendingOrder)
+->merge($cancelledOrders)
+->merge($completedOrders)
+->sortByDesc('created_at');
 
 // Merge all collections and sort by created_at descending
 $notifications = collect()
@@ -25,24 +41,15 @@ $notifications = collect()
   </form>
   <ul class="navbar-nav navbar-right">
     <!-- Notification dropdown -->
-    <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown"
-        class="nav-link notification-toggle nav-link-lg beep">
+    <li class="dropdown dropdown-list-toggle">
+      <a href="#" data-toggle="dropdown" class="nav-link notification-toggle nav-link-lg beep">
         <i class="far fa-bell"></i>
-        @if($notifications->count() > 0)
-        <span class="badge badge-danger navbar-badge">
-          {{ $notifications->count() }}
-        </span>
-        @endif
       </a>
+
       <div class="dropdown-menu dropdown-list dropdown-menu-right">
-        <div class="dropdown-header">Notifications
-          <div class="float-right">
-            <a href="#">Mark All As Read</a>
-          </div>
-        </div>
+        <div class="dropdown-header">Notifications</div>
         <div class="dropdown-list-content dropdown-list-icons">
           @foreach($notifications as $notification)
-
           <!-- Pending order notifications -->
           @if($notification instanceof \App\Models\Order)
           @if($notification->order_status == 'pending')
@@ -52,7 +59,7 @@ $notifications = collect()
               <i class="fas fa-box"></i>
             </div>
             <div class="dropdown-item-desc">
-              {{ $product->product_name }} has been ordered!
+              {{ $product->product_name }} has been ordered.
               <div class="time text-primary">{{ $notification->created_at->diffForHumans() }}</div>
             </div>
           </a>
@@ -65,8 +72,8 @@ $notifications = collect()
               <i class="fas fa-times"></i>
             </div>
             <div class="dropdown-item-desc">
-              Order #{{ $notification->invocie_id }} has been cancelled!
-              <div class="time text-danger">{{ $notification->updated_at->diffForHumans() }}</div>
+              Order #{{ $notification->invocie_id }} has been cancelled.
+              <div class="time text-danger">{{ $notification->created_at->diffForHumans() }}</div>
             </div>
           </a>
 
@@ -77,8 +84,8 @@ $notifications = collect()
               <i class="fas fa-check"></i>
             </div>
             <div class="dropdown-item-desc">
-              Order #{{ $notification->invocie_id }} has been completed!
-              <div class="time text-success">{{ $notification->updated_at->diffForHumans() }}</div>
+              Order #{{ $notification->invocie_id }} has been completed.
+              <div class="time text-success">{{ $notification->created_at->diffForHumans() }}</div>
             </div>
           </a>
           @endif
@@ -86,7 +93,7 @@ $notifications = collect()
           @endforeach
         </div>
         <div class="dropdown-footer text-center">
-          <a href="#">View All <i class="fas fa-chevron-right"></i></a>
+          <a href="{{ route('user.notifications.index') }}">View All <i class="fas fa-chevron-right"></i></a>
         </div>
       </div>
     </li>

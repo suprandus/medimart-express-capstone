@@ -27,6 +27,12 @@
                                         <span>Orders</span></a>
                         </li>
 
+                        <!-- Notification Section -->
+                        <li class="{{setActive(['user.notifications.index'])}}"><a class="nav-link"
+                                        href="{{ route('user.notifications.index') }}"><i class="fas fa-bell"></i>
+                                        <span>Notifications</span></a>
+                        </li>
+
                         <li class="{{setActive(['user.review.*'])}}"><a class="nav-link"
                                         href="{{route('user.review.index')}}"><i class="fas fa-star"></i>
                                         <span>Reviews</span></a>

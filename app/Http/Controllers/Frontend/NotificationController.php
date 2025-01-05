@@ -4,9 +4,7 @@ namespace App\Http\Controllers\Frontend;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Product;
 use App\Models\Order;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
 class NotificationController extends Controller

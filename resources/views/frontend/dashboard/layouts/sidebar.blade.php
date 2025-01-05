@@ -23,7 +23,7 @@
                         </li>
 
                         <li class="{{setActive(['user.orders.*'])}}"><a class="nav-link"
-                                        href=" {{ route('user.orders.index' )}}"><i class="fas fa-cart-plus"></i>
+                                        href=" {{ route('user.orders.index' )}}"><i class="fas fa-box"></i>
                                         <span>Orders</span></a>
                         </li>
 

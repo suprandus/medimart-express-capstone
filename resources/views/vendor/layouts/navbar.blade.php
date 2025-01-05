@@ -4,20 +4,30 @@ use App\Models\Product;
 use App\Models\Order;
 use Carbon\Carbon;
 
-$totalPendingOrder = Order::where('order_status', 'pending')->whereHas('orderProducts', function($query){
+$totalPendingOrder = Order::where('order_status', 'pending')
+->whereHas('orderProducts', function($query) {
 $query->where('vendor_id', Auth::user()->vendor->id);
-})->get();
+})
+->orderBy('created_at', 'desc')
+->get();
 
-$cancelledOrders = Order::where('order_status', 'cancelled')->whereHas('orderProducts', function ($query) {
+$cancelledOrders = Order::where('order_status', 'cancelled')
+->whereHas('orderProducts', function ($query) {
 $query->where('vendor_id', Auth::user()->vendor->id);
-})->get();
+})
+->orderBy('created_at', 'desc')
+->get();
 
-$completedOrders = Order::where('order_status', 'delivered')->where('payment_status',
-'completed')->whereHas('orderProducts', function ($query) {
+$completedOrders = Order::where('order_status', 'delivered')
+->where('payment_status', 'completed')
+->whereHas('orderProducts', function ($query) {
 $query->where('vendor_id', Auth::user()->vendor->id);
-})->get();
+})
+->orderBy('created_at', 'desc')
+->get();
 
-$lowStockProducts = Product::where('vendor_id', Auth::user()->vendor->id)->where('qty', '<=', 10)->get();
+$lowStockProducts = Product::where('vendor_id', Auth::user()->vendor->id)
+->where('qty', '<=', 10) ->get();
 
   // Merge all collections and sort by created_at descending
   $notifications = collect()
@@ -37,18 +47,9 @@ $lowStockProducts = Product::where('vendor_id', Auth::user()->vendor->id)->where
       <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown"
           class="nav-link notification-toggle nav-link-lg beep">
           <i class="far fa-bell"></i>
-          @if($notifications->count() > 0)
-          <span class="badge badge-danger navbar-badge">
-            {{ $notifications->count() }}
-          </span>
-          @endif
         </a>
         <div class="dropdown-menu dropdown-list dropdown-menu-right">
-          <div class="dropdown-header">Notifications
-            <div class="float-right">
-              <a href="#">Mark All As Read</a>
-            </div>
-          </div>
+          <div class="dropdown-header">Notifications</div>
           <div class="dropdown-list-content dropdown-list-icons">
             @foreach($notifications as $notification)
 
@@ -61,7 +62,7 @@ $lowStockProducts = Product::where('vendor_id', Auth::user()->vendor->id)->where
                 <i class="fas fa-box"></i>
               </div>
               <div class="dropdown-item-desc">
-                {{ $product->product_name }} has been ordered!
+                {{ $product->product_name }} has been ordered.
                 <div class="time text-primary">{{ $notification->created_at->diffForHumans() }}</div>
               </div>
             </a>
@@ -74,8 +75,8 @@ $lowStockProducts = Product::where('vendor_id', Auth::user()->vendor->id)->where
                 <i class="fas fa-times"></i>
               </div>
               <div class="dropdown-item-desc">
-                Order #{{ $notification->invocie_id }} has been cancelled!
-                <div class="time text-danger">{{ $notification->updated_at->diffForHumans() }}</div>
+                Order #{{ $notification->invocie_id }} has been cancelled.
+                <div class="time text-danger">{{ $notification->created_at->diffForHumans() }}</div>
               </div>
             </a>
 
@@ -86,8 +87,8 @@ $lowStockProducts = Product::where('vendor_id', Auth::user()->vendor->id)->where
                 <i class="fas fa-check"></i>
               </div>
               <div class="dropdown-item-desc">
-                Order #{{ $notification->invocie_id }} has been completed!
-                <div class="time text-success">{{ $notification->updated_at->diffForHumans() }}</div>
+                Order #{{ $notification->invocie_id }} has been completed.
+                <div class="time text-success">{{ $notification->created_at->diffForHumans() }}</div>
               </div>
             </a>
             @endif
@@ -99,8 +100,8 @@ $lowStockProducts = Product::where('vendor_id', Auth::user()->vendor->id)->where
                 <i class="fas fa-exclamation-triangle"></i>
               </div>
               <div class="dropdown-item-desc">
-                {{ $notification->name }} is low on stock!
-                <div class="time text-warning">{{ $notification->updated_at->diffForHumans() }}</div>
+                {{ $notification->name }} is low on stock.
+                <div class="time text-warning">{{ $notification->created_at->diffForHumans() }}</div>
               </div>
             </a>
             @endif

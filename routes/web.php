@@ -21,6 +21,7 @@ use App\Http\Controllers\Frontend\UserOrderController;
 use App\Http\Controllers\Frontend\UserVendorReqeustController;
 use App\Http\Controllers\Frontend\WishlistController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\Frontend\NotificationController;
 use App\Http\Controllers\Backend\VendorListController;
 use App\Http\Controllers\Frontend\NearbyPharmacyController;
 use App\Http\Controllers\OCRController;
@@ -171,4 +172,7 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'user', 'as' => 
 
     /** COD routes */
     Route::get('cod/payment', [PaymentController::class, 'payWithCod'])->name('cod.payment');
+
+    /** Notification routes */
+    Route::get('notifications', [NotificationController::class, 'index'])->name('notifications.index');
 });

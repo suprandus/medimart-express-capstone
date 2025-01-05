@@ -49,6 +49,7 @@ use App\Http\Controllers\Backend\VendorListController;
 use App\Http\Controllers\Backend\VendorRequestController;
 use App\Http\Controllers\Backend\WithdrawController;
 use App\Http\Controllers\Backend\WithdrawMehtodController;
+use App\Http\Controllers\Backend\AdminNotificationController;
 use App\Models\BlogCategory;
 use App\Models\FooterInfo;
 use App\Models\VendorCondition;
@@ -277,3 +278,6 @@ Route::put('paymongo-setting/{id}', [PayMongoSettingController::class, 'update']
 Route::put('stripe-setting/{id}', [StripeSettingController::class, 'update'])->name('stripe-setting.update');
 Route::put('razorpay-setting/{id}', [RazorpaySettingController::class, 'update'])->name('razorpay-setting.update');
 Route::put('cod-setting/{id}', [CodSettingController::class, 'update'])->name('cod-setting.update');
+
+/** Notification routes */
+Route::get('notification', [AdminNotificationController::class, 'index'])->name('notifications.index');

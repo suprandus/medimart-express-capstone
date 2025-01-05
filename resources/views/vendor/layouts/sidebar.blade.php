@@ -27,6 +27,13 @@
             class="fas fa-box"></i>
           <span> Orders</span></a>
       </li>
+
+      <!-- Notification Section -->
+      <li class="{{setActive(['vendor.notifications.index'])}}"><a class="nav-link"
+          href="{{ route('vendor.notifications.index') }}"><i class="fas fa-bell"></i>
+          <span>Notifications</span></a>
+      </li>
+
       <li class="{{setActive(['vendor.products.*'])}}"><a class="nav-link" href="{{route('vendor.products.index')}}"><i
             class="fas fa-shopping-cart"></i>
           <span> Products</span></a>

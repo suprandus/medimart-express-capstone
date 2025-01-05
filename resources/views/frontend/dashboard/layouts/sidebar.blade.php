@@ -21,7 +21,9 @@
                                         $notifCount = \App\Models\NotificationsUser::where('user_id', Auth::id())->where('status', 'unread')->count();
                                     @endphp
                                     <span class="mb-1">Notifications</span>
-                                    <small class="text-danger font-weight-bold" style="display: inline-block"> {{$notifCount}}</small>
+                                    @if($notifCount != 0)
+                                        <small class="text-danger font-weight-bold" style="display: inline-block"> {{$notifCount}}</small>
+                                    @endif
                                 </a>
                         </li>
                         <li class="{{setActive(['user.messages.*'])}}"><a class="nav-link" href="{{

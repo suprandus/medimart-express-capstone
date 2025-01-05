@@ -40,21 +40,80 @@
                         </div>
                     </div>
                     <ul class="wsus__icon_area">
-                        <li>
-                            <a href="javascript:void(0);" id="notification-icon">
+                        <li class="nav-item dropdown">
+                            <a href="javascript:void(0);" id="notification-icon" class="nav-link" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="bi bi-bell"></i>
                                 @if(auth()->check())
-                                    @if(auth()->user()->role == 'user')
-                                        @if($notificationsUserCount != 0)
-                                            <span>{{$notificationsUserCount}}</span>
-                                        @endif
-                                    @elseif(auth()->user()->role == 'vendor')
-                                        @if($notificationsVendorCount != 0)
-                                            <span>{{$notificationsUserCount}}</span>
-                                        @endif
+                                    @if(auth()->user()->role == 'user' && $notificationsUserCount != 0)
+                                        <span>{{$notificationsUserCount}}</span>
+                                    @elseif(auth()->user()->role == 'vendor' && $notificationsPharmacyCount != 0)
+                                        <span>{{$notificationsPharmacyCount}}</span>
                                     @endif
                                 @endif
                             </a>
+                            <div class="dropdown-menu dropdown-menu-right notification-preview" aria-labelledby="notification-icon">
+                                @if(auth()->check())
+                                    @if(auth()->user()->role == 'user')
+                                        @if($notificationsUserItems->isEmpty())
+                                            <div class="notification-container notification-preview">
+                                                <div class="dropdown-item list-group-item list-group-item-action">
+                                                    <a class="dropdown-item">No notifications</a>
+                                                </div>
+                                            </div>
+                                        @else
+                                            <div class="notification-container notification-preview">
+                                                @foreach($notificationsUserItems as $notification)
+                                                    <div class="dropdown-item list-group-item list-group-item-action" 
+                                                        href="{{ route('user.orders.show', $notification->order_id) }}" 
+                                                        data-id="{{ $notification->notification_id }}" 
+                                                        style="background-color: {{ $notification->status == 'unread' ? '#a7f783' : '#cce5ff' }}; 
+                                                        border: 1px solid {{ $notification->status == 'unread' ? '#7fcf5b' : '#004085' }}; 
+                                                        margin: 5px 5px 5px 5px;">
+                                                        <div class="d-flex w-100 justify-content-between">
+                                                            <p class="mb-1"><strong>{{ $notification->type ?? 'Notification' }}</strong></p>
+                                                            <small>{{ $notification->created_at->diffForHumans() }}</small>
+                                                        </div>
+                                                        <p class="mb-1">{{ $notification->text }}</p>
+                                                        <small>{{ ucfirst($notification->status) }}</small>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                            <hr>
+                                            <div class="d-flex justify-content-center">
+                                                <a class="dropdown-item text-center" href="{{ route('user.notifications') }}">View All Notifications</a>
+                                                <a class="dropdown-item text-center" href="javascript:void(0);" id="mark-all-read">Mark all as read</a>
+                                            </div>
+                                        @endif
+                                    @elseif(auth()->user()->role == 'vendor')
+                                        @if($notificationsPharmacyItems->isEmpty())
+                                            <a class="dropdown-item">No notifications</a>
+                                        @else
+                                            <div class="notification-container notification-preview">
+                                                @foreach($notificationsPharmacyItems as $notification)
+                                                    <div class="dropdown-item list-group-item list-group-item-action" 
+                                                        href="{{ route('user.orders.show', $notification->order_id) }}" 
+                                                        data-id="{{ $notification->notification_id }}" 
+                                                        style="background-color: {{ $notification->status == 'unread' ? '#a7f783' : '#cce5ff' }}; 
+                                                        border: 1px solid {{ $notification->status == 'unread' ? '#7fcf5b' : '#004085' }}; 
+                                                        margin: 5px 5px 5px 5px;">
+                                                        <div class="d-flex w-100 justify-content-between">
+                                                            <p class="mb-1"><strong>{{ $notification->type ?? 'Notification' }}</strong></p>
+                                                            <small>{{ $notification->created_at->diffForHumans() }}</small>
+                                                        </div>
+                                                        <p class="mb-1">{{ $notification->text }}</p>
+                                                        <small>{{ ucfirst($notification->status) }}</small>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                            <hr>
+                                            <div class="d-flex justify-content-center">
+                                                <a class="dropdown-item text-center" href="{{ route('user.notifications') }}">View All Notifications</a>
+                                                <a class="dropdown-item text-center" href="javascript:void(0);" id="mark-all-read">Mark all as read</a>
+                                            </div>
+                                        @endif
+                                    @endif
+                                @endif
+                            </div>
                         </li>
                         <li>
                             <a href="{{route('user.wishlist.index')}}">
@@ -179,7 +238,7 @@
     </div>
 </div>
 
-<div id="notification-preview" class="notification-preview">
+{{-- <div id="" class="notification-preview">
     <div class="list-group">
         @if(auth()->check())
             @if($notificationsUserItems == null || $notificationsPharmacyItems == null)
@@ -245,7 +304,7 @@
         @endif
     </div>
     </div>
-</div>
+</div> --}}
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -260,7 +319,51 @@
         const ocrResult = document.getElementById('ocr-result');
         const notificationIcon = document.getElementById('notification-icon');
         const notificationPreview = document.getElementById('notification-preview');
+        const markAllRead = document.getElementById('mark-all-read');
 
+        document.querySelectorAll('.dropdown-item').forEach(function (link) {
+        link.addEventListener('click', function (event) {
+            const notificationId = this.dataset.id;
+            if (notificationId) {
+                fetch('{{ route('user.view-notification', '') }}/' + notificationId, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ order_id: this.dataset.orderId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        window.location.href = this.href;
+                    } else {
+                        console.error(data.message);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            }
+        });
+    });
+
+    if (markAllRead) {
+        markAllRead.addEventListener('click', function () {
+            fetch('{{ route('user.mark-all-read') }}', {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    location.reload();
+                } else {
+                    console.error(data.message);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        });
+    }
         document.querySelectorAll('.order-link').forEach(function (link) {
             link.addEventListener('click', function (event) {
                 event.preventDefault();
@@ -369,20 +472,10 @@
 </script>
 <style>
     .notification-preview {
-        display: none;
-        position: absolute;
-        top: 50px; /* Adjust as needed */
-        right: 0;
-        background-color: rgb(223, 244, 255);
-        border: 2px solid rgb(77, 157, 218);
-        border-radius: 5px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        max-height: 400px;
-        max-width: 350px; /* Adjust as needed */
+        max-height: 300px;
+        max-width: 400px;
         overflow-y: auto;
-        overflow-x: hidden; /* Prevent horizontal scroll */
-        z-index: 1000;
-        padding: 5px 5px 5px 5px;
+        overflow-x: hidden; /* Remove horizontal scrollbar */
     }
 
     .notification-preview::-webkit-scrollbar {
@@ -402,8 +495,24 @@
         display: block;
     }
 
-    .notification-preview .list-group-item {
+    .notification-container {
+        max-height: 200px;
+        overflow-y: auto;
+        overflow-x: hidden; /* Remove horizontal scrollbar */
+    }
+    .dropdown-item{
+        max-width: 380px;
+    }
+
+    .notification-container .list-group-item {
         padding: 10px;
+        margin: 5px 0;
+        border-radius: 5px;
+    }
+
+    .d-flex.justify-content-center {
+        justify-content: center;
+        gap: 10px; /* Add space between the links */
     }
     .prescription-icon {
         display: flex;

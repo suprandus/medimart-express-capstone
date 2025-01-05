@@ -280,4 +280,4 @@ Route::put('razorpay-setting/{id}', [RazorpaySettingController::class, 'update']
 Route::put('cod-setting/{id}', [CodSettingController::class, 'update'])->name('cod-setting.update');
 
 /** Notification routes */
-Route::get('notification', [AdminNotificationController::class, 'index'])->name('notification.index');
+Route::get('notification', [AdminNotificationController::class, 'index'])->name('notifications.index');

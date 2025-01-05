@@ -70,7 +70,7 @@
             <div class="mb-2">
               <span class="text-job">{{ $notification->created_at->diffForHumans() }}</span>
             </div>
-            <p><a href="{{ route('vendor.products.edit', $notification->id) }}">{{ $notification->name }}</a>
+            <p><a href="{{ route('admin.products.edit', $notification->id) }}">{{ $notification->name }}</a>
               is low on stock.
             </p>
           </div>

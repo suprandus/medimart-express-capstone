@@ -101,7 +101,7 @@ $lowStockProducts = Product::where('qty', '<=', 10) ->orderBy('created_at', 'des
             @endforeach
           </div>
           <div class="dropdown-footer text-center">
-            <a href="{{ route('admin.notification.index') }}">View All <i class="fas fa-chevron-right"></i></a>
+            <a href="{{ route('admin.notifications.index') }}">View All <i class="fas fa-chevron-right"></i></a>
           </div>
         </div>
       </li>

@@ -77,7 +77,7 @@
                     <div class="wsus__pro_details_text">
                         <a class="title" href="javascript:;">{{$product->name}}</a>
                         @if ($product->qty > 0)
-                        <p class="wsus__stock_area"><span class="in_stock">in stock</span> ({{$product->qty}} item)</p>
+                        <p class="wsus__stock_area"><span class="in_stock">in stock</span> ({{$product->qty}} items)</p>
                         @elseif ($product->qty === 0)
                         <p class="wsus__stock_area"><span class="in_stock">stock out</span> ({{$product->qty}} item)</p>
                         @endif
@@ -131,9 +131,9 @@
                             <div class="wsus__quentity">
                                 <h5>quantity :</h5>
                                 <div class="select_number">
-                                    <input class="number_area" name="qty" type="text" min="1" max="100" value="1" />
+                                    <input class="number_area" name="qty" type="text" min="1" max="{{$product->qty}}"
+                                        value="1" onchange="validateQty(this, {{$product->qty}})" />
                                 </div>
-
                             </div>
 
                             <ul class="wsus__button_area">

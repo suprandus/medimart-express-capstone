@@ -57,12 +57,12 @@ class VendorOrderController extends Controller
 
         if ($paymentMethod === 'COD') {
             $order->order_status = $request->status;
-            $order->payment_status = 'cancelled';
 
             // Add quantity back to products
             foreach ($order->orderProducts as $orderProduct) {
                 $product = Product::find($orderProduct->product_id);
                 $product->qty += $orderProduct->qty;
+                $order->payment_status = 'cancelled';
                 $product->save();
             }
 

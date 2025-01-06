@@ -67,6 +67,11 @@ class VendorProductController extends Controller
         $product = new Product();
         $product->thumb_image = $imagePath;
         $product->name = $request->name;
+        // Check for duplicate product names
+        if (Product::where('name', $request->name)->exists()) {
+            toastr('Product with this name already exists!', 'error');
+            return redirect()->back()->withInput();
+        }
         $product->slug = Str::slug($request->name);
         $product->vendor_id = Auth::user()->vendor->id;
         $product->category_id = $request->category;

@@ -44,7 +44,7 @@ $lowStockProducts = Product::where('vendor_id', Auth::user()->vendor->id)
       <li><a href="#" data-toggle="sidebar" class="nav-link nav-link-lg"><i class="fas fa-bars"></i></a></li>
     </form>
     <ul class="navbar-nav navbar-right">
-      <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown"
+      {{-- <li class="dropdown dropdown-list-toggle"><a href="#" data-toggle="dropdown"
           class="nav-link notification-toggle nav-link-lg beep">
           <i class="far fa-bell"></i>
         </a>
@@ -111,7 +111,7 @@ $lowStockProducts = Product::where('vendor_id', Auth::user()->vendor->id)
             <a href="{{ route('vendor.notifications.index')}}">View All <i class="fas fa-chevron-right"></i></a>
           </div>
         </div>
-      </li>
+      </li> --}}
 
       <li class="dropdown"><a href="#" data-toggle="dropdown"
           class="nav-link dropdown-toggle nav-link-lg nav-link-user">

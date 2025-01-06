@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use App\Models\User;
 
 class SalesController extends Controller
 {
@@ -580,66 +581,71 @@ class SalesController extends Controller
         if (!in_array($period, $validPeriods)) {
             return back()->with('error', 'Invalid period selected.');
         }
-
+    
         $vendorId = Auth::id();
-
-        $query = SalesByPharmacy::selectRaw('vendor_id, name, email, DATE(created_at) as date, SUM(sales) as total_sales')
+    
+        $query = SalesByPharmacy::selectRaw('vendor_id, DATE(created_at) as date, SUM(sales) as total_sales')
             ->where('vendor_id', $vendorId)
             ->groupBy('date');
-
+    
+        $pharmacy = User::select('name', 'email', 'phone', 'image')
+            ->where('id', $vendorId)
+            ->firstOrFail();
+    
         $fileName = "Pharmacy_Sales_Report_Overall_" . Carbon::now()->format('Y-m-d') . '.pdf';
         $reportDate = 'As of ' . Carbon::now()->format('F j, Y');
         $reportTitle = 'Overall Sales';
-
+    
         switch ($period) {
             case 'today':
                 $query->whereDate('created_at', Carbon::today());
                 $fileName = "Pharmacy_Sales_Report_Today_" . Carbon::now()->format('Y-m-d') . '.pdf';
                 $reportTitle = "Today's Sales";
                 break;
-
+    
             case 'week':
                 $query->whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()]);
                 $fileName = "Pharmacy_Sales_Report_This_Week_" . Carbon::now()->format('Y-m-d') . '.pdf';
                 $reportTitle = "This Week's Sales";
                 break;
-
+    
             case 'month':
                 $query->whereMonth('created_at', Carbon::now()->month)
                     ->whereYear('created_at', Carbon::now()->year);
                 $fileName = "Pharmacy_Sales_Report_This_Month_" . Carbon::now()->format('Y-m-d') . '.pdf';
                 $reportTitle = "This Month's Sales";
                 break;
-
+    
             case 'year':
                 $query->whereYear('created_at', Carbon::now()->year);
                 $fileName = "Pharmacy_Sales_Report_This_Year_" . Carbon::now()->format('Y-m-d') . '.pdf';
                 $reportTitle = "This Year's Sales";
                 break;
         }
-
-        $latestDateQuery = clone $query;
-        $latestDate = $latestDateQuery->latest('created_at')->value('created_at');
-        if ($latestDate) {
-            $formattedLatestDate = Carbon::parse($latestDate)->format('F j, Y');
-            $reportDate = 'As of ' . $formattedLatestDate;
-        }
-
+    
         $data = $query->orderBy('date')->get();
-
+    
+        foreach ($data as $record) {
+            $record->products = SalesByPharmacy::where('vendor_id', $vendorId)
+                ->whereDate('created_at', $record->date)
+                ->pluck('product_name')
+                ->toArray(); // Fetch product names
+        }
+    
         if ($data->isEmpty()) {
             return back()->with('error', 'No sales data available for the selected period.');
         }
-
+    
         $grandTotalSales = $data->sum('total_sales');
-
+    
         $pdf = Pdf::loadView('vendor.reports.sales-pharmacy-pdf', [
             'data' => $data,
             'grandTotalSales' => $grandTotalSales,
             'reportDate' => $reportDate,
             'reportTitle' => $reportTitle,
+            'pharmacy' => $pharmacy,
         ]);
-
+    
         return $pdf->download($fileName);
     }
     public function pharmacyExportLineGraphToExcel($period)

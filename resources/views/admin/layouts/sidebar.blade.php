@@ -128,11 +128,11 @@
                                 </ul>
                         </li>
 
-                        {{-- <!-- Notification Section -->
+                        <!-- Notification Section -->
                         <li class="{{setActive(['admin.notifications.index'])}}"><a class="nav-link"
                                         href="{{ route('admin.notifications.index') }}"><i class="fas fa-bell"></i>
                                         <span>Notifications</span></a>
-                        </li> --}}
+                        </li>
                         <li class="{{ setActive(['admin.transaction']) }}"><a class="nav-link"
                                         href="{{ route('admin.transaction') }}"><i class="fas fa-money-bill-alt"></i>
                                         <span>Transactions</span></a>

@@ -96,7 +96,7 @@
                                         <div class="product_qty_wrapper">
                                             <button class="btn btn-danger product-decrement">-</button>
                                             <input class="product-qty" data-rowid="{{$item->rowId}}" type="text" min="1"
-                                                max="100" value="{{$item->qty}}" readonly />
+                                                max="20" value="{{$item->qty}}" readonly />
                                             <button class="btn btn-success product-increment">+</button>
                                         </div>
                                     </td>

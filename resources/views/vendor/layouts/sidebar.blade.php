@@ -13,16 +13,18 @@
         </a>
       </li>
       <li class=""><a class="nav-link" href="{{ route('home') }}"><i class="fas fa-home"></i>
-          <span> Home</span></a>
+          <span>Home</span></a>
       </li>
-      <li class="{{setActive(['user.notifications'])}}">
-      <a class="nav-link" href="{{route('user.notifications') }}">
-            <i class="fas fa-bell"></i>
-            @php
-                $notifCount = \App\Models\NotificationsPharmacy::where('vendor_id', Auth::id())->where('status', 'unread')->count();
-            @endphp
-            <span class="mb-1">Notifications</span>
+      <li class="{{setActive(['vendor.notifications'])}}">
+      <a class="nav-link" href="{{route('vendor.notifications') }}">
+        <i class="fas fa-bell"></i>
+        @php
+            $notifCount = \App\Models\NotificationsPharmacy::where('vendor_id', Auth::id())->where('status', 'unread')->count();
+        @endphp
+        <span class="mb-1">Notifications</span>
+        @if($notifCount != 0)
             <small class="text-danger font-weight-bold" style="display: inline-block"> {{$notifCount}}</small>
+        @endif
         </a>
       </li>
       <li class="{{setActive(['vendor.pharmacy-sales-reports'])}}"><a class="nav-link"

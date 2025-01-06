@@ -50,5 +50,30 @@ class ViewServiceProvider extends ServiceProvider
                 ));
             }
         });
+        View::composer('frontend.dashboard.layouts.master', function ($view) {
+            if (Auth::check()) {
+                $cartItems = new UserCart();
+                $cartItemsCount = $cartItems->where('user_id', Auth::id())->count();
+                $notificationsUser = new NotificationsUser();
+                $notificationsUserItems = $notificationsUser->where('user_id', Auth::id())
+                    ->orderBy('notification_id', 'DESC')
+                    ->get();
+                $notificationsUserCount = $notificationsUser->where('user_id', Auth::id())->where('status', 'unread')->count();
+                $notificationsPharmacy = new NotificationsPharmacy();
+                $notificationsPharmacyItems = $notificationsPharmacy->where('vendor_id', Auth::id())
+                    ->orderBy('notification_id', 'DESC')
+                    ->get();
+                $notificationsPharmacyCount = $notificationsPharmacy->where('vendor_id', Auth::id())->where('status', 'unread')->count();
+
+                $view->with(compact(
+                    'cartItems',
+                    'cartItemsCount',
+                    'notificationsUserItems',
+                    'notificationsUserCount',
+                    'notificationsPharmacyItems',
+                    'notificationsPharmacyCount'
+                ));
+            }
+        });
     }
 }

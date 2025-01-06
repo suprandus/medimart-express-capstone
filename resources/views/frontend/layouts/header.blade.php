@@ -9,7 +9,7 @@
             </div>
             <div class="col-xl-2 col-7 col-md-8 col-lg-2">
                 <div class="wsus_logo_area">
-                   <a class="wsus__header_logo" href="{{url('/')}}">
+                    <a class="wsus__header_logo" href="{{url('/')}}">
                         <img src="{{asset($logoSetting->logo)}}" alt="logo" class="img-fluid w-100">
                     </a>
                 </div>
@@ -17,7 +17,8 @@
             <div class="col-xl-5 col-md-6 col-lg-4 d-none d-lg-block">
                 <div class="wsus__search d-flex align-items-center">
                     <form action="{{route('products.index')}}" class="flex-grow-1">
-                        <input type="text" placeholder="e.g., Paracetamol, Ibuprofen" name="search" value="{{request()->search}}">
+                        <input type="text" placeholder="e.g., Mask, Caltrate Plus" name="search"
+                            value="{{request()->search}}">
                         <button type="submit"><i class="far fa-search"></i></button>
                     </form>
                     <div class="ms-3">
@@ -27,7 +28,7 @@
                         </span>
                     </div>
                 </div>
-            </div>            
+            </div>
             <div class="col-xl-5 col-3 col-md-3 col-lg-6">
                 <div class="wsus__call_icon_area">
                     <div class="wsus__call_area">
@@ -521,10 +522,12 @@
         font-size: 1.2rem;
         cursor: pointer;
     }
+
     .prescription-icon i {
         color: white;
         font-size: 30px;
     }
+
     .overlay {
         position: fixed;
         top: 0;
@@ -556,6 +559,7 @@
         display: inline-block;
         width: 100%;
     }
+
     #image-preview {
         max-height: 300px;
         border: 1px solid #ccc;

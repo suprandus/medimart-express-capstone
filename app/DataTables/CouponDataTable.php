@@ -46,7 +46,7 @@ class CouponDataTable extends DataTable
                         if ($query->discount_type == 'percent') {
                             return $query->discount . '%';
                         } else {
-                            return GeneralSetting::first()->currency_icon . $query->discount;
+                            return GeneralSetting::first()->currency_icon . number_format($query->discount, 2);
                         }
                     })
                     ->addColumn('status', function ($query) {

@@ -53,7 +53,7 @@ $coupon = json_decode($order->coupon);
                   <strong>Payment Information:</strong><br>
                   <b>Method:</b> {{$order->payment_method}}<br>
                   <b>Transaction Id:</b> {{@$order->transaction->transaction_id}}<br>
-                  <b>Status:</b> {{$order->payment_status === 1 ? 'Completed' : 'Pending'}}
+                  <b>Status:</b> {{$order->payment_status}}
                 </address>
               </div>
               <div class="col-md-6 text-md-right">
@@ -117,22 +117,24 @@ $coupon = json_decode($order->coupon);
               <div class="col-lg-8">
                 <div class="invoice-detail-item">
                   <div class="invoice-detail-name">Subtotal</div>
-                  <div class="invoice-detail-value">{{$settings->currency_icon}} {{$order->sub_total}}</div>
+                  <div class="invoice-detail-value">{{$settings->currency_icon}} {{number_format($order->sub_total, 2)}}
+                  </div>
                 </div>
                 <div class="invoice-detail-item">
                   <div class="invoice-detail-name">Shipping (+)</div>
-                  <div class="invoice-detail-value">{{$settings->currency_icon}} {{@$shipping->cost}}</div>
+                  <div class="invoice-detail-value">{{$settings->currency_icon}} {{number_format(@$shipping->cost, 2)}}
+                  </div>
                 </div>
                 <div class="invoice-detail-item">
                   <div class="invoice-detail-name">Coupon (-)</div>
-                  <div class="invoice-detail-value">{{$settings->currency_icon}} {{@$coupon->discount ?
-                    @$coupon->discount : 0}}</div>
+                  <div class="invoice-detail-value">{{$settings->currency_icon}} {{number_format(@$coupon->discount ?
+                    @$coupon->discount : 0, 2)}}</div>
                 </div>
                 <hr class="mt-2 mb-2">
                 <div class="invoice-detail-item">
                   <div class="invoice-detail-name">Total</div>
                   <div class="invoice-detail-value invoice-detail-value-lg">{{$settings->currency_icon}}
-                    {{$order->amount}}</div>
+                    {{number_format($order->amount, 2)}}</div>
                 </div>
               </div>
             </div>
@@ -144,7 +146,35 @@ $coupon = json_decode($order->coupon);
         @csrf
         <div class="form-group mt-3">
           <label for="" class="mb-2">Order Status</label>
-          <input type="text" class="form-control" value="{{ $order->order_status }}" readonly>
+          @php
+            switch ($order->order_status) {
+              case 'pending':
+                $status_text = 'Pending';
+                break;
+              case 'processed_and_ready_to_ship':
+                $status_text = 'Processed and Ready to Ship';
+                  break;
+              case 'dropped_off':
+                $status_text = 'Dropped off';
+                  break;
+              case 'shipped':
+                $status_text = 'Order Shipped!';
+                  break;
+              case 'out_for_delivery':
+              $status_text = 'Out for Delivery!';
+                  break;
+              case 'delivered':
+              $status_text = 'Order Delivered!';
+                  break;
+              case 'cancelled':
+              $status_text = 'Cancelled!';
+                  break;
+              default:
+                  $status_text = 'Order Status!';
+                  break;
+            }
+          @endphp
+          <input type="text" class="form-control" value="{{ $status_text }}" readonly>
           @if($order->order_status == 'pending')
           <input type="hidden" name="status" value="cancelled">
           <button class="btn btn-primary mt-3" type="submit">Cancel</button>

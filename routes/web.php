@@ -60,10 +60,6 @@ Route::get('flash-sale', [FlashSaleController::class, 'index'])->name('flash-sal
 Route::get('products', [FrontendProductController::class, 'productsIndex'])->name('products.index');
 Route::get('product-detail/{slug}', [FrontendProductController::class, 'showProduct'])->name('product-detail');
 Route::get('change-product-list-view', [FrontendProductController::class, 'chageListView'])->name('change-product-list-view');
-
-//Notification
-Route::get('notifications', [NotificationController::class, 'index'])->name('user.notifications');
-Route::get('notifications/{id}', [NotificationController::class, 'viewNotification'])->name('user.view-notification');
     
 //Cart routes
 Route::post('add-to-cart', [CartController::class, 'addToCart'])->name('add-to-cart');
@@ -169,4 +165,9 @@ Route::group(['middleware' => ['auth', 'verified'], 'prefix' => 'user', 'as' => 
     
     //COD routes
     Route::get('cod/payment', [PaymentController::class, 'payWithCod'])->name('cod.payment');
+
+    /** Notification routes */
+    Route::get('notifications', [NotificationController::class, 'index'])->name('notifications');
+    Route::get('notifications/{id}', [NotificationController::class, 'viewNotification'])->name('view-notification');
+    Route::post('notifcations', [NotificationController::class, 'markAllRead'])->name('mark-all-read');
 });

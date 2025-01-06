@@ -23,7 +23,7 @@
               <h4>Current Balance</h4>
             </div>
             <div class="card-body">
-              {{ $settings->currency_icon }}{{ $currentBalance }}
+              {{ $settings->currency_icon }}{{ number_format($currentBalance, 2) }}
             </div>
           </div>
         </div>
@@ -42,7 +42,7 @@
               <h4>Pending Amount</h4>
             </div>
             <div class="card-body">
-              {{ $settings->currency_icon }}{{ $pendingAmount }}
+              {{ $settings->currency_icon }}{{number_format($pendingAmount, 2)}}
             </div>
           </div>
         </div>
@@ -61,7 +61,7 @@
               <h4>Total Amount</h4>
             </div>
             <div class="card-body">
-              {{ $settings->currency_icon }}{{ $pendingAmount }}
+              {{ $settings->currency_icon }}{{ number_format($pendingAmount, 2) }}
             </div>
           </div>
         </div>

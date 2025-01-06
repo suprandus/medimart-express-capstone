@@ -47,7 +47,7 @@
                                     <small>{{ $notification->created_at->diffForHumans() }}</small>
                                 </div>
                                 <p class="mb-1">{{ $notification->text }}
-                                    <a href="{{ route('user.orders.show', $notification->order_id) }}" 
+                                    <a href="{{ route('vendor.orders.show', $notification->order_id) }}" 
                                         class="order-link" data-id="{{ $notification->notification_id }}">Order ID: {{$notification->order_id}}
                                     </a>
                                 </p>

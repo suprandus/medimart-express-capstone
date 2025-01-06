@@ -21,12 +21,6 @@ class VendorProductDataTable extends DataTable
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         return (new EloquentDataTable($query))
-            // Add the warning icon if quantity is less than 10
-            ->addColumn('warning', function ($query) {
-                $quantity = $query->qty;
-                // Add the warning icon if quantity is less than 10
-                return $quantity < 10 ? '<i class="fas fa-exclamation-circle text-danger warning-icon" title="Low stock"></i>' : '';
-            })
             ->addColumn('action', function ($query) {
                 $editBtn = "<a href='" . route('vendor.products.edit', $query->id) . "' class='btn btn-primary'><i class='far fa-edit'></i></a>";
 
@@ -46,6 +40,9 @@ class VendorProductDataTable extends DataTable
             })
             ->addColumn('image', function ($query) {
                 return "<img width='70px' src='" . asset($query->thumb_image) . "' ></img>";
+            })
+            ->addColumn('price', function ($query) {
+                return number_format($query->price, 2);
             })
             ->addColumn('type', function ($query) {
                 switch ($query->product_type) {
@@ -91,7 +88,7 @@ class VendorProductDataTable extends DataTable
             })
             // Add conditional row class for low stock products
             ->setRowClass(function ($query) {
-                return $query->qty < 10 
+                return $query->qty < 10
                     ? 'bg-light-danger'  // Custom class for light red background
                     : '';
             })
@@ -104,7 +101,9 @@ class VendorProductDataTable extends DataTable
      */
     public function query(Product $model): QueryBuilder
     {
-        return $model->where('vendor_id', Auth::user()->vendor->id)->newQuery();
+        return $model->where('vendor_id', Auth::user()->vendor->id)
+            ->orderBy('created_at', 'desc')
+            ->newQuery();
     }
 
     /**
@@ -134,7 +133,6 @@ class VendorProductDataTable extends DataTable
     public function getColumns(): array
     {
         return [
-            Column::computed('warning')->width(50)->addClass('text-center')->title('Warning'),
             // Column::make('id'),
             Column::make('image')->width(150),
             Column::make('name'),

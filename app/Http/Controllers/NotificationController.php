@@ -26,7 +26,14 @@ class NotificationController extends Controller
                     ->orderBy('created_at', 'desc')
                     ->get();
     
-                return view('frontend.user.notifications.notifications', compact('notifications'));
+                return view('vendor.notification.notifications', compact('notifications'));
+            }
+            if (Auth::user()->role == 'admin') {
+                $notifications = NotificationsPharmacy::where('vendor_id', Auth::id())
+                    ->orderBy('created_at', 'desc')
+                    ->get();
+    
+                return view('admin.notification.notifications', compact('notifications'));
             }
         }
     
@@ -58,6 +65,7 @@ class NotificationController extends Controller
                 $notification = NotificationsUser::where('user_id', Auth::id())
                     ->where('notification_id', $id)
                     ->first();
+                Log::info('Notification:'. $notification);
             } elseif (Auth::user()->role === 'vendor') {
                 $notification = NotificationsPharmacy::where('vendor_id', Auth::id())
                     ->where('notification_id', $id)

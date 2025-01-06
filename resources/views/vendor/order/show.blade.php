@@ -1,5 +1,8 @@
 @php
 $address = json_decode($order->order_address);
+$shipping = json_decode($order->shpping_method);
+$coupon = json_decode($order->coupon);
+
 @endphp
 
 @extends('vendor.layouts.master')
@@ -52,7 +55,7 @@ $address = json_decode($order->order_address);
                                     <strong>Payment Information:</strong><br>
                                     <b>Method:</b> {{$order->payment_method}}<br>
                                     <b>Transaction Id:</b> {{@$order->transaction->transaction_id}}<br>
-                                    <b>Status:</b> {{$order->payment_status === 1 ? 'Completed' : 'Pending'}}
+                                    <b>Status:</b> {{$order->payment_status}}
                                 </address>
                             </div>
                             <div class="col-md-6 text-md-right">
@@ -103,11 +106,13 @@ $address = json_decode($order->order_address);
                                     </td>
                                     <td>{{$product->vendor->shop_name}}</td>
 
-                                    <td class="text-center">{{$settings->currency_icon}}{{$product->unit_price}} </td>
+                                    <td class="text-center">
+                                        {{$settings->currency_icon}}{{number_format($product->unit_price, 2)}} </td>
                                     <td class="text-center">{{$product->qty}}</td>
-                                    <td class="text-right">{{$settings->currency_icon}}{{($product->unit_price *
+                                    <td class="text-right">
+                                        {{$settings->currency_icon}}{{number_format(($product->unit_price *
                                         $product->qty) +
-                                        $product->variant_total}}</td>
+                                        $product->variant_total, 2)}}</td>
                                 </tr>
                                 @endforeach
                             </table>
@@ -116,26 +121,29 @@ $address = json_decode($order->order_address);
                             <div class="col-lg-8">
                                 <div class="invoice-detail-item">
                                     <div class="invoice-detail-name">Subtotal</div>
-                                    <div class="invoice-detail-value">{{$settings->currency_icon}} {{$order->sub_total}}
+                                    <div class="invoice-detail-value">{{$settings->currency_icon}}
+                                        {{number_format($order->sub_total, 2)}}
                                     </div>
                                 </div>
                                 <div class="invoice-detail-item">
                                     <div class="invoice-detail-name">Shipping (+)</div>
-                                    <div class="invoice-detail-value">{{$settings->currency_icon}} {{@$shipping->cost}}
+                                    <div class="invoice-detail-value">{{$settings->currency_icon}}
+                                        {{number_format(@$shipping->cost, 2)}}
                                     </div>
                                 </div>
                                 <div class="invoice-detail-item">
                                     <div class="invoice-detail-name">Coupon (-)</div>
-                                    <div class="invoice-detail-value">{{$settings->currency_icon}} {{@$coupon->discount
+                                    <div class="invoice-detail-value">{{$settings->currency_icon}}
+                                        {{number_format(@$coupon->discount
                                         ?
-                                        @$coupon->discount : 0}}</div>
+                                        @$coupon->discount : 0, 2)}}</div>
                                 </div>
                                 <hr class="mt-2 mb-2">
                                 <div class="invoice-detail-item">
                                     <div class="invoice-detail-name">Total</div>
                                     <div class="invoice-detail-value invoice-detail-value-lg">
                                         {{$settings->currency_icon}}
-                                        {{$order->amount}}</div>
+                                        {{number_format($order->amount, 2)}}</div>
                                 </div>
                             </div>
                         </div>

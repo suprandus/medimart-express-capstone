@@ -53,7 +53,7 @@ $coupon = json_decode($order->coupon);
                   <strong>Payment Information:</strong><br>
                   <b>Method:</b> {{$order->payment_method}}<br>
                   <b>Transaction Id: </b>{{@$order->transaction->transaction_id}} <br>
-                  <b>Status: </b> {{$order->payment_status === 1 ? 'Complete' : 'Pending'}}
+                  <b>Status: </b> {{$order->payment_status}}
                 </address>
               </div>
               <div class="col-md-6 text-md-right">
@@ -79,7 +79,7 @@ $coupon = json_decode($order->coupon);
                   <th>Pharmacy Name</th>
                   <th class="text-center">Price</th>
                   <th class="text-center">Quantity</th>
-                  <th class="text-right">Totals</th>
+                  <th class="text-right">Total</th>
                 </tr>
                 @foreach ($order->orderProducts as $product)
                 @php
@@ -95,15 +95,16 @@ $coupon = json_decode($order->coupon);
                   @endif
                   <td>
                     @foreach ($variants as $key => $variant)
-                      <b>{{$key}}:</b> {{$variant->name}} ( {{$settings->currency_icon}}{{$variant->price}} )
+                      <b>{{$key}}:</b> {{$variant->name}} ( {{$settings->currency_icon}}{{number_format($variant->price,2)}} )
                     @endforeach
                   </td>
                   <td>{{$product->vendor->shop_name}}</td>
 
-                  <td class="text-center">{{$settings->currency_icon}}{{$product->unit_price}} </td>
+                  <td class="text-center">{{$settings->currency_icon}}{{number_format($product->unit_price, 2)}} </td>
                   <td class="text-center">{{$product->qty}}</td>
-                  <td class="text-right">{{$settings->currency_icon}}{{($product->unit_price * $product->qty) +
-                    $product->variant_total}}</td>
+                  <td class="text-right">{{$settings->currency_icon}}{{number_format(($product->unit_price *
+                    $product->qty) +
+                    $product->variant_total, 2)}}</td>
                 </tr>
                 @endforeach
 
@@ -115,60 +116,68 @@ $coupon = json_decode($order->coupon);
 
                   {{-- Payment Status --}}
                   <div class="form-group">
-                    <label for="">Payment status</label>
+                    <label for="">Payment Status</label>
                     @if ($paymentMethod === 'COD')
-                      @if ($order->payment_status === 'pending')
-                        <select name="" id="payment_status" class="form-control" data-id="{{$order->id}}">
-                          <option value="cancelled" {{$order->payment_status === 'cancelled' ? 'selected' : ''}}>Cancelled</option>
-                          <option value="pending" {{$order->payment_status === 'pending' ? 'selected' : ''}}>Pending</option>
-                          <option value="completed" {{$order->payment_status === 'completed' ? 'selected' : ''}}>Completed</option>
-                          <option value="refunded" {{$order->payment_status === 'refunded' ? 'selected' : ''}}>Refunded</option>
-                        </select>
-                      @else
-                        <input type="text" class="form-control" value="{{ $order->payment_status }}" readonly>
-                      @endif
+                    @if ($order->payment_status === 'pending')
+                    <select name="" id="payment_status" class="form-control" data-id="{{$order->id}}">
+                      <option value="cancelled" {{$order->payment_status === 'cancelled' ? 'selected' : ''}}>Cancelled
+                      </option>
+                      <option value="pending" {{$order->payment_status === 'pending' ? 'selected' : ''}}>Pending
+                      </option>
+                      <option value="completed" {{$order->payment_status === 'completed' ? 'selected' : ''}}>Completed
+                      </option>
+                      <option value="refunded" {{$order->payment_status === 'refunded' ? 'selected' : ''}}>Refunded
+                      </option>
+                    </select>
+                    @else
+                    <input type="text" class="form-control" value="{{ $order->payment_status }}" readonly>
+                    @endif
                     @elseif ($paymentMethod === 'paymongo')
-                      <input type="text" class="form-control" value="{{ $order->payment_status }}" readonly>
+                    <input type="text" class="form-control" value="{{ $order->payment_status }}" readonly>
                     @endif
                   </div>
 
-                    {{-- Order Status --}}
-                    <div class="form-group">
+                  {{-- Order Status --}}
+                  <div class="form-group">
                     <label for="">Order Status</label>
-                    <select name="order_status" id="order_status" data-id="{{$order->id}}" class="form-control" {{$order->order_status === 'cancelled' ? 'disabled' : ''}}>
+                    <select name="order_status" id="order_status" data-id="{{$order->id}}" class="form-control"
+                      {{$order->order_status === 'cancelled' ? 'disabled' : ''}}>
                       @foreach (config('order_status.order_status_admin') as $key => $orderStatus)
                       @if ($paymentMethod === 'paymongo' && $key === 'cancelled')
-                        @continue
+                      @continue
                       @endif
-                      <option value="{{$key}}" {{$order->order_status === $key ? 'selected' : ''}}>{{$orderStatus['status']}}</option>
+                      <option value="{{$key}}" {{$order->order_status === $key ? 'selected' :
+                        ''}}>{{$orderStatus['status']}}</option>
                       @endforeach
                     </select>
                     @if($order->order_status === 'cancelled')
-                      <small class="text-danger mt-1">Cancelled orders cannot be updated</small>
+                    <small class="text-danger mt-1">Cancelled orders cannot be updated</small>
                     @endif
-                    </div>
+                  </div>
 
                 </div>
               </div>
               <div class="col-lg-4 text-right">
                 <div class="invoice-detail-item">
                   <div class="invoice-detail-name">Subtotal</div>
-                  <div class="invoice-detail-value">{{$settings->currency_icon}} {{$order->sub_total}}</div>
+                  <div class="invoice-detail-value">{{$settings->currency_icon}} {{number_format($order->sub_total, 2)}}
+                  </div>
                 </div>
                 <div class="invoice-detail-item">
                   <div class="invoice-detail-name">Shipping (+)</div>
-                  <div class="invoice-detail-value">{{$settings->currency_icon}} {{@$shipping->cost}}</div>
+                  <div class="invoice-detail-value">{{$settings->currency_icon}} {{number_format(@$shipping->cost, 2)}}
+                  </div>
                 </div>
                 <div class="invoice-detail-item">
                   <div class="invoice-detail-name">Coupon (-)</div>
-                  <div class="invoice-detail-value">{{$settings->currency_icon}} {{@$coupon->discount ?
-                    @$coupon->discount : 0}}</div>
+                  <div class="invoice-detail-value">{{$settings->currency_icon}} {{number_format(@$coupon->discount ?
+                    @$coupon->discount : 0, 2)}}</div>
                 </div>
                 <hr class="mt-2 mb-2">
                 <div class="invoice-detail-item">
                   <div class="invoice-detail-name">Total</div>
                   <div class="invoice-detail-value invoice-detail-value-lg">{{$settings->currency_icon}}
-                    {{$order->amount}}</div>
+                    {{number_format($order->amount, 2)}}</div>
                 </div>
               </div>
             </div>

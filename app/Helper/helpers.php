@@ -70,42 +70,53 @@ function productType($type)
 /** Get total cart amount */
 function getCartTotal()
 {
-    try{
+    try {
         if (Auth::check()) {
-            $cartItems = UserCart::where('user_id', Auth::id())->get();
-            return number_format($cartItems->sum('cart_subtotal'), 2);
-        }
-        else{
+            $cartItems = Cart::where('user_id', Auth::id())->where('checked', 'yes')->get();
+
+            // Ensure subtotal values are cast to float before summing
+            $cartTotal = $cartItems->sum(function ($item) {
+                return (float)$item->subtotal;
+            });
+
+            return number_format($cartTotal, 2);
+        } else {
             $total = 0;
             foreach (PackageCart::content() as $product) {
                 $total += ($product->price + $product->options->variants_total) * $product->qty;
             }
             return number_format($total, 2);
         }
-    }
-    catch(Exception $e){
+    } catch (Exception $e) {
         Log::info($e->getMessage());
+        return '0.00'; // Return a fallback value in case of an exception
     }
 }
+
 
 /** Get payable total amount */
 function getMainCartTotal()
 {
     if (Session::has('coupon')) {
         $coupon = Session::get('coupon');
-        $subTotal = getCartTotal();
+
+        // Ensure getCartTotal() returns a numeric value for calculations
+        $subTotal = (float) str_replace(',', '', getCartTotal());
+
         if ($coupon['discount_type'] === 'amount') {
             $total = $subTotal - $coupon['discount'];
-            return number_format($total, 2);
+            return number_format(max($total, 0), 2); // Ensure no negative total
         } elseif ($coupon['discount_type'] === 'percent') {
             $discount = ($subTotal * $coupon['discount'] / 100);
             $total = $subTotal - $discount;
-            return number_format($total, 2);
+            return number_format(max($total, 0), 2); // Ensure no negative total
         }
     } else {
-        return number_format(getCartTotal(), 2);
+        // Ensure getCartTotal() is returned as a formatted string
+        return number_format((float) str_replace(',', '', getCartTotal()), 2);
     }
 }
+
 
 /** Get cart discount */
 function getCartDiscount()

@@ -13,7 +13,18 @@
                                                 class="fas fa-prescription-bottle-alt"></i><span>Dashboard</span></a>
 
                         </li>
-
+                        <li class="{{setActive(['admin.notifications'])}}">
+                                <a class="nav-link" href="{{route('admin.notifications') }}">
+                                  <i class="fas fa-bell"></i>
+                                  @php
+                                      $notifCount = \App\Models\NotificationsPharmacy::where('vendor_id', Auth::id())->where('status', 'unread')->count();
+                                  @endphp
+                                  <span class="mb-1">Notifications</span>
+                                  @if($notifCount != 0)
+                                      <small class="text-danger font-weight-bold" style="display: inline-block"> {{$notifCount}}</small>
+                                  @endif
+                                  </a>
+                                </li>
                         <li class="{{ setActive(['admin.sales-reports']) }}"><a class="nav-link"
                                         href="{{ route('admin.sales-reports') }}"><i class="fas fa-chart-line"></i>
                                         <span> Sales</span></a>
@@ -127,7 +138,6 @@
                                                         Orders</a></li>
                                 </ul>
                         </li>
-
                         <li class="{{ setActive(['admin.transaction']) }}"><a class="nav-link"
                                         href="{{ route('admin.transaction') }}"><i class="fas fa-money-bill-alt"></i>
                                         <span>Transactions</span></a>

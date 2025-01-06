@@ -18,17 +18,11 @@ class TransferCartToDatabase
     public function handle(Login $event)
     {
         try {
-            Log::info('TransferCartToDatabase: Listener triggered');
-
             $user = $event->user;
             $userId = $user->id;
             $cartItems = PackageCart::content();
 
-            Log::info('TransferCartToDatabase: User ID: ' . $userId);
-            Log::info('TransferCartToDatabase: Cart Items: ' . json_encode($cartItems));
-
             foreach ($cartItems as $item) {
-                Log::info('TransferCartToDatabase: Processing item: ' . json_encode($item));
 
                 $cartItem = ModelCart::where('user_id', $userId)
                                 ->where('product_id', $item->id)
@@ -40,7 +34,6 @@ class TransferCartToDatabase
                     $cartItem->subtotal = $cartItem->quantity * $cartItem->product_price;
                     $cartItem->save();
 
-                    Log::info('TransferCartToDatabase: Updated existing cart item: ' . json_encode($cartItem));
                 } else {
                     // If the product is not in the cart, add a new entry
                     $newCartItem = ModelCart::create([
@@ -55,13 +48,11 @@ class TransferCartToDatabase
                         'prescription_approved' => 'no',
                     ]);
 
-                    Log::info('TransferCartToDatabase: Created new cart item: ' . json_encode($newCartItem));
                 }
             }
 
             // Clear the session-based cart
             PackageCart::destroy();
-            Log::info('TransferCartToDatabase: Cleared session-based cart');
         } catch (\Exception $e) {
             Log::error('TransferCartToDatabase: Error occurred: ' . $e->getMessage());
         }

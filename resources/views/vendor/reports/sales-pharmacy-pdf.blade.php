@@ -72,7 +72,7 @@
 <body>
     <!-- Header -->
     <div class="header">
-        <img src="{{ storage_path('app/public/uploads/medimart_logo.png') }}" style=" border-radius: 5px; border: 1px solid rgb(66, 108, 246); width: 70px; height: 70px;" alt="MediMart Logo.png">
+        {{-- <img src="{{ storage_path('app/public/uploads/medimart_logo.png') }}" style=" border-radius: 5px; border: 1px solid rgb(66, 108, 246); width: 70px; height: 70px;" alt="MediMart Logo.png"> --}}
         <h2 style="color: rgb(66, 108, 246);">MediMart Express</h2>
     </div>
 

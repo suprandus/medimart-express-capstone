@@ -107,7 +107,7 @@
                                                 @endforeach
                                             </div>
                                             <hr>
-                                            <div class="d-flex justify-content-center">
+                                            <div class="d-flex justify-content-center space-between">
                                                 <a class="dropdown-item text-center" href="{{ route('user.notifications') }}">View All Notifications</a>
                                                 <a class="dropdown-item text-center" href="javascript:void(0);" id="mark-all-read">Mark all as read</a>
                                             </div>
@@ -497,7 +497,7 @@
     }
 
     .notification-container {
-        max-height: 200px;
+        max-height: 210px;
         overflow-y: auto;
         overflow-x: hidden; /* Remove horizontal scrollbar */
     }

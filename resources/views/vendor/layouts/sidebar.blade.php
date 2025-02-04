@@ -23,7 +23,7 @@
         @endphp
         <span class="mb-1">Notifications</span>
         @if($notifCount != 0)
-            <small class="text-danger font-weight-bold" style="display: inline-block"> {{$notifCount}}</small>
+            <small class="text-danger font-weight-bold" style="display: inline-block"></small>
         @endif
         </a>
       </li>
